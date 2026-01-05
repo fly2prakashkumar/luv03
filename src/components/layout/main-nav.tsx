@@ -79,7 +79,7 @@ export function MainNav() {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link href="/recommendations" legacyBehavior passHref>
+          <Link href="/recommendations" passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               AI Recommendations
             </NavigationMenuLink>
