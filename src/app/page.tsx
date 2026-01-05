@@ -51,9 +51,9 @@ export default function Home() {
             ))}
           </div>
           <div className="text-center mt-12">
-            <Button asChild variant="secondary">
-              <Link href="/recommendations">
-                Get a Personal Recommendation
+            <Button asChild variant="outline">
+              <Link href="/products">
+                View All Products
               </Link>
             </Button>
           </div>
