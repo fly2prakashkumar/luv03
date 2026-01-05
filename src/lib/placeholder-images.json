@@ -1,3 +1,70 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero",
+      "description": "Elegant hero image with skincare products laid out on a soft background",
+      "imageUrl": "https://images.unsplash.com/photo-1643168343279-3f93c2e592ef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxza2luY2FyZSUyMGZsYXRsYXl8ZW58MHx8fHwxNzY3NjE0NjI4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "skincare flatlay"
+    },
+    {
+      "id": "product-1",
+      "description": "Bottle of Radiant Glow Serum",
+      "imageUrl": "https://images.unsplash.com/photo-1699373381667-a325cbf60dfe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzZXJ1bSUyMGJvdHRsZXxlbnwwfHx8fDE3Njc1NjE3NDZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "serum bottle"
+    },
+    {
+      "id": "product-2",
+      "description": "Jar of Hydro-Boost Moisturizer",
+      "imageUrl": "https://images.unsplash.com/photo-1667242003558-e42942d2b911?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjcmVhbSUyMGphcnxlbnwwfHx8fDE3Njc1OTQ4MTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cream jar"
+    },
+    {
+      "id": "product-3",
+      "description": "Bottle of Gentle Purifying Cleanser",
+      "imageUrl": "https://images.unsplash.com/photo-1642429948029-19d6dadcea5a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjbGVhbnNlciUyMGJvdHRsZXxlbnwwfHx8fDE3Njc1OTQ4MTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cleanser bottle"
+    },
+    {
+      "id": "product-4",
+      "description": "Bottle of Revitalizing Eye Cream",
+      "imageUrl": "https://images.unsplash.com/photo-1711280219887-c0fd5fcada0e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZXllJTIwY3JlYW18ZW58MHx8fHwxNzY3NjIwMTA3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "eye cream"
+    },
+    {
+      "id": "product-5",
+      "description": "Bottle of Vitamin C Brightening Toner",
+      "imageUrl": "https://images.unsplash.com/photo-1556227703-ab57dbc6f839?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0b25lciUyMGJvdHRsZXxlbnwwfHx8fDE3Njc2MjExNzZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "toner bottle"
+    },
+    {
+      "id": "product-6",
+      "description": "Tube of Sun-Kissed SPF 50 Sunscreen",
+      "imageUrl": "https://images.unsplash.com/photo-1658387518136-703378fb6f48?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxzdW5zY3JlZW4lMjB0dWJlfGVufDB8fHx8MTc2NzU5NDgxMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sunscreen tube"
+    },
+    {
+      "id": "product-7",
+      "description": "Jar of Overnight Repair Night Cream",
+      "imageUrl": "https://images.unsplash.com/photo-1585232350744-974fc9804d65?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxuaWdodCUyMGNyZWFtfGVufDB8fHx8MTc2NzYyMTE3Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "night cream"
+    },
+    {
+      "id": "product-8",
+      "description": "Detoxifying Clay Mask in a jar",
+      "imageUrl": "https://images.unsplash.com/photo-1760679673134-ec50fe724567?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjbGF5JTIwbWFza3xlbnwwfHx8fDE3Njc2MjExNzZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "clay mask"
+    },
+    {
+      "id": "login-hero",
+      "description": "A minimalist image with a single leaf",
+      "imageUrl": "https://images.unsplash.com/photo-1483354483454-4cd359948304?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtaW5pbWFsaXN0JTIwbmF0dXJlfGVufDB8fHx8MTc2NzYyMTE3NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "minimalist nature"
+    },
+    {
+      "id": "order-confirmed",
+      "description": "A package being prepared for shipping",
+      "imageUrl": "https://images.unsplash.com/photo-1656543802898-41c8c46683a7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzaGlwcGluZyUyMGJveHxlbnwwfHx8fDE3Njc1MjA2NTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "shipping box"
+    }
+  ]
 }
