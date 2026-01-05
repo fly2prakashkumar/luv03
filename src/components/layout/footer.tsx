@@ -9,7 +9,7 @@ export function AppFooter() {
             <Link href="/" className="font-bold text-2xl font-headline">
               Luv 03
             </Link>
-            <p className="text-muted-foreground mt-2">Luxury Skincare, Redefined.</p>
+            <p className="text-muted-foreground mt-2">Luv Skin Brth Skin</p>
           </div>
           <div className="flex flex-col md:flex-row items-center gap-6 md:gap-12">
             <div className="flex space-x-6 text-muted-foreground">
