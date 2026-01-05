@@ -1,17 +1,24 @@
+"use client";
+
 import { getAllProducts } from "@/lib/products";
 import { ProductCard } from "@/components/products/product-card";
-
-export const metadata = {
-  title: "Shop All Products - Luv 03",
-  description: "Explore our collection of luxury skincare products.",
-};
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function ProductsPage() {
   const products = getAllProducts();
+  const router = useRouter();
 
   return (
     <div className="bg-background">
       <div className="container mx-auto px-4 py-12 md:py-16">
+        <div className="mb-4">
+            <Button variant="ghost" onClick={() => router.back()}>
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back
+            </Button>
+        </div>
         <div className="text-center mb-10">
           <h1 className="text-4xl md:text-5xl font-bold font-headline">
             Our Collection
