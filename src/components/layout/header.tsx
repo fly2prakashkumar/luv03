@@ -8,6 +8,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { Input } from "@/components/ui/input";
+import { MainNav } from "./main-nav";
 
 const navLinks = [
   { href: "/products", label: "Shop" },
@@ -22,17 +23,7 @@ export function AppHeader() {
           <Link href="/" className="mr-6 flex items-center space-x-2">
             <span className="font-bold text-xl font-headline">Luv 03</span>
           </Link>
-          <nav className="flex items-center space-x-6 text-sm font-medium">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="transition-colors hover:text-foreground/80 text-foreground/60"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+          <MainNav />
         </div>
 
         <div className="md:hidden">
