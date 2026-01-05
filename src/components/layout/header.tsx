@@ -7,6 +7,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { Input } from "@/components/ui/input";
 
 const navLinks = [
   { href: "/products", label: "Shop" },
@@ -63,13 +64,9 @@ export function AppHeader() {
 
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <div className="w-full flex-1 md:w-auto md:flex-none">
-            {/* Search can be implemented here */}
+            <Input icon={<Search/>} type="search" placeholder="Search..." className="md:w-48"/>
           </div>
           <nav className="flex items-center">
-            <Button variant="ghost" size="icon" className="hidden md:inline-flex">
-              <Search className="h-5 w-5" />
-              <span className="sr-only">Search</span>
-            </Button>
             <Button asChild variant="ghost" size="icon">
               <Link href="/account">
                 <User className="h-5 w-5" />
