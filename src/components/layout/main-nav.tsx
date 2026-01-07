@@ -52,14 +52,16 @@ export function MainNav() {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-            <Link href="/products">Shop</Link>
-          </NavigationMenuLink>
+          <Link href="/products" passHref asChild>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              Shop
+            </NavigationMenuLink>
+          </Link>
         </NavigationMenuItem>
          <NavigationMenuItem>
-            <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                <Link href="/recommendations">AI Beauty Advisor</Link>
-            </NavigationMenuLink>
+            <Link href="/recommendations" passHref asChild>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>AI Beauty Advisor</NavigationMenuLink>
+            </Link>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
