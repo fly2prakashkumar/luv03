@@ -1,28 +1,30 @@
-import Link from "next/link";
-import { User, Search, Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { CartIcon } from "@/components/cart/cart-icon";
+import Link from 'next/link';
+import { User, Search, Menu } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { CartIcon } from '@/components/cart/cart-icon';
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
-} from "@/components/ui/sheet"
-import { Input } from "@/components/ui/input";
-import { MainNav } from "./main-nav";
+} from '@/components/ui/sheet';
+import { Input } from '@/components/ui/input';
+import { MainNav } from './main-nav';
 
 const navLinks = [
-  { href: "/products", label: "Shop" },
+  { href: '/products', label: 'Shop' },
 ];
 
 export function AppHeader() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="bg-primary text-primary-foreground py-2 text-center text-sm">
+        <p>✨ Free Shipping on Orders Over $50! ✨</p>
+      </div>
       <div className="container flex h-16 items-center">
         <div className="mr-4 hidden md:flex">
           <Link href="/" className="mr-6 flex items-center space-x-2">
             <span className="font-bold text-xl font-headline">Luv O3</span>
           </Link>
-          <MainNav />
         </div>
 
         <div className="md:hidden">
@@ -51,10 +53,14 @@ export function AppHeader() {
             </SheetContent>
           </Sheet>
         </div>
+        
+        <div className="hidden md:flex flex-1 items-center justify-start space-x-2">
+           <MainNav />
+        </div>
 
-        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+        <div className="flex flex-1 items-center justify-end space-x-4">
           <div className="w-full flex-1 md:w-auto md:flex-none">
-            <Input icon={<Search/>} type="search" placeholder="Search..." className="md:w-48"/>
+            <Input icon={<Search/>} type="search" placeholder="Search..." className="md:w-64"/>
           </div>
           <nav className="flex items-center">
             <Button asChild variant="ghost" size="icon">

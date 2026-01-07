@@ -14,30 +14,37 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 
-const components: { title: string; href: string; description: string }[] = [
-  {
-    title: "Cleansers",
-    href: "/products",
-    description:
-      "Gentle yet effective cleansers for all skin types.",
-  },
-  {
-    title: "Moisturizers",
-    href: "/products",
-    description:
-      "Hydrate and nourish your skin with our range of moisturizers.",
-  },
-  {
-    title: "Serums",
-    href: "/products",
-    description:
-      "Targeted treatments to address specific skin concerns.",
-  },
-  {
-    title: "Sunscreen",
-    href: "/products",
-    description: "Protect your skin from harmful UV rays.",
-  },
+const categories: { title: string; href: string; description: string }[] = [
+    {
+      title: "Skincare",
+      href: "/products",
+      description: "Cleansers, moisturizers, serums, and more for your face.",
+    },
+    {
+      title: "Makeup",
+      href: "/products",
+      description: "Foundations, lipsticks, and everything for your look.",
+    },
+    {
+      title: "Hair",
+      href: "/products",
+      description: "Shampoos, conditioners, and treatments for luscious locks.",
+    },
+    {
+      title: "Body",
+      href: "/products",
+      description: "Lotions, scrubs, and oils for the whole body.",
+    },
+     {
+      title: "Fragrance",
+      href: "/products",
+      description: "Discover your signature scent.",
+    },
+     {
+      title: "Tools & Brushes",
+      href: "/products",
+      description: "Perfect your application with our professional tools.",
+    },
 ]
 
 export function MainNav() {
@@ -45,10 +52,10 @@ export function MainNav() {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Shop</NavigationMenuTrigger>
+          <NavigationMenuTrigger>Categories</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-              <li className="row-span-4">
+              <li className="row-span-3">
                 <NavigationMenuLink asChild>
                   <a
                     className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
@@ -63,20 +70,42 @@ export function MainNav() {
                   </a>
                 </NavigationMenuLink>
               </li>
-              <ListItem href="/products" title="Face">
-                Cleansers, moisturizers, serums, and more.
-              </ListItem>
-              <ListItem href="/products" title="Body">
-                Lotions, scrubs, and oils for the whole body.
-              </ListItem>
-              <ListItem href="/products" title="Lip">
-                Balms and treatments for soft, hydrated lips.
-              </ListItem>
-               <ListItem href="/products" title="Hair">
-                Shampoos, conditioners, and treatments.
-              </ListItem>
+              {categories.slice(0, 3).map((component) => (
+                <ListItem
+                  key={component.title}
+                  title={component.title}
+                  href={component.href}
+                >
+                  {component.description}
+                </ListItem>
+              ))}
             </ul>
+             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                {categories.slice(3).map((component) => (
+                    <ListItem
+                    key={component.title}
+                    title={component.title}
+                    href={component.href}
+                    >
+                    {component.description}
+                    </ListItem>
+                ))}
+             </ul>
           </NavigationMenuContent>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+           <Link href="/products" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                Brands
+                </NavigationMenuLink>
+            </Link>
+        </NavigationMenuItem>
+         <NavigationMenuItem>
+           <Link href="/recommendations" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                AI Beauty Advisor
+                </NavigationMenuLink>
+            </Link>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
