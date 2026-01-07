@@ -51,7 +51,7 @@ export function CartSheet() {
                     </div>
                     <div className="flex-1">
                       <h3 className="font-semibold text-sm">{item.product.name}</h3>
-                      <p className="text-muted-foreground text-sm">${item.product.price.toFixed(2)}</p>
+                      <p className="text-muted-foreground text-sm">₹{item.product.price.toFixed(2)}</p>
                       <div className="flex items-center gap-2 mt-2">
                         <Input
                           type="number"
@@ -75,7 +75,7 @@ export function CartSheet() {
             <Separator />
             <div className="flex justify-between font-semibold">
               <span>Subtotal</span>
-              <span>${subtotal.toFixed(2)}</span>
+              <span>₹{subtotal.toFixed(2)}</span>
             </div>
             <p className="text-xs text-muted-foreground">
               Shipping and taxes will be calculated at checkout.

@@ -35,7 +35,7 @@ export function ProductCard({ product }: ProductCardProps) {
             {product.name}
           </Link>
         </CardTitle>
-        <p className="font-semibold text-md">${product.price.toFixed(2)}</p>
+        <p className="font-semibold text-md">₹{product.price.toFixed(2)}</p>
       </CardContent>
       <CardFooter className="p-4 pt-0">
         <AddToCartButton product={product} />

@@ -45,7 +45,7 @@ export default function CheckoutPage() {
     (acc, item) => acc + item.product.price * item.quantity,
     0
   );
-  const shipping = 5.00;
+  const shipping = 50.00;
   const total = subtotal + shipping;
 
   const form = useForm<FormValues>({
@@ -80,22 +80,22 @@ export default function CheckoutPage() {
                     {state.cartItems.map(item => (
                         <div key={item.product.id} className="flex justify-between items-center text-sm">
                             <span className="text-muted-foreground">{item.product.name} x {item.quantity}</span>
-                            <span>${(item.product.price * item.quantity).toFixed(2)}</span>
+                            <span>₹{(item.product.price * item.quantity).toFixed(2)}</span>
                         </div>
                     ))}
                     <Separator/>
                     <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Subtotal</span>
-                        <span>${subtotal.toFixed(2)}</span>
+                        <span>₹{subtotal.toFixed(2)}</span>
                     </div>
                      <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Shipping</span>
-                        <span>${shipping.toFixed(2)}</span>
+                        <span>₹{shipping.toFixed(2)}</span>
                     </div>
                     <Separator/>
                      <div className="flex justify-between font-bold text-lg">
                         <span>Total</span>
-                        <span>${total.toFixed(2)}</span>
+                        <span>₹{total.toFixed(2)}</span>
                     </div>
                 </CardContent>
             </Card>
@@ -149,7 +149,7 @@ export default function CheckoutPage() {
                         )}/></div>
                     </CardContent>
                 </Card>
-              <Button type="submit" className="w-full" size="lg">Pay ${total.toFixed(2)}</Button>
+              <Button type="submit" className="w-full" size="lg">Pay ₹{total.toFixed(2)}</Button>
             </form>
           </Form>
         </div>
