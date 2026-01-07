@@ -12,7 +12,6 @@ import { MainNav } from "./main-nav";
 
 const navLinks = [
   { href: "/products", label: "Shop" },
-  { href: "/recommendations", label: "AI Recommendations" },
 ];
 
 export function AppHeader() {
