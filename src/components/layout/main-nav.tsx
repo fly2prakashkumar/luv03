@@ -94,18 +94,14 @@ export function MainNav() {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-           <Link href="/products" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Brands
-                </NavigationMenuLink>
-            </Link>
+           <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                <Link href="/products">Brands</Link>
+            </NavigationMenuLink>
         </NavigationMenuItem>
          <NavigationMenuItem>
-           <Link href="/recommendations" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                AI Beauty Advisor
-                </NavigationMenuLink>
-            </Link>
+           <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                <Link href="/recommendations">AI Beauty Advisor</Link>
+            </NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
