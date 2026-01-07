@@ -52,51 +52,11 @@ export function MainNav() {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Categories</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-              <li className="row-span-3">
-                <NavigationMenuLink asChild>
-                  <a
-                    className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                    href="/"
-                  >
-                    <div className="mb-2 mt-4 text-lg font-medium font-headline">
-                      Luv O3
-                    </div>
-                    <p className="text-sm leading-tight text-muted-foreground">
-                      Luxury Skincare & AI-Powered Recommendations.
-                    </p>
-                  </a>
-                </NavigationMenuLink>
-              </li>
-              {categories.slice(0, 3).map((component) => (
-                <ListItem
-                  key={component.title}
-                  title={component.title}
-                  href={component.href}
-                >
-                  {component.description}
-                </ListItem>
-              ))}
-            </ul>
-             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                {categories.slice(3).map((component) => (
-                    <ListItem
-                    key={component.title}
-                    title={component.title}
-                    href={component.href}
-                    >
-                    {component.description}
-                    </ListItem>
-                ))}
-             </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-            <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                <Link href="/products">Brands</Link>
+          <Link href="/products" legacyBehavior passHref>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              Shop
             </NavigationMenuLink>
+          </Link>
         </NavigationMenuItem>
          <NavigationMenuItem>
             <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
