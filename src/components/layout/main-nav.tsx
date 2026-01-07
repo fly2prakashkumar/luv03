@@ -94,12 +94,12 @@ export function MainNav() {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-           <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+            <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
                 <Link href="/products">Brands</Link>
             </NavigationMenuLink>
         </NavigationMenuItem>
          <NavigationMenuItem>
-           <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+            <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
                 <Link href="/recommendations">AI Beauty Advisor</Link>
             </NavigationMenuLink>
         </NavigationMenuItem>

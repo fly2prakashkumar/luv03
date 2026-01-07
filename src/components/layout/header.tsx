@@ -12,6 +12,7 @@ import { MainNav } from './main-nav';
 
 const navLinks = [
   { href: '/products', label: 'Shop' },
+  { href: '/recommendations', label: 'AI Beauty Advisor' },
 ];
 
 export function AppHeader() {
