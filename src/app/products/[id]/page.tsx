@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
     };
   }
   return {
-    title: `${product.name} - Luv 03`,
+    title: `${product.name} - Luv O3`,
     description: product.description,
   };
 }

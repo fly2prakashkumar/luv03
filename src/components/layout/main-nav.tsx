@@ -55,7 +55,7 @@ export function MainNav() {
                     href="/"
                   >
                     <div className="mb-2 mt-4 text-lg font-medium font-headline">
-                      Luv 03
+                      Luv O3
                     </div>
                     <p className="text-sm leading-tight text-muted-foreground">
                       Luxury Skincare & AI-Powered Recommendations.

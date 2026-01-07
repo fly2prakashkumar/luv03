@@ -7,7 +7,7 @@ export function AppFooter() {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-6 md:mb-0">
             <Link href="/" className="font-bold text-2xl font-headline">
-              Luv 03
+              Luv O3
             </Link>
             <p className="text-muted-foreground mt-2">Luv Skin Brth Skin</p>
           </div>
@@ -23,7 +23,7 @@ export function AppFooter() {
           </div>
         </div>
         <div className="mt-8 border-t pt-6 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Luv 03. All Rights Reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Luv O3. All Rights Reserved.</p>
         </div>
       </div>
     </footer>

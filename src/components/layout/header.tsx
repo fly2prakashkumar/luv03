@@ -21,7 +21,7 @@ export function AppHeader() {
       <div className="container flex h-16 items-center">
         <div className="mr-4 hidden md:flex">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <span className="font-bold text-xl font-headline">Luv 03</span>
+            <span className="font-bold text-xl font-headline">Luv O3</span>
           </Link>
           <MainNav />
         </div>
@@ -36,7 +36,7 @@ export function AppHeader() {
             </SheetTrigger>
             <SheetContent side="left" className="pr-0">
               <Link href="/" className="mr-6 flex items-center space-x-2 mb-6">
-                 <span className="font-bold text-xl font-headline">Luv 03</span>
+                 <span className="font-bold text-xl font-headline">Luv O3</span>
               </Link>
               <div className="flex flex-col space-y-3">
                 {navLinks.map((link) => (
