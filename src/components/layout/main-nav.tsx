@@ -52,14 +52,14 @@ export function MainNav() {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <Link href="/products" passHref asChild>
+          <Link href="/products" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               Shop
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
          <NavigationMenuItem>
-            <Link href="/recommendations" passHref asChild>
+            <Link href="/recommendations" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>AI Beauty Advisor</NavigationMenuLink>
             </Link>
         </NavigationMenuItem>
