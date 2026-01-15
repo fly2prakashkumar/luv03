@@ -10,8 +10,9 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { DollarSign, ShoppingCart, Users, Package, ArrowUp, Star, MoreHorizontal } from 'lucide-react';
+import { DollarSign, ShoppingCart, Users, Package, ArrowUp, Star, MoreHorizontal, Pencil, Trash2, Plus } from 'lucide-react';
 import { useState } from "react";
+import Image from "next/image";
 import {
   ResponsiveContainer,
   LineChart,
@@ -23,6 +24,24 @@ import {
   Legend,
 } from "recharts";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { getAllProducts } from "@/lib/products";
+import { getPlaceholderImage } from "@/lib/placeholder-images";
+import type { Product } from "@/lib/types";
 
 const TABS = ["overview", "products", "orders"];
 
@@ -63,8 +82,23 @@ const reviews = [
     },
 ];
 
+const allProducts = getAllProducts();
+const allCategories = ["All Categories", ...Array.from(new Set(allProducts.map(p => p.category)))];
+
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("overview");
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>(allProducts);
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    if (category === "All Categories") {
+      setFilteredProducts(allProducts);
+    } else {
+      setFilteredProducts(allProducts.filter(p => p.category === category));
+    }
+  };
+
 
   return (
     <div className="flex-1 space-y-4 p-4 sm:p-6 md:p-8 pt-6 bg-muted/20">
@@ -217,12 +251,74 @@ export default function AdminPage() {
         )}
          {activeTab === 'products' && (
             <Card className="mt-4">
-                <CardHeader>
-                    <CardTitle>Manage Products</CardTitle>
-                    <CardDescription>Add, edit, or remove products from your catalog.</CardDescription>
+                <CardHeader className="flex flex-row items-center justify-between">
+                    <div>
+                        <CardTitle>Product Management</CardTitle>
+                        <CardDescription>Add, edit, or remove products from your catalog.</CardDescription>
+                    </div>
+                    <Button>
+                        <Plus className="mr-2 h-4 w-4" /> Add Product
+                    </Button>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-muted-foreground">Product management interface coming soon.</p>
+                    <div className="mb-4">
+                         <Select value={selectedCategory} onValueChange={handleCategoryChange}>
+                            <SelectTrigger className="w-full md:w-64">
+                                <SelectValue placeholder="All Categories" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {allCategories.map(category => (
+                                    <SelectItem key={category} value={category}>{category}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Image</TableHead>
+                                <TableHead>Name</TableHead>
+                                <TableHead>Category</TableHead>
+                                <TableHead>Price</TableHead>
+                                <TableHead>Actions</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {filteredProducts.map(product => {
+                                const placeholder = getPlaceholderImage(product.imageId);
+                                return (
+                                    <TableRow key={product.id}>
+                                        <TableCell>
+                                            <div className="relative h-12 w-12 rounded-md overflow-hidden">
+                                                 {placeholder && (
+                                                    <Image 
+                                                        src={placeholder.imageUrl} 
+                                                        alt={product.name} 
+                                                        fill 
+                                                        className="object-cover"
+                                                        data-ai-hint={placeholder.imageHint}
+                                                    />
+                                                )}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="font-medium">{product.name}</TableCell>
+                                        <TableCell>{product.category}</TableCell>
+                                        <TableCell>₹{product.price.toFixed(2)}</TableCell>
+                                        <TableCell>
+                                            <div className="flex gap-2">
+                                                <Button variant="outline" size="icon">
+                                                    <Pencil className="h-4 w-4" />
+                                                </Button>
+                                                <Button variant="destructive" size="icon">
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
+                        </TableBody>
+                    </Table>
                 </CardContent>
             </Card>
         )}
@@ -240,5 +336,7 @@ export default function AdminPage() {
     </div>
   );
 }
+
+    
 
     
