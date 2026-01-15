@@ -5,15 +5,16 @@ import { getProductsByCategory } from "@/lib/products";
 import { ProductCard } from "@/components/products/product-card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { notFound } from "next/navigation";
+import { useRouter, useParams, notFound } from "next/navigation";
 
-export default function CategoryPage({ params }: { params: { name: string } }) {
+export default function CategoryPage() {
   const router = useRouter();
-  const categoryName = decodeURIComponent(params.name).replace(/-/g, ' ');
+  const params = useParams();
+  const name = Array.isArray(params.name) ? params.name[0] : params.name;
+  const categoryName = decodeURIComponent(name || '').replace(/-/g, ' ');
   const products = getProductsByCategory(categoryName);
 
-  if (products.length === 0) {
+  if (!name || products.length === 0) {
     notFound();
   }
 
