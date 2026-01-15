@@ -25,7 +25,7 @@ const WhatsappIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 export function AppFooter() {
   return (
-    <footer className="bg-foreground text-background">
+    <footer className="bg-muted text-muted-foreground">
       <div className="container mx-auto px-4 py-12 md:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           
@@ -35,21 +35,21 @@ export function AppFooter() {
                 <ShoppingBag className="h-8 w-8" />
                 <span className="font-bold text-2xl font-headline">Luv O3</span>
               </Link>
-            <p className="text-muted-foreground text-sm max-w-sm">
+            <p className="text-sm max-w-sm">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum in beatae ea recusandae blanditiis veritatis.
             </p>
              <div className="flex space-x-4 pt-2">
-              <Link href="#" className="text-muted-foreground transition-colors"><Instagram className="h-6 w-6" /></Link>
-              <Link href="#" className="text-muted-foreground transition-colors"><Facebook className="h-6 w-6" /></Link>
-              <Link href="#" className="text-muted-foreground transition-colors"><WhatsappIcon className="h-6 w-6" /></Link>
+              <Link href="#" className="transition-colors"><Instagram className="h-6 w-6" /></Link>
+              <Link href="#" className="transition-colors"><Facebook className="h-6 w-6" /></Link>
+              <Link href="#" className="transition-colors"><WhatsappIcon className="h-6 w-6" /></Link>
             </div>
           </div>
 
           {/* Column 2: Links & Contact */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
             <div className="space-y-4">
-              <h3 className="font-bold text-lg">Links</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
+              <h3 className="font-bold text-lg text-foreground">Links</h3>
+              <ul className="space-y-2 text-sm">
                 {navLinks.map((link) => (
                   <li key={link.href + link.label}>
                     <Link href={link.href} className="transition-colors">
@@ -60,8 +60,8 @@ export function AppFooter() {
               </ul>
             </div>
             <div className="space-y-4">
-              <h3 className="font-bold text-lg">Contact Us</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
+              <h3 className="font-bold text-lg text-foreground">Contact Us</h3>
+              <ul className="space-y-2 text-sm">
                   <li className="flex items-center space-x-2">
                       <MapPin className="h-4 w-4"/>
                       <span>Chennai , India</span>
