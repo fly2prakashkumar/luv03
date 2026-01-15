@@ -4,12 +4,12 @@ import { ShoppingBag, Instagram, Facebook, MapPin, Phone } from "lucide-react";
 const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/products', label: 'All products' },
-    { href: '/about', label: 'About' },
-    { href: '/contact', label: 'Contact' },
     { href: '/products/category/bath-&-body', label: 'Bath & Body' },
     { href: '/products/category/skin-care', label: 'Skin care' },
     { href: '/products/category/toothpaste', label: 'Toothpaste' },
     { href: '/products/category/handwash', label: 'Handwash' },
+    { href: '/about', label: 'About' },
+    { href: '/contact', label: 'Contact' },
 ];
 
 const WhatsappIcon = (props: React.SVGProps<SVGSVGElement>) => (
