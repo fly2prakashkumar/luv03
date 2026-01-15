@@ -97,7 +97,7 @@ export default function Home() {
   )
 
   const heroPlugin = React.useRef(
-    Autoplay({ delay: 5000, stopOnInteraction: true })
+    Autoplay({ delay: 1500, stopOnInteraction: true })
   )
 
   return (
