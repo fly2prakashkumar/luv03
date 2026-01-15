@@ -8,6 +8,8 @@ import { CartIcon } from '@/components/cart/cart-icon';
 import {
   Sheet,
   SheetContent,
+  SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
@@ -78,10 +80,13 @@ export function AppHeader() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="pr-0">
-                <Link href="/" className="mr-6 flex items-center space-x-2 mb-6">
-                   <ShoppingBag className="h-6 w-6" />
-                   <span className="font-bold text-xl font-headline">Luv O3</span>
-                </Link>
+                <SheetHeader className="mb-6">
+                    <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
+                    <Link href="/" className="mr-6 flex items-center space-x-2">
+                    <ShoppingBag className="h-6 w-6" />
+                    <span className="font-bold text-xl font-headline">Luv O3</span>
+                    </Link>
+                </SheetHeader>
                 <MainNav isMobile={true}/>
               </SheetContent>
             </Sheet>
