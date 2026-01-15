@@ -2,7 +2,7 @@
 "use client";
 
 import { getProductById } from "@/lib/products";
-import { notFound, useRouter } from "next/navigation";
+import { notFound, useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { AddToCartButton } from "@/components/products/add-to-cart-button";
@@ -10,14 +10,10 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
-type ProductDetailPageProps = {
-  params: {
-    id: string;
-  };
-};
-
-export default function ProductDetailPage({ params }: ProductDetailPageProps) {
-  const product = getProductById(params.id);
+export default function ProductDetailPage() {
+  const params = useParams();
+  const id = Array.isArray(params.id) ? params.id[0] : params.id;
+  const product = getProductById(id);
   const router = useRouter();
 
   if (!product) {
