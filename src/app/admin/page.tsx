@@ -18,25 +18,29 @@ export default function AdminPage() {
   return (
     <div className="bg-muted/40 flex-1 p-4 sm:p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
-        <RadioGroup defaultValue="overview" className="grid grid-cols-3 gap-2 bg-background p-1 rounded-lg mb-8 shadow-sm border" onValueChange={setActiveTab}>
-          <RadioGroupItem value="overview" id="overview" className="peer sr-only" />
+        <RadioGroup 
+          defaultValue="overview" 
+          className="grid grid-cols-3 gap-1 bg-muted p-1 rounded-lg mb-8" 
+          onValueChange={setActiveTab}
+        >
+          <RadioGroupItem value="overview" id="overview" className="sr-only peer" />
           <Label
             htmlFor="overview"
-            className="flex-1 text-center py-2 px-4 rounded-md cursor-pointer transition-colors text-muted-foreground peer-data-[state=checked]:bg-card peer-data-[state=checked]:text-foreground peer-data-[state=checked]:shadow-sm"
+            className="flex-1 text-center py-2 px-4 rounded-lg cursor-pointer transition-all text-foreground/80 peer-data-[state=checked]:bg-background peer-data-[state=checked]:text-foreground peer-data-[state=checked]:font-semibold peer-data-[state=checked]:shadow"
           >
             Overview
           </Label>
-          <RadioGroupItem value="products" id="products" className="peer sr-only" />
+          <RadioGroupItem value="products" id="products" className="sr-only peer" />
           <Label
             htmlFor="products"
-            className="flex-1 text-center py-2 px-4 rounded-md cursor-pointer transition-colors text-muted-foreground peer-data-[state=checked]:bg-card peer-data-[state=checked]:text-foreground peer-data-[state=checked]:shadow-sm"
+            className="flex-1 text-center py-2 px-4 rounded-lg cursor-pointer transition-all text-foreground/80 peer-data-[state=checked]:bg-background peer-data-[state=checked]:text-foreground peer-data-[state=checked]:font-semibold peer-data-[state=checked]:shadow"
           >
             Products
           </Label>
-          <RadioGroupItem value="outfits" id="outfits" className="peer sr-only" />
+          <RadioGroupItem value="outfits" id="outfits" className="sr-only peer" />
           <Label
             htmlFor="outfits"
-            className="flex-1 text-center py-2 px-4 rounded-md cursor-pointer transition-colors text-muted-foreground peer-data-[state=checked]:bg-card peer-data-[state=checked]:text-foreground peer-data-[state=checked]:shadow-sm"
+            className="flex-1 text-center py-2 px-4 rounded-lg cursor-pointer transition-all text-foreground/80 peer-data-[state=checked]:bg-background peer-data-[state=checked]:text-foreground peer-data-[state=checked]:font-semibold peer-data-[state=checked]:shadow"
           >
             Outfits
           </Label>
