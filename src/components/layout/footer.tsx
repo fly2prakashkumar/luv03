@@ -14,7 +14,7 @@ export function AppFooter() {
   return (
     <footer className="bg-foreground text-background">
       <div className="container mx-auto px-4 py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           
           {/* Column 1: Brand */}
           <div className="space-y-4">
@@ -27,18 +27,7 @@ export function AppFooter() {
             </p>
           </div>
 
-          {/* Column 2: Important Links */}
-          <div className="space-y-4">
-            <h3 className="font-bold text-lg">Important Links</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/account" className="hover:text-primary transition-colors">My Account</Link></li>
-              <li><Link href="/recommendations" className="hover:text-primary transition-colors">AI Recommendations</Link></li>
-              <li><Link href="/checkout" className="hover:text-primary transition-colors">Checkout</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
-            </ul>
-          </div>
-
-          {/* Column 3: Links */}
+          {/* Column 2: Links */}
            <div className="space-y-4">
             <h3 className="font-bold text-lg">Links</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
@@ -52,7 +41,7 @@ export function AppFooter() {
             </ul>
           </div>
 
-          {/* Column 4: Contact and Socials */}
+          {/* Column 3: Contact and Socials */}
           <div className="space-y-4">
              <div className="flex space-x-4">
               <Link href="#" className="text-muted-foreground hover:text-primary transition-colors"><Instagram className="h-6 w-6" /></Link>
