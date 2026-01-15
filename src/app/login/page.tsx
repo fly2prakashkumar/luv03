@@ -30,14 +30,15 @@ export default function LoginPage() {
   const { user, isUserLoading } = useUser();
 
   useEffect(() => {
-    if (!isUserLoading && user) {
+    // Wait until auth is initialized and user state is known
+    if (auth && !isUserLoading && user) {
         if (user.email === 'admin@gmail.com') {
             router.push('/admin');
         } else {
             router.push('/account');
         }
     }
-  }, [user, isUserLoading, router]);
+  }, [user, isUserLoading, router, auth]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();

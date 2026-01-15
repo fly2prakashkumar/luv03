@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -41,10 +42,11 @@ export default function SignupPage() {
   const { user, isUserLoading } = useUser();
 
   useEffect(() => {
-    if (!isUserLoading && user) {
+    // Wait until auth is initialized and user state is known
+    if (auth && !isUserLoading && user) {
         router.push('/account');
     }
-  }, [user, isUserLoading, router]);
+  }, [user, isUserLoading, router, auth]);
 
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
