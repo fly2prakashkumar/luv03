@@ -7,6 +7,18 @@
       "imageHint": "skincare flatlay"
     },
     {
+      "id": "hero-2",
+      "description": "A woman with glowing skin, representing natural radiance",
+      "imageUrl": "https://images.unsplash.com/photo-1590439471364-192aa70c0b53?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxnbG93aW5nJTIwc2tpbnxlbnwwfHx8fDE3Njg1MDEzODF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "glowing skin"
+    },
+    {
+      "id": "hero-3",
+      "description": "A minimal arrangement of natural ingredients and skincare bottles",
+      "imageUrl": "https://images.unsplash.com/photo-1556228723-8c4c5f3261a3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxuYXR1cmFsJTIwc2tpbmNhcmV8ZW58MHx8fHwxNzY4NTAxMzgxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "natural skincare"
+    },
+    {
       "id": "product-1",
       "description": "Bottle of Radiant Glow Serum",
       "imageUrl": "https://images.unsplash.com/photo-1699373381667-a325cbf60dfe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzZXJ1bSUyMGJvdHRsZXxlbnwwfHx8fDE3Njc1NjE3NDZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
