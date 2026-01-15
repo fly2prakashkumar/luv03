@@ -3,7 +3,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Search, Menu, ShoppingBag, User, LogOut, Home } from 'lucide-react';
+import { Search, Menu, ShoppingBag, User, LogOut, Home, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CartIcon } from '@/components/cart/cart-icon';
 import {
@@ -204,6 +204,11 @@ export function AppHeader() {
                     <DropdownMenuItem asChild>
                       <Link href="/"><Home className="mr-2 h-4 w-4" /> Home</Link>
                     </DropdownMenuItem>
+                    {user.email === 'admin@gmail.com' && (
+                        <DropdownMenuItem asChild>
+                            <Link href="/admin"><LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard</Link>
+                        </DropdownMenuItem>
+                    )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="mr-2 h-4 w-4" /> Logout
