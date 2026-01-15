@@ -21,10 +21,7 @@ export default function AboutPage() {
           </CardHeader>
           <CardContent className="text-muted-foreground space-y-4">
             <p>
-              Luv O3 was born from a simple yet powerful idea: to harness the purifying properties of ozone and combine them with the finest organic ingredients. Our journey began in a small lab, driven by a passion for creating skincare that is both effective and gentle. We believe in the synergy of science and nature to deliver products that not only beautify but also respect the skin's natural balance.
-            </p>
-            <p>
-              We are proud to be India's first advanced skin and oral care brand utilizing ozonated organic oils. Every product is a testament to our commitment to quality, innovation, and sustainability.
+              Luv O3 Pvt Ltd is a pioneer in ozone-infused skincare and herbal cream formulations. Leveraging innovative ozone technology, we develop high-quality, natural, and skin-friendly products designed to nourish, protect, and rejuvenate. With a strong foundation in chemical engineering and years of experience working with ozone applications, our mission is to bring safe, eco-conscious, and effective skincare solutions to the market.
             </p>
           </CardContent>
         </Card>
