@@ -1,6 +1,15 @@
 import Link from "next/link";
 import { ShoppingBag, Instagram, Facebook, Linkedin, MapPin, Phone } from "lucide-react";
 
+const navLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/products', label: 'All products' },
+    { href: '/products', label: 'Both&Body' },
+    { href: '/products', label: 'Skin care' },
+    { href: '/products', label: 'Toothpaste' },
+    { href: '/products', label: 'Handwash' },
+];
+
 export function AppFooter() {
   return (
     <footer className="bg-foreground text-background">
@@ -22,10 +31,10 @@ export function AppFooter() {
           <div className="space-y-4">
             <h3 className="font-bold text-lg">Important Links</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/" className="hover:text-primary transition-colors">Home</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">About</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">Contact</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">Blog</Link></li>
+              <li><Link href="/account" className="hover:text-primary transition-colors">My Account</Link></li>
+              <li><Link href="/recommendations" className="hover:text-primary transition-colors">AI Recommendations</Link></li>
+              <li><Link href="/checkout" className="hover:text-primary transition-colors">Checkout</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
             </ul>
           </div>
 
@@ -33,10 +42,13 @@ export function AppFooter() {
            <div className="space-y-4">
             <h3 className="font-bold text-lg">Links</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/" className="hover:text-primary transition-colors">Home</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">About</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">Contact</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">Blog</Link></li>
+              {navLinks.map((link) => (
+                <li key={link.href + link.label}>
+                  <Link href={link.href} className="hover:text-primary transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
