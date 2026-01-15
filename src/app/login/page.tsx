@@ -13,9 +13,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
-  User,
 } from 'firebase/auth';
-import { Separator } from "@/components/ui/separator";
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512" {...props} fill="currentColor">
@@ -50,6 +48,7 @@ export default function LoginPage() {
         title: "Login Successful",
         description: "Welcome back!",
       });
+      // The useEffect will handle the redirect
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -68,6 +67,7 @@ export default function LoginPage() {
         title: "Login Successful",
         description: "Welcome!",
       });
+       // The useEffect will handle the redirect
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -77,13 +77,9 @@ export default function LoginPage() {
     }
   };
 
-
-  if (isUserLoading) {
-    return <div>Loading...</div>; // Or a spinner component
-  }
-
-  if (user) {
-    return null; // The useEffect will handle redirection
+  if (isUserLoading || user) {
+    // Show a loading indicator while checking auth state or if user is already logged in (and redirecting)
+    return <div className="flex justify-center items-center min-h-[calc(100vh-8rem)]">Loading...</div>;
   }
 
   return (
@@ -123,7 +119,7 @@ export default function LoginPage() {
               Login
             </Button>
           </form>
-           <div className="relative">
+           <div className="relative my-2">
                 <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
                 </div>

@@ -21,14 +21,12 @@ import {
   GoogleAuthProvider,
   updateProfile,
 } from 'firebase/auth';
-import { Separator } from '@/components/ui/separator';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512" {...props} fill="currentColor">
       <path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 126 23.4 172.9 61.9l-76.2 74.2C313.6 113.4 283.3 97.4 248 97.4c-85.3 0-153.9 68.6-153.9 158.6s68.6 158.6 153.9 158.6c99.9 0 137.3-82.9 140.8-120.9H248v-94.2h236.3c4.7 25.4 7.7 54.2 7.7 84.1z"/>
     </svg>
   );
-
 
 export default function SignupPage() {
   const [firstName, setFirstName] = useState('');
@@ -61,7 +59,6 @@ export default function SignupPage() {
     }
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      // Ensure there's a user object before trying to update the profile.
       if (userCredential.user) {
         await updateProfile(userCredential.user, {
           displayName: `${firstName} ${lastName}`.trim()
@@ -71,7 +68,7 @@ export default function SignupPage() {
         title: "Account Created",
         description: "Welcome! You are now signed in.",
       });
-      // The useEffect will handle the redirect to /account
+      // The useEffect will handle the redirect
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -90,6 +87,7 @@ export default function SignupPage() {
         title: "Sign-in Successful",
         description: "Welcome!",
       });
+       // The useEffect will handle the redirect
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -99,14 +97,10 @@ export default function SignupPage() {
     }
   };
 
-  if (isUserLoading) {
-    return <div>Loading...</div>; // Or a spinner component
+  if (isUserLoading || user) {
+     // Show a loading indicator while checking auth state or if user is already logged in (and redirecting)
+    return <div className="flex justify-center items-center min-h-[calc(100vh-8rem)]">Loading...</div>;
   }
-
-  if (user) {
-    return null; // The useEffect will handle redirection
-  }
-
 
   return (
     <div className="flex items-center justify-center py-12 min-h-[calc(100vh-8rem)]">
