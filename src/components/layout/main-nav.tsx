@@ -30,7 +30,7 @@ export function MainNav({ isMobile = false }: { isMobile?: boolean }) {
           <Link
             key={link.href + link.label}
             href={link.href}
-            className="text-foreground transition-colors hover:text-foreground"
+            className="text-foreground transition-colors"
           >
             {link.label}
           </Link>
@@ -44,7 +44,7 @@ export function MainNav({ isMobile = false }: { isMobile?: boolean }) {
       <NavigationMenuList>
          {navLinks.map((link) => (
             <NavigationMenuItem key={link.href + link.label}>
-                <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent text-foreground hover:bg-transparent hover:text-foreground focus:bg-transparent focus:text-foreground data-[active]:bg-transparent data-[state=open]:bg-transparent")}>
+                <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent text-foreground focus:bg-transparent focus:text-foreground data-[active]:bg-transparent data-[state=open]:bg-transparent")}>
                   <Link href={link.href}>{link.label}</Link>
                 </NavigationMenuLink>
             </NavigationMenuItem>

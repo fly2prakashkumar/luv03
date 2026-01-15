@@ -15,7 +15,7 @@ import { MainNav } from './main-nav';
 import { ThemeToggle } from './theme-toggle';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
-import { Popover, PopoverContent, PopoverTrigger, PopoverAnchor } from '@/components/ui/popover';
+import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover';
 import { searchProducts } from '@/lib/products';
 import type { Product } from '@/lib/types';
 import Image from 'next/image';
@@ -72,7 +72,7 @@ export function AppHeader() {
           <div className="md:hidden">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="hover:bg-primary/90">
+                <Button variant="ghost" size="icon" className="bg-primary/90">
                   <Menu className="h-5 w-5" />
                   <span className="sr-only">Toggle Menu</span>
                 </Button>
@@ -108,7 +108,7 @@ export function AppHeader() {
                             const placeholder = getPlaceholderImage(product.imageId);
                             return (
                                 <Link key={product.id} href={`/products/${product.id}`} className="block" onClick={handleSuggestionClick}>
-                                    <div className="flex items-center gap-4 p-2 rounded-md hover:bg-muted">
+                                    <div className="flex items-center gap-4 p-2 rounded-md bg-muted">
                                         <div className="relative h-12 w-12 rounded-md overflow-hidden">
                                             {placeholder && <Image src={placeholder.imageUrl} alt={product.name} fill className="object-cover" data-ai-hint={placeholder.imageHint} />}
                                         </div>
