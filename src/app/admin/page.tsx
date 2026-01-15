@@ -21,33 +21,33 @@ export default function AdminPage() {
         <RadioGroup
           value={activeTab}
           onValueChange={setActiveTab}
-          className="grid grid-cols-3 gap-1 bg-muted p-1 rounded-lg mb-8"
+          className="relative grid grid-cols-3 items-center gap-2 rounded-lg bg-gray-200 p-2"
         >
           <RadioGroupItem value="overview" id="overview" className="sr-only peer" />
           <Label
             htmlFor="overview"
-            className="flex-1 text-center py-2 px-4 rounded-lg cursor-pointer transition-all text-foreground/80 peer-data-[state=checked]:bg-background peer-data-[state=checked]:text-foreground peer-data-[state=checked]:font-semibold peer-data-[state=checked]:shadow"
+            className="flex h-full w-full cursor-pointer items-center justify-center rounded-md p-2 text-center text-sm font-medium text-gray-500 transition-all peer-data-[state=checked]:bg-white peer-data-[state=checked]:text-gray-900 peer-data-[state=checked]:shadow-sm"
           >
             Overview
           </Label>
           <RadioGroupItem value="products" id="products" className="sr-only peer" />
           <Label
             htmlFor="products"
-            className="flex-1 text-center py-2 px-4 rounded-lg cursor-pointer transition-all text-foreground/80 peer-data-[state=checked]:bg-background peer-data-[state=checked]:text-foreground peer-data-[state=checked]:font-semibold peer-data-[state=checked]:shadow"
+            className="flex h-full w-full cursor-pointer items-center justify-center rounded-md p-2 text-center text-sm font-medium text-gray-500 transition-all peer-data-[state=checked]:bg-white peer-data-[state=checked]:text-gray-900 peer-data-[state=checked]:shadow-sm"
           >
             Products
           </Label>
           <RadioGroupItem value="outfits" id="outfits" className="sr-only peer" />
           <Label
             htmlFor="outfits"
-            className="flex-1 text-center py-2 px-4 rounded-lg cursor-pointer transition-all text-foreground/80 peer-data-[state=checked]:bg-background peer-data-[state=checked]:text-foreground peer-data-[state=checked]:font-semibold peer-data-[state=checked]:shadow"
+            className="flex h-full w-full cursor-pointer items-center justify-center rounded-md p-2 text-center text-sm font-medium text-gray-500 transition-all peer-data-[state=checked]:bg-white peer-data-[state=checked]:text-gray-900 peer-data-[state=checked]:shadow-sm"
           >
             Outfits
           </Label>
         </RadioGroup>
 
         {activeTab === 'overview' && (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Products</CardTitle>
