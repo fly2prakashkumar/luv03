@@ -40,47 +40,45 @@ export default function LoginPage() {
     }
   }, [user, isUserLoading, router, auth]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!auth) return;
-    signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        toast({
-          title: "Login Successful",
-          description: "Welcome back!",
-        });
-        // The useEffect will handle the redirect
-      })
-      .catch((error: any) => {
-        toast({
-          variant: "destructive",
-          title: "Login Failed",
-          description: error.message || "Invalid email or password.",
-        });
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      toast({
+        title: "Login Successful",
+        description: "Welcome back!",
       });
+      // The useEffect will handle the redirect
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: error.message || "Invalid email or password.",
+      });
+    }
   };
 
-  const handleGoogleSignIn = () => {
+  const handleGoogleSignIn = async () => {
     if (!auth) return;
     const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider)
-      .then(() => {
-        toast({
-          title: "Login Successful",
-          description: "Welcome!",
-        });
-         // The useEffect will handle the redirect
-      })
-      .catch((error: any) => {
-        toast({
-          variant: "destructive",
-          title: "Google Sign-In Failed",
-          description: error.message || "Could not sign in with Google.",
-        });
+    try {
+      await signInWithPopup(auth, provider);
+      toast({
+        title: "Login Successful",
+        description: "Welcome!",
       });
+       // The useEffect will handle the redirect
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Google Sign-In Failed",
+        description: error.message || "Could not sign in with Google.",
+      });
+    }
   };
 
-  if (isUserLoading || user) {
+  if (isUserLoading || (user && auth)) {
     // Show a loading indicator while checking auth state or if user is already logged in (and redirecting)
     return <div className="flex justify-center items-center min-h-[calc(100vh-8rem)]">Loading...</div>;
   }
