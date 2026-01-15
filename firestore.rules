@@ -1,223 +1,128 @@
 /**
- * Core Philosophy: This ruleset enforces a strict user-ownership model. All user-specific data, such as shopping carts,
- * orders, and addresses, is nested within that user's private document tree. A user can only access their own data.
- * The product catalog is public for reading, but write access is restricted.
+ * Core Philosophy: This ruleset enforces a strict user-ownership model. All user-specific data,
+ * including shopping carts, orders, and AI recommendations, is private and accessible only by the
+ * authenticated owner. The product catalog is treated as public data, readable by anyone, but
+ * write access is restricted to prevent unauthorized modifications.
  *
- * Data Structure: User data is hierarchically organized under `/users/{userId}`. This structure allows for simple and
- * performant path-based security rules. A top-level `/products` collection holds publicly readable product information.
+ * Data Structure: User data is organized hierarchically under the `/users/{userId}` path. This
+ * path-based ownership simplifies authorization checks. A separate top-level collection, `/products`,
+ * stores the public product catalog, segregating public and private data for security and performance.
  *
  * Key Security Decisions:
- * - Default Deny: All operations are denied unless explicitly allowed.
- * - User Isolation: Users are strictly isolated from each other's data. Listing the top-level `/users` collection is forbidden.
- * - Public Catalog: The `/products` collection is publicly readable by anyone, including unauthenticated users, to support browsing.
- *   However, write access is disabled for clients to prevent unauthorized catalog modifications.
- * - Ownership Enforcement: All writes to user-specific subcollections require the user to be authenticated and to be the owner
- *   of the data tree they are trying to modify.
+ * - User Isolation: Users can only read or write documents within their own data tree (e.g., `/users/THEIR_OWN_ID/...`).
+ * - No User Listing: It is not possible for any client to list all documents in the `/users` collection.
+ * - Public Catalog: The `/products` collection is publicly readable to allow anonymous browsing of the e-commerce store.
+ * - Restricted Product Writes: Direct writes to the `/products` collection from clients are disabled as a security
+ *   precaution, as an admin role or ownership model for products is not defined.
  *
- * Denormalization for Authorization: This ruleset relies on the Firestore path structure for authorization, which is a form of
- * denormalization. For example, by placing a shopping cart item at `/users/{userId}/shoppingCartItems/{itemId}`, we can secure it
- * with a simple check on `{userId}` without needing a `get()` call to another document.
+ * Denormalization for Authorization: The rules rely on path-based ownership (`/users/{userId}`), which
+ * is a highly performant authorization strategy that avoids costly `get()` calls. For documents
+ * within a user's subcollection, we enforce that a `userAccountId` field is present on creation and
+ * remains immutable, ensuring a permanent and verifiable link to the parent user.
  *
- * Structural Segregation: The separation of private user data (`/users/{userId}`) and public product data (`/products`)
- * is a key design choice. This prevents accidental data exposure and makes list queries on the public collection secure and efficient.
+ * Structural Segregation: The separation of private data (`/users`) and public data (`/products`) into
+ * distinct top-level collections is a deliberate design choice. This prevents accidental data exposure
+ * and allows for highly efficient and secure list operations (queries) on the public product catalog.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ------------------------------------------------------------------------
-    // Helper Functions
-    // ------------------------------------------------------------------------
-
-    /**
-     * Checks if the user is authenticated.
-     */
+    // Helper functions for reusable logic
     function isSignedIn() {
       return request.auth != null;
     }
 
-    /**
-     * Checks if the currently authenticated user's UID matches the provided userId.
-     */
+    // Checks if the requesting user's UID matches the document's owner ID from the path.
     function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
     }
 
-    /**
-     * For update/delete operations, checks if the user is the owner AND the document already exists.
-     */
+    // Verifies a document exists before an update or delete operation.
+    function isExistingDocument() {
+      return resource != null;
+    }
+
+    // Combines ownership and existence checks for state-changing operations.
     function isExistingOwner(userId) {
-      return isOwner(userId) && resource != null;
+      return isOwner(userId) && isExistingDocument();
     }
 
     /**
-     * On create, validates that the new document's internal 'id' field matches the user's UID from the path.
-     */
-    function isNewUserAccountDataConsistent(userId) {
-      return request.resource.data.id == userId;
-    }
-
-    /**
-     * On update, ensures the internal 'id' field of a user account is immutable.
-     */
-    function isUserAccountIdImmutable() {
-      return request.resource.data.id == resource.data.id;
-    }
-
-    /**
-     * On create, validates that a subcollection document's internal 'userAccountId' field
-     * matches the user's UID from the path.
-     */
-    function isNewSubcollectionDataConsistent(userId) {
-      return request.resource.data.userAccountId == userId;
-    }
-
-    /**
-     * On update, ensures the internal 'userAccountId' field of a subcollection document is immutable.
-     */
-    function isSubcollectionUserAccountIdImmutable() {
-      return request.resource.data.userAccountId == resource.data.userAccountId;
-    }
-
-    /**
-     * On create, validates that an OrderItem's 'orderId' field matches the path.
-     */
-    function isNewOrderItemDataConsistent(orderId) {
-      return request.resource.data.orderId == orderId;
-    }
-
-    /**
-     * On update, ensures an OrderItem's 'orderId' field is immutable.
-     */
-    function isOrderItemIdImmutable() {
-      return request.resource.data.orderId == resource.data.orderId;
-    }
-
-    // ------------------------------------------------------------------------
-    // Collection Rules
-    // ------------------------------------------------------------------------
-
-    /**
-     * @description A user can create their own account document and can read, update, or delete it thereafter.
+     * @description Rules for UserAccount documents, which store user profile and address information.
      * @path /users/{userId}
-     * @allow (create) An authenticated user with UID 'user_abc' creating their own document at `/users/user_abc`.
-     * @deny (list) Any user attempting to list all documents in the `/users` collection.
-     * @deny (get) User 'user_xyz' attempting to read data at `/users/user_abc`.
+     * @allow (create) An authenticated user creating their own user account document. `request.auth.uid == userId`.
+     * @deny (get) An authenticated user trying to read another user's account document.
      * @principle Restricts access to a user's own data tree and prevents user enumeration.
      */
     match /users/{userId} {
       allow get: if isOwner(userId);
-      allow list: if false;
-      allow create: if isOwner(userId) && isNewUserAccountDataConsistent(userId);
-      allow update: if isExistingOwner(userId) && isUserAccountIdImmutable();
+      allow list: if false; // Disallow listing all users for security and privacy.
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
       allow delete: if isExistingOwner(userId);
 
       /**
-       * @description A user can manage their own shopping cart items.
-       * @path /users/{userId}/shoppingCartItems/{cartItemId}
-       * @allow (create) User 'user_abc' creating a cart item at `/users/user_abc/shoppingCartItems/item_123`.
-       * @deny (get) User 'user_xyz' trying to read a cart item from `/users/user_abc/shoppingCartItems/item_123`.
-       * @principle Enforces strict ownership for all personal data subcollections.
+       * @description Rules for a user's ShoppingCart, containing product references.
+       * @path /users/{userId}/shoppingCarts/{shoppingCartId}
+       * @allow (get, list, create, update, delete) The owner of the user document accessing their own shopping cart.
+       * @deny (get) A user trying to access another user's shopping cart.
+       * @principle Enforces document ownership for all operations within a user's private subcollection.
        */
-      match /shoppingCartItems/{cartItemId} {
+      match /shoppingCarts/{shoppingCartId} {
         allow get: if isOwner(userId);
         allow list: if isOwner(userId);
-        allow create: if isOwner(userId) && isNewSubcollectionDataConsistent(userId);
-        allow update: if isExistingOwner(userId) && isSubcollectionUserAccountIdImmutable();
+        allow create: if isOwner(userId) && request.resource.data.userAccountId == userId;
+        allow update: if isExistingOwner(userId) && request.resource.data.userAccountId == resource.data.userAccountId;
         allow delete: if isExistingOwner(userId);
       }
 
       /**
-       * @description A user can manage their own orders.
+       * @description Rules for a user's Orders, representing their purchase history.
        * @path /users/{userId}/orders/{orderId}
-       * @allow (list) User 'user_abc' listing their past orders from `/users/user_abc/orders`.
-       * @deny (delete) User 'user_xyz' trying to delete an order from `/users/user_abc/orders/order_456`.
-       * @principle Enforces strict ownership for all personal data subcollections.
+       * @allow (get, list, create, update, delete) The owner of the user document accessing their own orders.
+       * @deny (update) A user trying to modify another user's order history.
+       * @principle Enforces document ownership for all operations within a user's private subcollection.
        */
       match /orders/{orderId} {
         allow get: if isOwner(userId);
         allow list: if isOwner(userId);
-        allow create: if isOwner(userId) && isNewSubcollectionDataConsistent(userId);
-        allow update: if isExistingOwner(userId) && isSubcollectionUserAccountIdImmutable();
-        allow delete: if isExistingOwner(userId);
-
-        /**
-         * @description A user can read the items within their own orders.
-         * @path /users/{userId}/orders/{orderId}/orderItems/{orderItemId}
-         * @allow (get) User 'user_abc' reading an item from `/users/user_abc/orders/order_456/orderItems/item_789`.
-         * @deny (get) User 'user_xyz' trying to read an item from another user's order.
-         * @principle Inherits ownership rules from the parent user document.
-         */
-        match /orderItems/{orderItemId} {
-          allow get: if isOwner(userId);
-          allow list: if isOwner(userId);
-          allow create: if isOwner(userId) && isNewOrderItemDataConsistent(orderId);
-          allow update: if isExistingOwner(userId) && isOrderItemIdImmutable();
-          allow delete: if isExistingOwner(userId);
-        }
-      }
-
-      /**
-       * @description A user can manage their own shipping addresses.
-       * @path /users/{userId}/shippingAddresses/{shippingAddressId}
-       * @allow (update) User 'user_abc' updating their address at `/users/user_abc/shippingAddresses/addr_1`.
-       * @deny (list) User 'user_xyz' trying to list addresses for `user_abc`.
-       * @principle Enforces strict ownership for all personal data subcollections.
-       */
-      match /shippingAddresses/{shippingAddressId} {
-        allow get: if isOwner(userId);
-        allow list: if isOwner(userId);
-        allow create: if isOwner(userId) && isNewSubcollectionDataConsistent(userId);
-        allow update: if isExistingOwner(userId) && isSubcollectionUserAccountIdImmutable();
+        allow create: if isOwner(userId) && request.resource.data.userAccountId == userId;
+        allow update: if isExistingOwner(userId) && request.resource.data.userAccountId == resource.data.userAccountId;
         allow delete: if isExistingOwner(userId);
       }
 
       /**
-       * @description A user can manage their own billing addresses.
-       * @path /users/{userId}/billingAddresses/{billingAddressId}
-       * @allow (create) User 'user_abc' adding a new address at `/users/user_abc/billingAddresses/addr_2`.
-       * @deny (delete) User 'user_xyz' trying to delete an address for `user_abc`.
-       * @principle Enforces strict ownership for all personal data subcollections.
-       */
-      match /billingAddresses/{billingAddressId} {
-        allow get: if isOwner(userId);
-        allow list: if isOwner(userId);
-        allow create: if isOwner(userId) && isNewSubcollectionDataConsistent(userId);
-        allow update: if isExistingOwner(userId) && isSubcollectionUserAccountIdImmutable();
-        allow delete: if isExistingOwner(userId);
-      }
-
-      /**
-       * @description A user can manage their own AI-generated recommendations.
+       * @description Rules for AI-generated product recommendations for a specific user.
        * @path /users/{userId}/aiRecommendations/{recommendationId}
-       * @allow (get) User 'user_abc' reading a recommendation at `/users/user_abc/aiRecommendations/rec_1`.
-       * @deny (create) User 'user_xyz' trying to create a fake recommendation for `user_abc`.
-       * @principle Enforces strict ownership for all personal data subcollections.
+       * @allow (get, list, create, update, delete) The owner of the user document accessing their own recommendations.
+       * @deny (create) A user trying to create a recommendation for another user.
+       * @principle Enforces document ownership for all operations within a user's private subcollection.
        */
       match /aiRecommendations/{recommendationId} {
         allow get: if isOwner(userId);
         allow list: if isOwner(userId);
-        allow create: if isOwner(userId) && isNewSubcollectionDataConsistent(userId);
-        allow update: if isExistingOwner(userId) && isSubcollectionUserAccountIdImmutable();
+        allow create: if isOwner(userId) && request.resource.data.userAccountId == userId;
+        allow update: if isExistingOwner(userId) && request.resource.data.userAccountId == resource.data.userAccountId;
         allow delete: if isExistingOwner(userId);
       }
     }
 
     /**
-     * @description Product catalog is public for anyone to read, but cannot be modified by clients.
+     * @description Rules for Product documents, which are part of the public product catalog.
      * @path /products/{productId}
-     * @allow (get) Any user (authenticated or not) reading product data from `/products/prod_123`.
-     * @deny (create) Any client attempting to add a new product to the catalog.
-     * @principle Enforces a public read-only pattern for globally shared data. Writes should be handled by a trusted backend or admin role.
+     * @allow (get, list) Any user, including unauthenticated users, can view products.
+     * @deny (create, update, delete) All write operations are denied directly from clients to protect catalog integrity.
+     * @principle Provides public read access for catalog data while preventing unauthorized modification.
      */
     match /products/{productId} {
       allow get: if true;
       allow list: if true;
       // CRITICAL: Cannot implement owner-only writes. The 'Product' entity is missing an 'ownerId' or 'authorId' field.
-      // Disabling all client writes by default for security.
-      allow create: if false; // TODO: Add admin validation once an admin role system is implemented.
-      allow update: if false; // TODO: Add admin validation once an admin role system is implemented.
-      allow delete: if false; // TODO: Add admin validation once an admin role system is implemented.
+      // Disabling writes until an admin role or ownership model is added to the application.
+      allow create: if false; // TODO: Add admin validation or ownership check once the schema is updated.
+      allow update: if false; // TODO: Add admin validation or ownership check once the schema is updated.
+      allow delete: if false; // TODO: Add admin validation or ownership check once the schema is updated.
     }
   }
 }
