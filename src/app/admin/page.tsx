@@ -23,19 +23,19 @@ export default function AdminPage() {
   return (
     <div className="bg-muted/40 flex-1 p-4 sm:p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-center mb-8">
+        <div className="mb-8">
             <RadioGroup
               value={activeTab}
               onValueChange={setActiveTab}
-              className="relative flex items-center bg-white shadow-[0_0_1px_0_rgba(24,94,224,0.15),0_6px_12px_0_rgba(24,94,224,0.15)] p-2 rounded-full"
+              className="relative grid grid-cols-3 items-center bg-white shadow-[0_0_1px_0_rgba(24,94,224,0.15),0_6px_12px_0_rgba(24,94,224,0.15)] p-2 rounded-full"
             >
-                {TABS.map((tab, index) => (
-                    <div key={tab}>
+                {TABS.map((tab) => (
+                    <div key={tab} className="flex justify-center">
                         <RadioGroupItem value={tab} id={tab} className="sr-only peer" />
                         <Label
                             htmlFor={tab}
                             className={cn(
-                                "flex items-center justify-center h-8 w-24 text-sm font-medium rounded-full cursor-pointer transition-colors z-10",
+                                "flex items-center justify-center h-8 w-full text-sm font-medium rounded-full cursor-pointer transition-colors z-10",
                                 activeTab === tab ? "text-blue-600" : "text-black"
                             )}
                         >
@@ -44,9 +44,11 @@ export default function AdminPage() {
                     </div>
                 ))}
               <div
-                className="absolute h-8 w-24 bg-blue-100/70 rounded-full z-0 transition-transform duration-300 ease-out"
+                className="absolute h-8 w-1/3 bg-blue-100/70 rounded-full z-0 transition-transform duration-300 ease-out p-2"
                 style={{ transform: `translateX(${activeIndex * 100}%)` }}
-              />
+              >
+                <div className="bg-white h-full w-full rounded-full" />
+              </div>
             </RadioGroup>
         </div>
 
