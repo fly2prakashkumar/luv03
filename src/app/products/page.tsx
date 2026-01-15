@@ -21,7 +21,7 @@ export default function ProductsPage() {
         </div>
         <div className="text-center mb-10">
           <h1 className="text-4xl md:text-5xl font-bold font-headline">
-            Our Collection
+            All Products
           </h1>
           <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
             Discover skincare that understands you. Each product is crafted with the finest ingredients for visible results.
