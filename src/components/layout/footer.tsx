@@ -1,29 +1,64 @@
 import Link from "next/link";
+import { ShoppingBag, Instagram, Facebook, Linkedin, MapPin, Phone } from "lucide-react";
 
 export function AppFooter() {
   return (
-    <footer className="border-t">
-      <div className="container mx-auto px-4 py-8 md:py-12">
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="mb-6 md:mb-0">
-            <Link href="/" className="font-bold text-2xl font-headline">
-              Luv O3
-            </Link>
-            <p className="text-muted-foreground mt-2">Luv Skin Brth Skin</p>
+    <footer className="bg-foreground text-background">
+      <div className="container mx-auto px-4 py-12 md:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          
+          {/* Column 1: Brand */}
+          <div className="space-y-4">
+              <Link href="/" className="flex items-center space-x-2">
+                <ShoppingBag className="h-8 w-8" />
+                <span className="font-bold text-2xl font-headline">Luv O3</span>
+              </Link>
+            <p className="text-muted-foreground text-sm">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum in beatae ea recusandae blanditiis veritatis.
+            </p>
           </div>
-          <div className="flex flex-col md:flex-row items-center gap-6 md:gap-12">
-            <div className="flex space-x-6 text-muted-foreground">
-              <Link href="#" className="hover:text-primary transition-colors">About</Link>
-              <Link href="/products" className="hover:text-primary transition-colors">Shop</Link>
-              <Link href="#" className="hover:text-primary transition-colors">Contact</Link>
-            </div>
-            <div className="flex space-x-6 text-muted-foreground">
-              {/* Social Icons would go here */}
-            </div>
+
+          {/* Column 2: Important Links */}
+          <div className="space-y-4">
+            <h3 className="font-bold text-lg">Important Links</h3>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li><Link href="/" className="hover:text-primary transition-colors">Home</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors">About</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors">Contact</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors">Blog</Link></li>
+            </ul>
           </div>
-        </div>
-        <div className="mt-8 border-t pt-6 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Luv O3. All Rights Reserved.</p>
+
+          {/* Column 3: Links */}
+           <div className="space-y-4">
+            <h3 className="font-bold text-lg">Links</h3>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li><Link href="/" className="hover:text-primary transition-colors">Home</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors">About</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors">Contact</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors">Blog</Link></li>
+            </ul>
+          </div>
+
+          {/* Column 4: Contact and Socials */}
+          <div className="space-y-4">
+             <div className="flex space-x-4">
+              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors"><Instagram className="h-6 w-6" /></Link>
+              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors"><Facebook className="h-6 w-6" /></Link>
+              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors"><Linkedin className="h-6 w-6" /></Link>
+            </div>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="flex items-center space-x-2">
+                    <MapPin className="h-4 w-4"/>
+                    <span>Indore, Madhya Pradesh</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                    <Phone className="h-4 w-4"/>
+                    <span>+91 123456789</span>
+                </li>
+            </ul>
+          </div>
+
         </div>
       </div>
     </footer>
