@@ -12,6 +12,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
+import { SheetClose } from "@/components/ui/sheet"
 
 const navLinks = [
     { href: '/', label: 'Home' },
@@ -27,13 +28,14 @@ export function MainNav({ isMobile = false }: { isMobile?: boolean }) {
     return (
       <div className="flex flex-col space-y-3">
         {navLinks.map((link) => (
-          <Link
-            key={link.href + link.label}
-            href={link.href}
-            className="text-foreground transition-colors"
-          >
-            {link.label}
-          </Link>
+          <SheetClose asChild key={link.href + link.label}>
+            <Link
+              href={link.href}
+              className="text-foreground transition-colors"
+            >
+              {link.label}
+            </Link>
+          </SheetClose>
         ))}
       </div>
     );
