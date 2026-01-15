@@ -35,7 +35,7 @@ const trendingProducts: { title: string; href: string; description: string }[] =
 const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/products', label: 'All products' },
-    { href: '/products', label: 'Kids Wear' },
+    { href: '/products', label: 'Both&Body' },
     { href: '/products', label: 'Mens Wear' },
     { href: '/products', label: 'Electronics' },
 ];
