@@ -53,7 +53,7 @@ export function AppHeader() {
         </div>
       </div>
       <div className="hidden md:block border-b">
-         <div className="container">
+         <div className="container flex justify-center">
            <MainNav />
          </div>
       </div>
