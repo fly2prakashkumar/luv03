@@ -14,7 +14,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const placeholder = getPlaceholderImage(product.imageId);
 
   return (
-    <Card className="flex flex-col overflow-hidden h-full transition-shadow duration-300 hover:shadow-lg">
+    <Card className="flex flex-col overflow-hidden h-full">
       <CardHeader className="p-0">
         <Link href={`/products/${product.id}`} className="block aspect-square relative">
           {placeholder && (
@@ -31,7 +31,7 @@ export function ProductCard({ product }: ProductCardProps) {
       </CardHeader>
       <CardContent className="p-4 flex-grow">
         <CardTitle className="text-lg font-headline leading-tight mb-1">
-          <Link href={`/products/${product.id}`} className="hover:text-primary transition-colors">
+          <Link href={`/products/${product.id}`} className="transition-colors">
             {product.name}
           </Link>
         </CardTitle>

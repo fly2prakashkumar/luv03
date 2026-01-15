@@ -39,9 +39,9 @@ export function AppFooter() {
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum in beatae ea recusandae blanditiis veritatis.
             </p>
              <div className="flex space-x-4 pt-2">
-              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors"><Instagram className="h-6 w-6" /></Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors"><Facebook className="h-6 w-6" /></Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors"><WhatsappIcon className="h-6 w-6" /></Link>
+              <Link href="#" className="text-muted-foreground transition-colors"><Instagram className="h-6 w-6" /></Link>
+              <Link href="#" className="text-muted-foreground transition-colors"><Facebook className="h-6 w-6" /></Link>
+              <Link href="#" className="text-muted-foreground transition-colors"><WhatsappIcon className="h-6 w-6" /></Link>
             </div>
           </div>
 
@@ -52,7 +52,7 @@ export function AppFooter() {
               <ul className="space-y-2 text-sm text-muted-foreground">
                 {navLinks.map((link) => (
                   <li key={link.href + link.label}>
-                    <Link href={link.href} className="hover:text-primary transition-colors">
+                    <Link href={link.href} className="transition-colors">
                       {link.label}
                     </Link>
                   </li>
