@@ -22,7 +22,7 @@ const navLinks = [
     { href: '/products/category/toothpaste', label: 'Toothpaste' },
     { href: '/products/category/handwash', label: 'Handwash' },
     { href: '/about', label: 'About' },
-    { href: '/contact', label: 'Contact' },
+    { href: '#footer', label: 'Contact' },
 ];
 
 export function MainNav({ isMobile = false }: { isMobile?: boolean }) {

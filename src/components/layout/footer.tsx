@@ -9,7 +9,7 @@ const navLinks = [
     { href: '/products/category/toothpaste', label: 'Toothpaste' },
     { href: '/products/category/handwash', label: 'Handwash' },
     { href: '/about', label: 'About' },
-    { href: '/contact', label: 'Contact' },
+    { href: '#footer', label: 'Contact' },
 ];
 
 const WhatsappIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -27,7 +27,7 @@ const WhatsappIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 export function AppFooter() {
   return (
-    <footer className="bg-muted text-muted-foreground">
+    <footer id="footer" className="bg-muted text-muted-foreground scroll-mt-20">
       <div className="container mx-auto px-4 py-12 md:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           
