@@ -62,6 +62,24 @@ const testimonials = [
         location: "Bangalore",
         avatarId: "testimonial-3",
     },
+    {
+        quote: "I never thought a sunscreen could feel this good. The Sun-Kissed SPF 50 is non-greasy and leaves no white cast. I'm hooked!",
+        name: "Vikram Singh",
+        location: "Pune",
+        avatarId: "testimonial-4",
+    },
+    {
+        quote: "The Detoxifying Clay Mask is a weekend essential for me. It leaves my skin feeling so clean and refreshed.",
+        name: "Sneha Patel",
+        location: "Ahmedabad",
+        avatarId: "testimonial-5",
+    },
+    {
+        quote: "Finally, an eye cream that actually works on my dark circles. The Revitalizing Eye Cream is fantastic!",
+        name: "Arjun Iyer",
+        location: "Chennai",
+        avatarId: "testimonial-6",
+    }
 ];
 
 const heroSlides = [
