@@ -61,13 +61,17 @@ export default function SignupPage() {
     }
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(userCredential.user, {
-        displayName: `${firstName} ${lastName}`.trim()
-      })
+      // Ensure there's a user object before trying to update the profile.
+      if (userCredential.user) {
+        await updateProfile(userCredential.user, {
+          displayName: `${firstName} ${lastName}`.trim()
+        });
+      }
       toast({
         title: "Account Created",
         description: "Welcome! You are now signed in.",
       });
+      // The useEffect will handle the redirect to /account
     } catch (error: any) {
       toast({
         variant: "destructive",
