@@ -10,9 +10,9 @@ import { Separator } from "@/components/ui/separator";
 
 export default function AccountPage() {
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-12 md:py-20">
+    <div className="container mx-auto max-w-4xl px-4 py-8 md:py-12">
       <div className="mb-8">
-        <h1 className="text-4xl md:text-5xl font-bold font-headline">My Account</h1>
+        <h1 className="text-3xl md:text-5xl font-bold font-headline">My Account</h1>
         <p className="text-muted-foreground mt-2">Manage your account settings and track your orders.</p>
       </div>
       <Tabs defaultValue="profile" className="w-full">

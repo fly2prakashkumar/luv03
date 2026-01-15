@@ -66,13 +66,13 @@ export default function RecommendationsPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-12 md:py-20">
+    <div className="container mx-auto max-w-3xl px-4 py-8 md:py-16">
       <div className="text-center mb-10">
         <Wand2 className="mx-auto h-12 w-12 text-primary mb-4" />
-        <h1 className="text-4xl md:text-5xl font-bold font-headline">
+        <h1 className="text-3xl md:text-5xl font-bold font-headline">
           Personalized Recommendations
         </h1>
-        <p className="mt-4 text-lg text-muted-foreground">
+        <p className="mt-4 text-base md:text-lg text-muted-foreground">
           Let our AI expert analyze your skin needs and recommend the perfect products for you.
         </p>
       </div>

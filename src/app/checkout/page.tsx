@@ -70,13 +70,13 @@ export default function CheckoutPage() {
   }
   
   return (
-    <div className="container mx-auto max-w-5xl px-4 py-12 md:py-20">
-      <h1 className="text-4xl md:text-5xl font-bold font-headline text-center mb-10">Checkout</h1>
-      <div className="grid md:grid-cols-2 gap-12">
-        <div>
-            <h2 className="text-2xl font-headline font-semibold mb-4">Order Summary</h2>
+    <div className="container mx-auto max-w-5xl px-4 py-8 md:py-12">
+      <h1 className="text-3xl md:text-5xl font-bold font-headline text-center mb-8">Checkout</h1>
+      <div className="grid md:grid-cols-2 gap-8 md:gap-12">
+        <div className="md:order-last">
+            <h2 className="text-xl font-headline font-semibold mb-4">Order Summary</h2>
             <Card>
-                <CardContent className="p-6 space-y-4">
+                <CardContent className="p-4 md:p-6 space-y-4">
                     {state.cartItems.map(item => (
                         <div key={item.product.id} className="flex justify-between items-center text-sm">
                             <span className="text-muted-foreground">{item.product.name} x {item.quantity}</span>
@@ -101,11 +101,11 @@ export default function CheckoutPage() {
             </Card>
         </div>
         <div>
-          <h2 className="text-2xl font-headline font-semibold mb-4">Shipping & Payment</h2>
+          <h2 className="text-xl font-headline font-semibold mb-4">Shipping & Payment</h2>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <Card>
-                    <CardHeader><CardTitle className="text-xl font-headline">Contact Information</CardTitle></CardHeader>
+                    <CardHeader><CardTitle className="text-lg md:text-xl font-headline">Contact Information</CardTitle></CardHeader>
                     <CardContent>
                         <FormField control={form.control} name="email" render={({ field }) => (
                             <FormItem><FormLabel>Email</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
@@ -113,9 +113,9 @@ export default function CheckoutPage() {
                     </CardContent>
                 </Card>
                  <Card>
-                    <CardHeader><CardTitle className="text-xl font-headline">Shipping Address</CardTitle></CardHeader>
+                    <CardHeader><CardTitle className="text-lg md:text-xl font-headline">Shipping Address</CardTitle></CardHeader>
                     <CardContent className="space-y-4">
-                        <div className="flex gap-4"><FormField control={form.control} name="firstName" render={({ field }) => (
+                        <div className="flex flex-col md:flex-row gap-4"><FormField control={form.control} name="firstName" render={({ field }) => (
                             <FormItem className="flex-1"><FormLabel>First Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                         )}/><FormField control={form.control} name="lastName" render={({ field }) => (
                             <FormItem className="flex-1"><FormLabel>Last Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
@@ -123,7 +123,7 @@ export default function CheckoutPage() {
                         <FormField control={form.control} name="address" render={({ field }) => (
                             <FormItem><FormLabel>Address</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                         )}/>
-                        <div className="flex gap-4"><FormField control={form.control} name="city" render={({ field }) => (
+                        <div className="flex flex-col md:flex-row gap-4"><FormField control={form.control} name="city" render={({ field }) => (
                             <FormItem className="flex-1"><FormLabel>City</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                         )}/><FormField control={form.control} name="postalCode" render={({ field }) => (
                             <FormItem className="flex-1"><FormLabel>Postal Code</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
@@ -134,7 +134,7 @@ export default function CheckoutPage() {
                     </CardContent>
                 </Card>
                  <Card>
-                    <CardHeader><CardTitle className="text-xl font-headline">Payment Details</CardTitle></CardHeader>
+                    <CardHeader><CardTitle className="text-lg md:text-xl font-headline">Payment Details</CardTitle></CardHeader>
                     <CardContent className="space-y-4">
                          <FormField control={form.control} name="cardName" render={({ field }) => (
                             <FormItem><FormLabel>Name on Card</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>

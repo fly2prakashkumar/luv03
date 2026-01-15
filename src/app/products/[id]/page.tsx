@@ -34,8 +34,8 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   const placeholder = getPlaceholderImage(product.imageId);
 
   return (
-    <div className="container mx-auto px-4 py-12 md:py-20">
-      <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-start">
+    <div className="container mx-auto px-4 py-8 md:py-16">
+      <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-start">
         <div className="aspect-square relative rounded-lg overflow-hidden shadow-lg">
           {placeholder && (
             <Image
