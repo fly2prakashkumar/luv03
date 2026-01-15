@@ -3,7 +3,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Search, Menu, ShoppingBag, User, LogOut, Home, LayoutDashboard, LogIn } from 'lucide-react';
+import { Search, Menu, ShoppingBag, User, LogOut, LayoutDashboard, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CartIcon } from '@/components/cart/cart-icon';
 import {
@@ -221,7 +221,7 @@ export function AppHeader() {
               ) : (
                 <Button asChild variant="ghost" size="icon" className="hover:bg-transparent">
                   <Link href="/login">
-                    <LogIn className="h-5 w-5" />
+                    <User className="h-5 w-5" />
                     <span className="sr-only">Login</span>
                   </Link>
                 </Button>
