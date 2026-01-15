@@ -1,16 +1,13 @@
-import Image from "next/image";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { getPlaceholderImage } from "@/lib/placeholder-images";
 
 export default function LoginPage() {
-  const loginImage = getPlaceholderImage("login-hero");
 
   return (
-    <div className="w-full lg:grid lg:min-h-[calc(100vh-4rem)] lg:grid-cols-2 xl:min-h-[calc(100vh-4rem)]">
-      <div className="flex items-center justify-center py-12">
+    <div className="w-full flex items-center justify-center py-12 min-h-[calc(100vh-8rem)]">
         <div className="mx-auto grid w-[350px] gap-6">
           <div className="grid gap-2 text-center">
             <h1 className="text-3xl font-bold font-headline">Login</h1>
@@ -51,18 +48,6 @@ export default function LoginPage() {
             </Link>
           </div>
         </div>
-      </div>
-      <div className="hidden bg-muted lg:block relative">
-        {loginImage && (
-            <Image
-            src={loginImage.imageUrl}
-            alt={loginImage.description}
-            fill
-            className="h-full w-full object-cover"
-            data-ai-hint={loginImage.imageHint}
-            />
-        )}
-      </div>
     </div>
   );
 }
