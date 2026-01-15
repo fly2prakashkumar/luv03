@@ -36,7 +36,7 @@ const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/products', label: 'All products' },
     { href: '/products', label: 'Both&Body' },
-    { href: '/products', label: 'Mens Wear' },
+    { href: '/products', label: 'Skin care' },
     { href: '/products', label: 'Electronics' },
 ];
 
