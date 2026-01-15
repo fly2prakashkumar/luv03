@@ -18,36 +18,41 @@ const TABS = ["overview", "products", "outfits"];
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("overview");
 
-  const activeIndex = TABS.indexOf(activeTab);
-
   return (
+    <>
+    <style>{`
+      .admin-tabs .radio-label {
+        transition: background-color 0.5s ease, font-weight 0.5s ease, color 0.5s ease;
+      }
+      .admin-tabs [data-state=checked] ~ .radio-label {
+        background-color: #4d4a45;
+        font-weight: 600;
+        color: #fff;
+        clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
+      }
+    `}</style>
     <div className="bg-muted/40 flex-1 p-4 sm:p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
+        <div className="mb-8 flex justify-center">
             <RadioGroup
               value={activeTab}
               onValueChange={setActiveTab}
-              className="relative grid grid-cols-3 items-center bg-white shadow-[0_0_1px_0_rgba(24,94,224,0.15),0_6px_12px_0_rgba(24,94,224,0.15)] p-1 rounded-full"
+              className="admin-tabs grid grid-cols-3 items-center bg-black p-1 rounded-md w-full max-w-md"
             >
                 {TABS.map((tab) => (
-                    <div key={tab} className="flex justify-center">
-                        <RadioGroupItem value={tab} id={tab} className="sr-only peer" />
+                    <div key={tab} className="flex justify-center text-center">
+                        <RadioGroupItem value={tab} id={tab} className="sr-only" />
                         <Label
                             htmlFor={tab}
                             className={cn(
-                                "flex items-center justify-center h-8 w-full text-sm font-medium rounded-full cursor-pointer transition-colors z-10",
-                                activeTab === tab ? "text-blue-600" : "text-black"
+                                "radio-label flex items-center justify-center h-10 w-full text-sm font-medium rounded-sm cursor-pointer",
+                                activeTab !== tab ? "text-neutral-400" : "text-white"
                             )}
                         >
                             <span className="capitalize">{tab}</span>
                         </Label>
                     </div>
                 ))}
-              <div
-                className="absolute h-8 w-1/3 bg-blue-100/70 rounded-full z-0 transition-transform duration-300 ease-out flex items-center justify-center"
-                style={{ transform: `translateX(${activeIndex * 100}%)` }}
-              >
-              </div>
             </RadioGroup>
         </div>
 
@@ -97,5 +102,6 @@ export default function AdminPage() {
         )}
       </div>
     </div>
+    </>
   );
 }
