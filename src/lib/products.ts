@@ -36,7 +36,7 @@ const products: Product[] = [
   {
     id: '5',
     name: 'Vitamin C Brightening Toner',
-    description: 'An alcohol-free toner that refines pores and brightens the complexion with a stable form of Vitamin C and antioxidants.',
+    description: 'An alcohol-free toner that refines pores and a stable form of Vitamin C and antioxidants.',
     price: 700.00,
     imageId: 'product-5',
     category: 'Skin care'
@@ -112,7 +112,7 @@ export function getProductsByCategory(category: string): Product[] {
 }
 
 export function getFeaturedProducts(count: number): Product[] {
-  return [...products].sort(() => 0.5 - Math.random()).slice(0, count);
+  return products.slice(0, count);
 }
 
 export function searchProducts(query: string): Product[] {
