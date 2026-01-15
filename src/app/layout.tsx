@@ -6,6 +6,7 @@ import { CartProvider } from "@/contexts/cart-context";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/layout/theme-provider";
+import { AuthProvider } from "@/contexts/auth-context";
 
 export const metadata: Metadata = {
   title: "Luv O3",
@@ -42,14 +43,16 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <CartProvider>
-            <div className="relative flex min-h-dvh flex-col bg-background">
-              <AppHeader />
-              <main className="flex-1 pt-[104px]">{children}</main>
-              <AppFooter />
-            </div>
-            <Toaster />
-          </CartProvider>
+          <AuthProvider>
+            <CartProvider>
+              <div className="relative flex min-h-dvh flex-col bg-background">
+                <AppHeader />
+                <main className="flex-1 pt-[104px]">{children}</main>
+                <AppFooter />
+              </div>
+              <Toaster />
+            </CartProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

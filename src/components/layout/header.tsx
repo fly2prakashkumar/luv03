@@ -3,7 +3,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Search, Menu, ShoppingBag, User } from 'lucide-react';
+import { Search, Menu, ShoppingBag, User, LogOut, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CartIcon } from '@/components/cart/cart-icon';
 import {
@@ -18,13 +18,17 @@ import { MainNav } from './main-nav';
 import { ThemeToggle } from './theme-toggle';
 import { useRouter, usePathname } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
-import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover';
+import { Popover, PopoverContent, PopoverAnchor, PopoverTrigger } from '@/components/ui/popover';
 import { searchProducts } from '@/lib/products';
 import type { Product } from '@/lib/types';
 import Image from 'next/image';
 import { getPlaceholderImage } from '@/lib/placeholder-images';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/auth-context';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+
 
 export function AppHeader() {
     const router = useRouter();
@@ -35,6 +39,7 @@ export function AppHeader() {
     const [isMounted, setIsMounted] = useState(false);
     const isMobile = useIsMobile();
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const { user, logout } = useAuth();
 
     const isAdminPage = pathname.startsWith('/admin');
 
@@ -77,6 +82,11 @@ export function AppHeader() {
         if (isMobile) {
             setIsSearchOpen(false);
         }
+    }
+    
+    const handleLogout = () => {
+      logout();
+      router.push('/');
     }
 
   return (
@@ -181,12 +191,33 @@ export function AppHeader() {
               )}
               <CartIcon />
               <ThemeToggle />
-              <Button asChild variant="ghost" size="icon" className="hover:bg-transparent">
-                <Link href="/login">
-                  <User className="h-5 w-5" />
-                  <span className="sr-only">Login</span>
-                </Link>
-              </Button>
+              {user ? (
+                 <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="hover:bg-transparent">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                      <Link href="/"><Home className="mr-2 h-4 w-4" /> Home</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className="mr-2 h-4 w-4" /> Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Button asChild variant="ghost" size="icon" className="hover:bg-transparent">
+                  <Link href="/login">
+                    <User className="h-5 w-5" />
+                    <span className="sr-only">Login</span>
+                  </Link>
+                </Button>
+              )}
             </nav>
           </div>
         </div>
