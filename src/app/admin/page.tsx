@@ -19,9 +19,9 @@ export default function AdminPage() {
     <div className="bg-muted/40 flex-1 p-4 sm:p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
         <RadioGroup
-          defaultValue="overview"
-          className="grid grid-cols-3 gap-1 bg-muted p-1 rounded-lg mb-8"
+          value={activeTab}
           onValueChange={setActiveTab}
+          className="grid grid-cols-3 gap-1 bg-muted p-1 rounded-lg mb-8"
         >
           <RadioGroupItem value="overview" id="overview" className="sr-only peer" />
           <Label
