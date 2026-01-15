@@ -47,7 +47,7 @@ export default function AboutPage() {
                 </CardHeader>
                 <CardContent className="text-muted-foreground">
                    <p>
-                        To be the leading innovator in ozonated personal care, inspiring a movement towards conscious beauty that prioritizes both personal well-being and environmental responsibility.
+                        To become a trusted global brand recognized for excellence in ozone and herbal skincare, setting new standards for quality and innovation in the cosmetics industry.
                    </p>
                 </CardContent>
             </Card>
