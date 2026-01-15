@@ -39,42 +39,44 @@ export default function LoginPage() {
     }
   }, [user, isUserLoading, router]);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (!auth) return;
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      toast({
-        title: "Login Successful",
-        description: "Welcome back!",
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        toast({
+          title: "Login Successful",
+          description: "Welcome back!",
+        });
+        // The useEffect will handle the redirect
+      })
+      .catch((error: any) => {
+        toast({
+          variant: "destructive",
+          title: "Login Failed",
+          description: error.message || "Invalid email or password.",
+        });
       });
-      // The useEffect will handle the redirect
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Login Failed",
-        description: error.message || "Invalid email or password.",
-      });
-    }
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignIn = () => {
     if (!auth) return;
     const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-      toast({
-        title: "Login Successful",
-        description: "Welcome!",
+    signInWithPopup(auth, provider)
+      .then(() => {
+        toast({
+          title: "Login Successful",
+          description: "Welcome!",
+        });
+         // The useEffect will handle the redirect
+      })
+      .catch((error: any) => {
+        toast({
+          variant: "destructive",
+          title: "Google Sign-In Failed",
+          description: error.message || "Could not sign in with Google.",
+        });
       });
-       // The useEffect will handle the redirect
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Google Sign-In Failed",
-        description: error.message || "Could not sign in with Google.",
-      });
-    }
   };
 
   if (isUserLoading || user) {

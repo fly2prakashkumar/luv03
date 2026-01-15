@@ -46,7 +46,7 @@ export default function SignupPage() {
     }
   }, [user, isUserLoading, router]);
 
-  const handleSignup = async (e: React.FormEvent) => {
+  const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
     if (!auth) return;
     if (password !== confirmPassword) {
@@ -57,44 +57,48 @@ export default function SignupPage() {
       });
       return;
     }
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      if (userCredential.user) {
-        await updateProfile(userCredential.user, {
-          displayName: `${firstName} ${lastName}`.trim()
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        if (userCredential.user) {
+          return updateProfile(userCredential.user, {
+            displayName: `${firstName} ${lastName}`.trim()
+          });
+        }
+      })
+      .then(() => {
+        toast({
+          title: "Account Created",
+          description: "Welcome! You are now signed in.",
         });
-      }
-      toast({
-        title: "Account Created",
-        description: "Welcome! You are now signed in.",
+        // The useEffect will handle the redirect
+      })
+      .catch((error: any) => {
+        toast({
+          variant: "destructive",
+          title: "Signup Failed",
+          description: error.message || "Could not create your account.",
+        });
       });
-      // The useEffect will handle the redirect
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Signup Failed",
-        description: error.message || "Could not create your account.",
-      });
-    }
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignIn = () => {
     if (!auth) return;
     const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-      toast({
-        title: "Sign-in Successful",
-        description: "Welcome!",
+    signInWithPopup(auth, provider)
+      .then(() => {
+        toast({
+          title: "Sign-in Successful",
+          description: "Welcome!",
+        });
+         // The useEffect will handle the redirect
+      })
+      .catch((error: any) => {
+        toast({
+          variant: "destructive",
+          title: "Google Sign-In Failed",
+          description: error.message || "Could not sign in with Google.",
+        });
       });
-       // The useEffect will handle the redirect
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Google Sign-In Failed",
-        description: error.message || "Could not sign in with Google.",
-      });
-    }
   };
 
   if (isUserLoading || user) {
