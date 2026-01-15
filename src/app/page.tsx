@@ -7,6 +7,14 @@ import { getFeaturedProducts } from "@/lib/products";
 import { ProductCard } from "@/components/products/product-card";
 import { ArrowRight, Leaf, FlaskConical, Recycle, Microscope } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from "@/components/ui/carousel";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const features = [
   {
@@ -29,6 +37,27 @@ const features = [
     title: "Science Meets Nature",
     description: "Advanced skincare inspired by ozone research.",
   },
+];
+
+const testimonials = [
+    {
+        quote: "My skin has never felt better! The Radiant Glow Serum is a game-changer. I saw a visible difference in just a week.",
+        name: "Priya Sharma",
+        location: "Mumbai",
+        avatarId: "testimonial-1",
+    },
+    {
+        quote: "I've struggled with sensitive skin for years, but the Gentle Purifying Cleanser is amazing. It's so mild yet effective.",
+        name: "Rahul Verma",
+        location: "Delhi",
+        avatarId: "testimonial-2",
+    },
+    {
+        quote: "The Hydro-Boost Moisturizer is my holy grail. It's lightweight, hydrating, and perfect under makeup. Highly recommend!",
+        name: "Ananya Reddy",
+        location: "Bangalore",
+        avatarId: "testimonial-3",
+    },
 ];
 
 
@@ -114,6 +143,52 @@ export default function Home() {
                 ))}
             </div>
           </div>
+      </section>
+        
+      <section className="py-12 md:py-20 bg-muted/50">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl md:text-4xl font-headline font-bold text-center mb-12">
+            What Our Customers Say
+          </h2>
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent>
+              {testimonials.map((testimonial, index) => {
+                const avatarImage = getPlaceholderImage(testimonial.avatarId);
+                return (
+                    <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+                        <div className="p-1 h-full">
+                        <Card className="h-full flex flex-col justify-between">
+                            <CardContent className="p-6">
+                            <p className="text-muted-foreground italic">"{testimonial.quote}"</p>
+                            </CardContent>
+                            <CardHeader className="pt-0">
+                                <div className="flex items-center gap-4">
+                                    <Avatar>
+                                        {avatarImage && <AvatarImage src={avatarImage.imageUrl} alt={testimonial.name} data-ai-hint={avatarImage.imageHint}/>}
+                                        <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
+                                    </Avatar>
+                                    <div>
+                                        <CardTitle className="text-lg font-semibold">{testimonial.name}</CardTitle>
+                                        <p className="text-sm text-muted-foreground">{testimonial.location}</p>
+                                    </div>
+                                </div>
+                            </CardHeader>
+                        </Card>
+                        </div>
+                    </CarouselItem>
+                );
+              })}
+            </CarouselContent>
+            <CarouselPrevious className="hidden md:flex" />
+            <CarouselNext className="hidden md:flex" />
+          </Carousel>
+        </div>
       </section>
 
     </div>
