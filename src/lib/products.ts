@@ -23,7 +23,7 @@ const products: Product[] = [
     description: 'A mild, soap-free cleanser that effectively removes impurities and makeup without stripping the skin\'s natural moisture.',
     price: 600.00,
     imageId: 'product-3',
-    category: 'Handwash'
+    category: 'Skin care'
   },
   {
     id: '4',
@@ -47,7 +47,7 @@ const products: Product[] = [
     description: 'A broad-spectrum mineral sunscreen that provides high protection with a lightweight, non-greasy finish.',
     price: 750.00,
     imageId: 'product-6',
-    category: 'Both&Body'
+    category: 'Skin care'
   },
   {
     id: '7',
@@ -63,7 +63,39 @@ const products: Product[] = [
     description: 'A weekly treatment mask with kaolin clay and charcoal to draw out impurities and reduce the appearance of pores.',
     price: 900.00,
     imageId: 'product-8',
+    category: 'Skin care'
+  },
+  {
+    id: '9',
+    name: 'Soothing Aloe Handwash',
+    description: 'A gentle handwash that cleanses without drying, leaving hands soft and refreshed.',
+    price: 450.00,
+    imageId: 'product-9',
+    category: 'Handwash'
+  },
+  {
+    id: '10',
+    name: 'Mint Fresh Toothpaste',
+    description: 'A fluoride-free toothpaste that naturally whitens teeth and freshens breath.',
+    price: 350.00,
+    imageId: 'product-10',
     category: 'Toothpaste'
+  },
+  {
+    id: '11',
+    name: 'Nourishing Body Wash',
+    description: 'A rich and creamy body wash that moisturizes and soothes the skin.',
+    price: 650.00,
+    imageId: 'product-11',
+    category: 'Bath & Body'
+  },
+  {
+    id: '12',
+    name: 'Strengthening Shampoo',
+    description: 'A sulfate-free shampoo that strengthens hair and reduces breakage.',
+    price: 750.00,
+    imageId: 'product-12',
+    category: 'Bath & Body'
   }
 ];
 

@@ -15,7 +15,7 @@ import {
 const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/products', label: 'All products' },
-    { href: '/products/category/both-and-body', label: 'Both&Body' },
+    { href: '/products/category/bath-&-body', label: 'Bath & Body' },
     { href: '/products/category/skin-care', label: 'Skin care' },
     { href: '/products/category/toothpaste', label: 'Toothpaste' },
     { href: '/products/category/handwash', label: 'Handwash' },

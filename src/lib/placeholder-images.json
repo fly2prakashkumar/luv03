@@ -55,6 +55,30 @@
       "imageHint": "clay mask"
     },
     {
+      "id": "product-9",
+      "description": "Bottle of handwash",
+      "imageUrl": "https://images.unsplash.com/photo-1611861317409-7dcc62856a8a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxoYW5kd2FzaCUyMGJvdHRsZXxlbnwwfHx8fDE3Njg0NDYzMTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "handwash bottle"
+    },
+    {
+      "id": "product-10",
+      "description": "Tube of toothpaste",
+      "imageUrl": "https://images.unsplash.com/photo-1759910548177-638d4e6ee0d5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx0b290aHBhc3RlJTIwdHViZXxlbnwwfHx8fDE3Njg0NDYzMTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "toothpaste tube"
+    },
+    {
+      "id": "product-11",
+      "description": "Bottle of body wash",
+      "imageUrl": "https://images.unsplash.com/photo-1677726050511-48866c4a64d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxib2R5d2FzaCUyMGJvdHRsZXxlbnwwfHx8fDE3Njg0NDYzMTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "bodywash bottle"
+    },
+    {
+      "id": "product-12",
+      "description": "Bottle of shampoo",
+      "imageUrl": "https://images.unsplash.com/photo-1585232350744-974fc9804d65?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzaGFtcG9vJTIwYm90dGxlfGVufDB8fHx8MTc2ODM2MDkwN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "shampoo bottle"
+    },
+    {
       "id": "login-hero",
       "description": "A minimalist image with a single leaf",
       "imageUrl": "https://images.unsplash.com/photo-1483354483454-4cd359948304?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtaW5pbWFsaXN0JTIwbmF0dXJlfGVufDB8fHx8MTc2NzYyMTE3NXww&ixlib=rb-4.1.0&q=80&w=1080",
