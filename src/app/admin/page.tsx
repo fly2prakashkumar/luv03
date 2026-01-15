@@ -27,7 +27,7 @@ export default function AdminPage() {
             <RadioGroup
               value={activeTab}
               onValueChange={setActiveTab}
-              className="relative grid grid-cols-3 items-center bg-white shadow-[0_0_1px_0_rgba(24,94,224,0.15),0_6px_12px_0_rgba(24,94,224,0.15)] p-2 rounded-full"
+              className="relative grid grid-cols-3 items-center bg-white shadow-[0_0_1px_0_rgba(24,94,224,0.15),0_6px_12px_0_rgba(24,94,224,0.15)] p-1 rounded-full"
             >
                 {TABS.map((tab) => (
                     <div key={tab} className="flex justify-center">
