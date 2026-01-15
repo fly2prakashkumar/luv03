@@ -16,7 +16,6 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -110,23 +109,12 @@ const heroSlides = [
 export default function Home() {
   const featuredProducts = getFeaturedProducts(4);
 
-  const plugin = React.useRef(
-    Autoplay({ delay: 5000, stopOnInteraction: true })
-  )
-
-  const heroPlugin = React.useRef(
-    Autoplay({ delay: 5000, stopOnInteraction: true })
-  )
-
   return (
     <div className="flex flex-col">
        <section className="relative w-full h-[60vh] md:h-[70vh] text-white">
         <Carousel
-          plugins={[heroPlugin.current]}
           opts={{ loop: true }}
           className="w-full h-full"
-          onMouseEnter={heroPlugin.current.stop}
-          onMouseLeave={heroPlugin.current.reset}
         >
           <CarouselContent>
             {heroSlides.map((slide) => {
@@ -222,14 +210,11 @@ export default function Home() {
             What Our Customers Say
           </h2>
           <Carousel
-            plugins={[plugin.current]}
             opts={{
               align: "start",
               loop: true,
             }}
             className="w-full"
-            onMouseEnter={plugin.current.stop}
-            onMouseLeave={plugin.current.reset}
           >
             <CarouselContent>
               {testimonials.map((testimonial, index) => {
