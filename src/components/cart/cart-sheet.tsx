@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useCart } from "@/contexts/cart-context";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   SheetContent,
@@ -15,7 +14,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
-import { ShoppingCart, X } from "lucide-react";
+import { ShoppingCart, X, Plus, Minus } from "lucide-react";
 
 export function CartSheet() {
   const { state, dispatch } = useCart();
@@ -53,13 +52,13 @@ export function CartSheet() {
                       <h3 className="font-semibold text-sm">{item.product.name}</h3>
                       <p className="text-muted-foreground text-sm">₹{item.product.price.toFixed(2)}</p>
                       <div className="flex items-center gap-2 mt-2">
-                        <Input
-                          type="number"
-                          min="1"
-                          value={item.quantity}
-                          onChange={(e) => updateQuantity(item.product.id, parseInt(e.target.value))}
-                          className="h-8 w-16"
-                        />
+                        <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.product.id, item.quantity - 1)} disabled={item.quantity <= 1}>
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                        <span className="w-8 text-center font-medium">{item.quantity}</span>
+                         <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.product.id, item.quantity + 1)}>
+                          <Plus className="h-4 w-4" />
+                        </Button>
                       </div>
                     </div>
                     <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => removeItem(item.product.id)}>
