@@ -6,31 +6,11 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
-
-const trendingProducts: { title: string; href: string; description: string }[] = [
-  {
-    title: "Trending 1",
-    href: "/products",
-    description: "Description for trending product 1.",
-  },
-  {
-    title: "Trending 2",
-    href: "/products",
-    description: "Description for trending product 2.",
-  },
-  {
-    title: "Trending 3",
-    href: "/products",
-    description: "Description for trending product 3.",
-  },
-]
 
 const navLinks = [
     { href: '/', label: 'Home' },
@@ -53,12 +33,6 @@ export function MainNav({ isMobile = false }: { isMobile?: boolean }) {
             {link.label}
           </Link>
         ))}
-         <Link
-            href={'/products'}
-            className="transition-colors hover:text-foreground/80 text-foreground"
-          >
-            Trending Products
-        </Link>
       </div>
     );
   }
@@ -73,22 +47,6 @@ export function MainNav({ isMobile = false }: { isMobile?: boolean }) {
                 </NavigationMenuLink>
             </NavigationMenuItem>
         ))}
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Trending Products</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-              {trendingProducts.map((component) => (
-                <ListItem
-                  key={component.title}
-                  title={component.title}
-                  href={component.href}
-                >
-                  {component.description}
-                </ListItem>
-              ))}
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
   )
