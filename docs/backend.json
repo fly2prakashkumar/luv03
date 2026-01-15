@@ -1,0 +1,509 @@
+{
+  "entities": {
+    "UserAccount": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserAccount",
+      "type": "object",
+      "description": "Represents a user account within the Luv 03 application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user account."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the user.",
+          "format": "email"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "First name of the user."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Last name of the user."
+        },
+        "shippingAddresses": {
+          "type": "array",
+          "description": "Shipping addresses associated with the user.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "billingAddresses": {
+          "type": "array",
+          "description": "Billing addresses associated with the user.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "firstName",
+        "lastName"
+      ]
+    },
+    "Product": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Product",
+      "type": "object",
+      "description": "Represents a skincare product in the catalog.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the product."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the product."
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the product."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL of the product image.",
+          "format": "uri"
+        },
+        "price": {
+          "type": "number",
+          "description": "Price of the product."
+        },
+        "ingredients": {
+          "type": "array",
+          "description": "List of ingredients in the product.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the product (e.g., cleanser, moisturizer)."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "imageUrl",
+        "price",
+        "category"
+      ]
+    },
+    "ShoppingCartItem": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ShoppingCartItem",
+      "type": "object",
+      "description": "Represents an item in the shopping cart.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the cart item."
+        },
+        "userAccountId": {
+          "type": "string",
+          "description": "Reference to UserAccount. (Relationship: UserAccount 1:N ShoppingCartItem)"
+        },
+        "productId": {
+          "type": "string",
+          "description": "Reference to Product. (Relationship: Product 1:N ShoppingCartItem)"
+        },
+        "quantity": {
+          "type": "number",
+          "description": "Quantity of the product in the cart."
+        }
+      },
+      "required": [
+        "id",
+        "userAccountId",
+        "productId",
+        "quantity"
+      ]
+    },
+    "Order": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Order",
+      "type": "object",
+      "description": "Represents a customer order.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the order."
+        },
+        "userAccountId": {
+          "type": "string",
+          "description": "Reference to UserAccount. (Relationship: UserAccount 1:N Order)"
+        },
+        "orderDate": {
+          "type": "string",
+          "description": "Date the order was placed.",
+          "format": "date-time"
+        },
+        "totalAmount": {
+          "type": "number",
+          "description": "Total amount of the order."
+        },
+        "shippingAddressId": {
+          "type": "string",
+          "description": "Reference to ShippingAddress. (Relationship: Order 1:1 ShippingAddress)"
+        },
+        "billingAddressId": {
+          "type": "string",
+          "description": "Reference to BillingAddress. (Relationship: Order 1:1 BillingAddress)"
+        },
+        "orderStatus": {
+          "type": "string",
+          "description": "Status of the order (e.g., placed, processing, shipped, delivered)."
+        }
+      },
+      "required": [
+        "id",
+        "userAccountId",
+        "orderDate",
+        "totalAmount",
+        "shippingAddressId",
+        "billingAddressId",
+        "orderStatus"
+      ]
+    },
+    "OrderItem": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "OrderItem",
+      "type": "object",
+      "description": "Represents an item within an order.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the order item."
+        },
+        "orderId": {
+          "type": "string",
+          "description": "Reference to Order. (Relationship: Order 1:N OrderItem)"
+        },
+        "productId": {
+          "type": "string",
+          "description": "Reference to Product. (Relationship: Product 1:N OrderItem)"
+        },
+        "quantity": {
+          "type": "number",
+          "description": "Quantity of the product in this order item."
+        },
+        "itemPrice": {
+          "type": "number",
+          "description": "Price of the item at the time of the order."
+        }
+      },
+      "required": [
+        "id",
+        "orderId",
+        "productId",
+        "quantity",
+        "itemPrice"
+      ]
+    },
+    "ShippingAddress": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ShippingAddress",
+      "type": "object",
+      "description": "Represents a shipping address for a user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the shipping address."
+        },
+        "userAccountId": {
+          "type": "string",
+          "description": "Reference to UserAccount. (Relationship: UserAccount 1:N ShippingAddress)"
+        },
+        "addressLine1": {
+          "type": "string",
+          "description": "First line of the address."
+        },
+        "addressLine2": {
+          "type": "string",
+          "description": "Second line of the address (optional)."
+        },
+        "city": {
+          "type": "string",
+          "description": "City of the address."
+        },
+        "state": {
+          "type": "string",
+          "description": "State of the address."
+        },
+        "zipCode": {
+          "type": "string",
+          "description": "Zip code of the address."
+        },
+        "country": {
+          "type": "string",
+          "description": "Country of the address."
+        }
+      },
+      "required": [
+        "id",
+        "userAccountId",
+        "addressLine1",
+        "city",
+        "state",
+        "zipCode",
+        "country"
+      ]
+    },
+    "BillingAddress": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "BillingAddress",
+      "type": "object",
+      "description": "Represents a billing address for a user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the billing address."
+        },
+        "userAccountId": {
+          "type": "string",
+          "description": "Reference to UserAccount. (Relationship: UserAccount 1:N BillingAddress)"
+        },
+        "addressLine1": {
+          "type": "string",
+          "description": "First line of the address."
+        },
+        "addressLine2": {
+          "type": "string",
+          "description": "Second line of the address (optional)."
+        },
+        "city": {
+          "type": "string",
+          "description": "City of the address."
+        },
+        "state": {
+          "type": "string",
+          "description": "State of the address."
+        },
+        "zipCode": {
+          "type": "string",
+          "description": "Zip code of the address."
+        },
+        "country": {
+          "type": "string",
+          "description": "Country of the address."
+        }
+      },
+      "required": [
+        "id",
+        "userAccountId",
+        "addressLine1",
+        "city",
+        "state",
+        "zipCode",
+        "country"
+      ]
+    },
+    "AIRecommendation": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "AIRecommendation",
+      "type": "object",
+      "description": "Represents a product recommendation generated by AI.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the recommendation."
+        },
+        "userAccountId": {
+          "type": "string",
+          "description": "Reference to UserAccount. (Relationship: UserAccount 1:N AIRecommendation)"
+        },
+        "productId": {
+          "type": "string",
+          "description": "Reference to Product. (Relationship: Product 1:N AIRecommendation)"
+        },
+        "recommendationReason": {
+          "type": "string",
+          "description": "Reason why the product was recommended (based on skin type, concerns, etc.)."
+        },
+        "recommendationDate": {
+          "type": "string",
+          "description": "Date when the recommendation was generated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userAccountId",
+        "productId",
+        "recommendationReason",
+        "recommendationDate"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "UserAccount",
+          "schema": {
+            "$ref": "#/backend/entities/UserAccount"
+          },
+          "description": "Stores user account information. The 'userId' parameter corresponds to the Firebase Authentication UID.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user, matching the Firebase Auth UID."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/products/{productId}",
+        "definition": {
+          "entityName": "Product",
+          "schema": {
+            "$ref": "#/backend/entities/Product"
+          },
+          "description": "Stores product information.",
+          "params": [
+            {
+              "name": "productId",
+              "description": "The unique identifier for the product."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/shoppingCartItems/{cartItemId}",
+        "definition": {
+          "entityName": "ShoppingCartItem",
+          "schema": {
+            "$ref": "#/backend/entities/ShoppingCartItem"
+          },
+          "description": "Stores shopping cart items for a user. The 'userId' parameter corresponds to the Firebase Authentication UID.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user, matching the Firebase Auth UID."
+            },
+            {
+              "name": "cartItemId",
+              "description": "The unique identifier for the shopping cart item."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/orders/{orderId}",
+        "definition": {
+          "entityName": "Order",
+          "schema": {
+            "$ref": "#/backend/entities/Order"
+          },
+          "description": "Stores order information for a user. The 'userId' parameter corresponds to the Firebase Authentication UID.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user, matching the Firebase Auth UID."
+            },
+            {
+              "name": "orderId",
+              "description": "The unique identifier for the order."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/orders/{orderId}/orderItems/{orderItemId}",
+        "definition": {
+          "entityName": "OrderItem",
+          "schema": {
+            "$ref": "#/backend/entities/OrderItem"
+          },
+          "description": "Stores order items for a specific order. The 'userId' parameter corresponds to the Firebase Authentication UID.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user, matching the Firebase Auth UID."
+            },
+            {
+              "name": "orderId",
+              "description": "The unique identifier for the order."
+            },
+            {
+              "name": "orderItemId",
+              "description": "The unique identifier for the order item."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/shippingAddresses/{shippingAddressId}",
+        "definition": {
+          "entityName": "ShippingAddress",
+          "schema": {
+            "$ref": "#/backend/entities/ShippingAddress"
+          },
+          "description": "Stores shipping addresses for a user. The 'userId' parameter corresponds to the Firebase Authentication UID.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user, matching the Firebase Auth UID."
+            },
+            {
+              "name": "shippingAddressId",
+              "description": "The unique identifier for the shipping address."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/billingAddresses/{billingAddressId}",
+        "definition": {
+          "entityName": "BillingAddress",
+          "schema": {
+            "$ref": "#/backend/entities/BillingAddress"
+          },
+          "description": "Stores billing addresses for a user. The 'userId' parameter corresponds to the Firebase Authentication UID.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user, matching the Firebase Auth UID."
+            },
+            {
+              "name": "billingAddressId",
+              "description": "The unique identifier for the billing address."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/aiRecommendations/{recommendationId}",
+        "definition": {
+          "entityName": "AIRecommendation",
+          "schema": {
+            "$ref": "#/backend/entities/AIRecommendation"
+          },
+          "description": "Stores AI product recommendations for a user. The 'userId' parameter corresponds to the Firebase Authentication UID.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user, matching the Firebase Auth UID."
+            },
+            {
+              "name": "recommendationId",
+              "description": "The unique identifier for the AI recommendation."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to align with the application's core features, emphasizing security, scalability, and maintainability. User-related data is stored under the `/users/{userId}` path to ensure clear ownership and simplified security rules. Products are stored in a top-level `/products` collection. Shopping cart items, orders, shipping addresses, billing addresses and AI recommendations are modeled as subcollections under the user's document. This enables simple, path-based security rules and efficient data retrieval for user-specific data.\n\nAuthorization Independence is achieved by avoiding `get()` calls in security rules. Since all user-related data is stored as subcollections of the user document, access control can be directly based on `request.auth.uid` without needing to fetch data from parent documents.\n\nThe structure supports the required QAPs as follows:\n\n*   **Secure `list` operations:** Using structural segregation ensures that listing operations are secure because each collection contains documents with the same access control requirements. For example, listing shopping cart items is secure because only the authenticated user has access to their shopping cart.\n*   **DBAC (Database Authenticated Claims):** The system relies exclusively on `request.auth.uid` for authorization. Roles and permissions can be managed directly in the database (if needed in the future), avoiding the complexity of custom claims."
+  }
+}
