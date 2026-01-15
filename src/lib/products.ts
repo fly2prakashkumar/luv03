@@ -114,3 +114,13 @@ export function getProductsByCategory(category: string): Product[] {
 export function getFeaturedProducts(count: number): Product[] {
   return [...products].sort(() => 0.5 - Math.random()).slice(0, count);
 }
+
+export function searchProducts(query: string): Product[] {
+  const lowerCaseQuery = query.toLowerCase();
+  return products.filter(
+    (product) =>
+      product.name.toLowerCase().includes(lowerCaseQuery) ||
+      product.description.toLowerCase().includes(lowerCaseQuery) ||
+      product.category.toLowerCase().includes(lowerCaseQuery)
+  );
+}

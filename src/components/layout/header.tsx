@@ -1,3 +1,6 @@
+
+'use client';
+
 import Link from 'next/link';
 import { Search, Menu, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,8 +13,22 @@ import {
 import { Input } from '@/components/ui/input';
 import { MainNav } from './main-nav';
 import { ThemeToggle } from './theme-toggle';
+import { useRouter } from 'next/navigation';
+import React from 'react';
 
 export function AppHeader() {
+    const router = useRouter();
+
+    const handleSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            const query = event.currentTarget.value;
+            if (query) {
+                router.push(`/search?q=${encodeURIComponent(query)}`);
+            }
+        }
+    };
+
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="bg-header">
@@ -43,7 +60,13 @@ export function AppHeader() {
           
           <div className="flex flex-1 items-center justify-end space-x-4">
             <div className="w-full flex-1 md:w-auto md:flex-none">
-              <Input icon={<Search/>} type="search" placeholder="Search..." className="md:w-64 bg-background"/>
+              <Input
+                icon={<Search/>}
+                type="search"
+                placeholder="Search..."
+                className="md:w-64 bg-background"
+                onKeyDown={handleSearch}
+              />
             </div>
             <nav className="flex items-center">
               <CartIcon />
