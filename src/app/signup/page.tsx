@@ -50,6 +50,7 @@ export default function SignupPage() {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!auth) return;
     if (password !== confirmPassword) {
       toast({
         variant: "destructive",
@@ -77,6 +78,7 @@ export default function SignupPage() {
   };
 
   const handleGoogleSignIn = async () => {
+    if (!auth) return;
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);

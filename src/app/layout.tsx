@@ -6,7 +6,7 @@ import { CartProvider } from "@/contexts/cart-context";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/layout/theme-provider";
-import { FirebaseClientProvider } from "@/firebase";
+import { FirebaseClientProvider } from "@/firebase/client-provider";
 
 export const metadata: Metadata = {
   title: "Luv O3",
@@ -44,14 +44,14 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <FirebaseClientProvider>
-              <CartProvider>
-                <div className="relative flex min-h-dvh flex-col bg-background">
-                  <AppHeader />
-                  <main className="flex-1 pt-[104px]">{children}</main>
-                  <AppFooter />
-                </div>
-                <Toaster />
-              </CartProvider>
+            <CartProvider>
+              <div className="relative flex min-h-dvh flex-col bg-background">
+                <AppHeader />
+                <main className="flex-1 pt-[104px]">{children}</main>
+                <AppFooter />
+              </div>
+              <Toaster />
+            </CartProvider>
           </FirebaseClientProvider>
         </ThemeProvider>
       </body>
