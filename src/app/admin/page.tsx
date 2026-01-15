@@ -7,11 +7,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Archive, LayoutGrid, BarChart, Users } from 'lucide-react';
 import { useState } from "react";
-import { cn } from "@/lib/utils";
 
 const TABS = ["overview", "products", "outfits"];
 
@@ -19,41 +17,18 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("overview");
 
   return (
-    <>
-    <style>{`
-      .admin-tabs .radio-label {
-        transition: background-color 0.5s ease, font-weight 0.5s ease, color 0.5s ease;
-      }
-      .admin-tabs [data-state=checked] ~ .radio-label {
-        background-color: hsl(var(--background));
-        font-weight: 600;
-        color: hsl(var(--foreground));
-        clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
-      }
-    `}</style>
     <div className="bg-muted/40 flex-1 p-4 sm:p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8 flex justify-center">
-            <RadioGroup
-              value={activeTab}
-              onValueChange={setActiveTab}
-              className="admin-tabs grid grid-cols-3 items-center bg-muted p-1 rounded-md w-full max-w-md"
-            >
-                {TABS.map((tab) => (
-                    <div key={tab} className="flex justify-center text-center">
-                        <RadioGroupItem value={tab} id={tab} className="sr-only" />
-                        <Label
-                            htmlFor={tab}
-                            className={cn(
-                                "radio-label flex items-center justify-center h-10 w-full text-sm font-medium rounded-sm cursor-pointer",
-                                activeTab !== tab ? "text-muted-foreground" : "text-foreground"
-                            )}
-                        >
-                            <span className="capitalize">{tab}</span>
-                        </Label>
-                    </div>
-                ))}
-            </RadioGroup>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-md">
+            <TabsList className="grid w-full grid-cols-3">
+              {TABS.map((tab) => (
+                <TabsTrigger key={tab} value={tab}>
+                  <span className="capitalize">{tab}</span>
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
         </div>
 
         {activeTab === 'overview' && (
@@ -102,6 +77,5 @@ export default function AdminPage() {
         )}
       </div>
     </div>
-    </>
   );
 }
