@@ -109,13 +109,25 @@ export function AppHeader() {
             </div>
           )}
           
-          <div className={cn("flex flex-1 items-center justify-end space-x-2 md:space-x-4", isSearchOpen && isMobile && "w-full")}>
-            <div className={cn("w-full flex-1 md:w-auto md:flex-none", isSearchOpen && isMobile && "absolute left-0 top-0 w-full h-full px-4 bg-primary")}>
-              {isMounted && isMobile && !isSearchOpen ? (
-                null
-              ) : (
-                <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+          <div className={cn("flex flex-1 items-center justify-end space-x-2 md:space-x-4")}>
+             <div className="w-full flex-1 md:w-auto md:flex-none">
+              <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
                   <PopoverAnchor asChild>
+                      <form
+                        className={cn(
+                          'relative w-full',
+                          isMounted && isMobile && !isSearchOpen && 'hidden'
+                        )}
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          if (searchQuery) {
+                            router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+                            setIsPopoverOpen(false);
+                             setSearchQuery('');
+                            if (isMobile) setIsSearchOpen(false);
+                          }
+                        }}
+                      >
                       <Input
                           icon={<Search/>}
                           type="search"
@@ -126,10 +138,13 @@ export function AppHeader() {
                           onKeyDown={handleSearchSubmit}
                           onFocus={() => searchQuery.length > 1 && setIsPopoverOpen(true)}
                           onBlur={() => {
-                            if (isMobile) setIsSearchOpen(false);
+                            setTimeout(() => {
+                                if (isMobile) setIsSearchOpen(false);
+                            }, 150);
                           }}
                           autoFocus={isMobile && isSearchOpen}
                       />
+                      </form>
                   </PopoverAnchor>
                   <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
                       <div className="flex flex-col gap-1 p-2">
@@ -152,9 +167,8 @@ export function AppHeader() {
                       </div>
                   </PopoverContent>
                 </Popover>
-              )}
             </div>
-            <nav className="flex items-center">
+            <nav className={cn("flex items-center", isMobile && isSearchOpen && "hidden")}>
               {isMounted && isMobile && !isSearchOpen && (
                 <Button variant="ghost" size="icon" onClick={() => setIsSearchOpen(true)} className='hover:bg-transparent'>
                   <Search className="h-5 w-5" />
