@@ -30,15 +30,14 @@ export default function LoginPage() {
   const { user, isUserLoading } = useUser();
 
   useEffect(() => {
-    // Wait until auth is initialized and user state is known
-    if (auth && !isUserLoading && user) {
+    if (!isUserLoading && user) {
         if (user.email === 'admin@gmail.com') {
             router.push('/admin');
         } else {
             router.push('/account');
         }
     }
-  }, [user, isUserLoading, router, auth]);
+  }, [user, isUserLoading, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,8 +77,7 @@ export default function LoginPage() {
     }
   };
 
-  if (isUserLoading || (user && auth)) {
-    // Show a loading indicator while checking auth state or if user is already logged in (and redirecting)
+  if (isUserLoading || user) {
     return <div className="flex justify-center items-center min-h-[calc(100vh-8rem)]">Loading...</div>;
   }
 

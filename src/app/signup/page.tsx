@@ -42,11 +42,10 @@ export default function SignupPage() {
   const { user, isUserLoading } = useUser();
 
   useEffect(() => {
-    // Wait until auth is initialized and user state is known
-    if (auth && !isUserLoading && user) {
+    if (!isUserLoading && user) {
         router.push('/account');
     }
-  }, [user, isUserLoading, router, auth]);
+  }, [user, isUserLoading, router]);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,8 +98,7 @@ export default function SignupPage() {
     }
   };
 
-  if (isUserLoading || (user && auth)) {
-     // Show a loading indicator while checking auth state or if user is already logged in (and redirecting)
+  if (isUserLoading || user) {
     return <div className="flex justify-center items-center min-h-[calc(100vh-8rem)]">Loading...</div>;
   }
 
