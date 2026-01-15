@@ -25,9 +25,9 @@ export default function AdminPage() {
         transition: background-color 0.5s ease, font-weight 0.5s ease, color 0.5s ease;
       }
       .admin-tabs [data-state=checked] ~ .radio-label {
-        background-color: #4d4a45;
+        background-color: hsl(var(--background));
         font-weight: 600;
-        color: #fff;
+        color: hsl(var(--foreground));
         clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
       }
     `}</style>
@@ -37,7 +37,7 @@ export default function AdminPage() {
             <RadioGroup
               value={activeTab}
               onValueChange={setActiveTab}
-              className="admin-tabs grid grid-cols-3 items-center bg-black p-1 rounded-md w-full max-w-md"
+              className="admin-tabs grid grid-cols-3 items-center bg-muted p-1 rounded-md w-full max-w-md"
             >
                 {TABS.map((tab) => (
                     <div key={tab} className="flex justify-center text-center">
@@ -46,7 +46,7 @@ export default function AdminPage() {
                             htmlFor={tab}
                             className={cn(
                                 "radio-label flex items-center justify-center h-10 w-full text-sm font-medium rounded-sm cursor-pointer",
-                                activeTab !== tab ? "text-neutral-400" : "text-white"
+                                activeTab !== tab ? "text-muted-foreground" : "text-foreground"
                             )}
                         >
                             <span className="capitalize">{tab}</span>
