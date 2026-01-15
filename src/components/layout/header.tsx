@@ -22,12 +22,19 @@ import { searchProducts } from '@/lib/products';
 import type { Product } from '@/lib/types';
 import Image from 'next/image';
 import { getPlaceholderImage } from '@/lib/placeholder-images';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export function AppHeader() {
     const router = useRouter();
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState<Product[]>([]);
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
+    const isMobile = useIsMobile();
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     useEffect(() => {
         if (searchQuery.length > 1) {
@@ -71,26 +78,28 @@ export function AppHeader() {
             </Link>
           </div>
 
-          <div className="md:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="bg-primary/90 hover:bg-primary/90">
-                  <Menu className="h-5 w-5" />
-                  <span className="sr-only">Toggle Menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="pr-0">
-                <SheetHeader className="mb-6">
-                    <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
-                    <Link href="/" className="mr-6 flex items-center space-x-2">
-                    <ShoppingBag className="h-6 w-6" />
-                    <span className="font-bold text-xl font-headline">Luv O3</span>
-                    </Link>
-                </SheetHeader>
-                <MainNav isMobile={true}/>
-              </SheetContent>
-            </Sheet>
-          </div>
+          {isMounted && isMobile && (
+            <div className="md:hidden">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="bg-primary/90 hover:bg-primary/90">
+                    <Menu className="h-5 w-5" />
+                    <span className="sr-only">Toggle Menu</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="pr-0">
+                  <SheetHeader className="mb-6">
+                      <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
+                      <Link href="/" className="mr-6 flex items-center space-x-2">
+                      <ShoppingBag className="h-6 w-6" />
+                      <span className="font-bold text-xl font-headline">Luv O3</span>
+                      </Link>
+                  </SheetHeader>
+                  <MainNav isMobile={true}/>
+                </SheetContent>
+              </Sheet>
+            </div>
+          )}
           
           <div className="flex flex-1 items-center justify-end space-x-2 md:space-x-4">
             <div className="w-full flex-1 md:w-auto md:flex-none">
