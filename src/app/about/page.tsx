@@ -35,7 +35,7 @@ export default function AboutPage() {
                 </CardHeader>
                 <CardContent className="text-muted-foreground">
                     <p>
-                        To provide advanced, safe, and effective skincare solutions by blending cutting-edge ozone technology with nature's purest ingredients, promoting healthier skin and a healthier planet.
+                        To provide high-quality, science-backed, natural cosmetic products that promote healthy, radiant skin while maintaining the highest standards of safety and efficacy.
                     </p>
                 </CardContent>
             </Card>
