@@ -14,7 +14,7 @@ export default function ProductsPage() {
     <div className="bg-background">
       <div className="container mx-auto px-4 py-12 md:py-16">
         <div className="mb-4">
-            <Button variant="ghost" onClick={() => router.back()}>
+            <Button variant="ghost" onClick={() => router.back()} className="hover:bg-transparent">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back
             </Button>
