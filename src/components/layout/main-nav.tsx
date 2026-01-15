@@ -37,7 +37,7 @@ const navLinks = [
     { href: '/products', label: 'All products' },
     { href: '/products', label: 'Both&Body' },
     { href: '/products', label: 'Skin care' },
-    { href: '/products', label: 'Electronics' },
+    { href: '/products', label: 'toothpaste' },
 ];
 
 export function MainNav({ isMobile = false }: { isMobile?: boolean }) {
