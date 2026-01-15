@@ -3,7 +3,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Search, Menu, ShoppingBag, User, LogOut, Home, LayoutDashboard } from 'lucide-react';
+import { Search, Menu, ShoppingBag, User, LogOut, Home, LayoutDashboard, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CartIcon } from '@/components/cart/cart-icon';
 import {
@@ -25,9 +25,10 @@ import Image from 'next/image';
 import { getPlaceholderImage } from '@/lib/placeholder-images';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import { useAuth } from '@/contexts/auth-context';
+import { useUser, useAuth } from '@/firebase';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { signOut } from 'firebase/auth';
 
 
 export function AppHeader() {
@@ -39,7 +40,8 @@ export function AppHeader() {
     const [isMounted, setIsMounted] = useState(false);
     const isMobile = useIsMobile();
     const [isSearchOpen, setIsSearchOpen] = useState(false);
-    const { user, logout } = useAuth();
+    const { user } = useUser();
+    const auth = useAuth();
 
     const isAdminPage = pathname.startsWith('/admin');
 
@@ -84,8 +86,8 @@ export function AppHeader() {
         }
     }
     
-    const handleLogout = () => {
-      logout();
+    const handleLogout = async () => {
+      await signOut(auth);
       router.push('/');
     }
 
@@ -196,13 +198,14 @@ export function AppHeader() {
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="hover:bg-transparent">
                       <Avatar className="h-8 w-8">
-                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                         {user.photoURL && <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />}
+                        <AvatarFallback>{user.displayName ? user.displayName.charAt(0) : user.email?.charAt(0).toUpperCase()}</AvatarFallback>
                       </Avatar>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem asChild>
-                      <Link href="/"><Home className="mr-2 h-4 w-4" /> Home</Link>
+                      <Link href="/account"><User className="mr-2 h-4 w-4" /> My Account</Link>
                     </DropdownMenuItem>
                     {user.email === 'admin@gmail.com' && (
                         <DropdownMenuItem asChild>
@@ -218,7 +221,7 @@ export function AppHeader() {
               ) : (
                 <Button asChild variant="ghost" size="icon" className="hover:bg-transparent">
                   <Link href="/login">
-                    <User className="h-5 w-5" />
+                    <LogIn className="h-5 w-5" />
                     <span className="sr-only">Login</span>
                   </Link>
                 </Button>

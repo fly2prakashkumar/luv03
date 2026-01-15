@@ -6,30 +6,83 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/auth-context";
+import { useUser, useAuth } from "@/firebase";
+import {
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  User,
+} from 'firebase/auth';
+import { Separator } from "@/components/ui/separator";
+
+const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512" {...props} fill="currentColor">
+      <path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 126 23.4 172.9 61.9l-76.2 74.2C313.6 113.4 283.3 97.4 248 97.4c-85.3 0-153.9 68.6-153.9 158.6s68.6 158.6 153.9 158.6c99.9 0 137.3-82.9 140.8-120.9H248v-94.2h236.3c4.7 25.4 7.7 54.2 7.7 84.1z"/>
+    </svg>
+  );
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
   const { toast } = useToast();
-  const { login } = useAuth();
+  const auth = useAuth();
+  const { user, isUserLoading } = useUser();
 
-  const handleLogin = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (!isUserLoading && user) {
+        if (user.email === 'admin@gmail.com') {
+            router.push('/admin');
+        } else {
+            router.push('/account');
+        }
+    }
+  }, [user, isUserLoading, router]);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email === 'admin@gmail.com' && password === 'Admin123') {
-      login({ name: 'Admin', email });
-      router.push('/admin');
-    } else {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      toast({
+        title: "Login Successful",
+        description: "Welcome back!",
+      });
+    } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Login Failed",
-        description: "Invalid email or password.",
+        description: error.message || "Invalid email or password.",
       });
     }
   };
+
+  const handleGoogleSignIn = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+      toast({
+        title: "Login Successful",
+        description: "Welcome!",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Google Sign-In Failed",
+        description: error.message || "Could not sign in with Google.",
+      });
+    }
+  };
+
+
+  if (isUserLoading) {
+    return <div>Loading...</div>; // Or a spinner component
+  }
+
+  if (user) {
+    return null; // The useEffect will handle redirection
+  }
 
   return (
     <div className="w-full flex items-center justify-center py-12 min-h-[calc(100vh-8rem)]">
@@ -68,6 +121,20 @@ export default function LoginPage() {
               Login
             </Button>
           </form>
+           <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">
+                    Or continue with
+                    </span>
+                </div>
+            </div>
+            <Button variant="outline" className="w-full" onClick={handleGoogleSignIn}>
+               <GoogleIcon className="mr-2 h-4 w-4" />
+               Sign in with Google
+            </Button>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
             <Link href="/signup" className="underline">
