@@ -1,9 +1,14 @@
+
+"use client";
+
 import { getProductById } from "@/lib/products";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import Image from "next/image";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { AddToCartButton } from "@/components/products/add-to-cart-button";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 type ProductDetailPageProps = {
   params: {
@@ -11,21 +16,9 @@ type ProductDetailPageProps = {
   };
 };
 
-export async function generateMetadata({ params }: ProductDetailPageProps) {
-  const product = getProductById(params.id);
-  if (!product) {
-    return {
-      title: "Product Not Found",
-    };
-  }
-  return {
-    title: `${product.name} - Luv O3`,
-    description: product.description,
-  };
-}
-
 export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   const product = getProductById(params.id);
+  const router = useRouter();
 
   if (!product) {
     notFound();
@@ -35,6 +28,12 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-16">
+       <div className="mb-4">
+            <Button variant="ghost" onClick={() => router.back()}>
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back
+            </Button>
+        </div>
       <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-start">
         <div className="aspect-square relative rounded-lg overflow-hidden shadow-lg">
           {placeholder && (
