@@ -5,6 +5,7 @@ import { AppFooter } from "@/components/layout/footer";
 import { CartProvider } from "@/contexts/cart-context";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
+import { ThemeProvider } from "@/components/layout/theme-provider";
 
 export const metadata: Metadata = {
   title: "Luv O3",
@@ -35,14 +36,21 @@ export default function RootLayout({
           "min-h-screen bg-background font-body antialiased",
         )}
       >
-        <CartProvider>
-          <div className="relative flex min-h-dvh flex-col bg-background">
-            <AppHeader />
-            <main className="flex-1">{children}</main>
-            <AppFooter />
-          </div>
-          <Toaster />
-        </CartProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <CartProvider>
+            <div className="relative flex min-h-dvh flex-col bg-background">
+              <AppHeader />
+              <main className="flex-1">{children}</main>
+              <AppFooter />
+            </div>
+            <Toaster />
+          </CartProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

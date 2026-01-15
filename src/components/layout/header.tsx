@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { User, Search, Menu } from 'lucide-react';
+import { Search, Menu, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CartIcon } from '@/components/cart/cart-icon';
 import {
@@ -9,70 +9,53 @@ import {
 } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
 import { MainNav } from './main-nav';
-
-const navLinks = [
-  { href: '/products', label: 'Shop' },
-  { href: '/recommendations', label: 'AI Beauty Advisor' },
-];
+import { ThemeToggle } from './theme-toggle';
 
 export function AppHeader() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="bg-primary text-primary-foreground py-2 text-center text-sm">
-        <p>✨ Free Shipping on Orders Over ₹599! ✨</p>
-      </div>
-      <div className="container flex h-16 items-center">
-        <div className="mr-4 hidden md:flex">
-          <Link href="/" className="mr-6 flex items-center space-x-2">
-            <span className="font-bold text-xl font-headline">Luv O3</span>
-          </Link>
-        </div>
-
-        <div className="md:hidden">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle Menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="pr-0">
-              <Link href="/" className="mr-6 flex items-center space-x-2 mb-6">
-                 <span className="font-bold text-xl font-headline">Luv O3</span>
-              </Link>
-              <div className="flex flex-col space-y-3">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="transition-colors hover:text-foreground/80 text-foreground"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
-        
-        <div className="hidden md:flex flex-1 items-center justify-start space-x-2">
-           <MainNav />
-        </div>
-
-        <div className="flex flex-1 items-center justify-end space-x-4">
-          <div className="w-full flex-1 md:w-auto md:flex-none">
-            <Input icon={<Search/>} type="search" placeholder="Search..." className="md:w-64"/>
+      <div className="bg-header">
+        <div className="container flex h-16 items-center">
+          <div className="mr-4 hidden md:flex">
+            <Link href="/" className="mr-6 flex items-center space-x-2">
+              <ShoppingBag className="h-6 w-6" />
+              <span className="font-bold text-xl font-headline">Luv O3</span>
+            </Link>
           </div>
-          <nav className="flex items-center">
-            <Button asChild variant="ghost" size="icon">
-              <Link href="/account">
-                <User className="h-5 w-5" />
-                <span className="sr-only">Account</span>
-              </Link>
-            </Button>
-            <CartIcon />
-          </nav>
+
+          <div className="md:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Toggle Menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="pr-0">
+                <Link href="/" className="mr-6 flex items-center space-x-2 mb-6">
+                   <ShoppingBag className="h-6 w-6" />
+                   <span className="font-bold text-xl font-headline">Luv O3</span>
+                </Link>
+                <MainNav isMobile={true}/>
+              </SheetContent>
+            </Sheet>
+          </div>
+          
+          <div className="flex flex-1 items-center justify-end space-x-4">
+            <div className="w-full flex-1 md:w-auto md:flex-none">
+              <Input icon={<Search/>} type="search" placeholder="Search..." className="md:w-64 bg-background"/>
+            </div>
+            <nav className="flex items-center">
+              <CartIcon />
+              <ThemeToggle />
+            </nav>
+          </div>
         </div>
+      </div>
+      <div className="hidden md:block border-b">
+         <div className="container">
+           <MainNav />
+         </div>
       </div>
     </header>
   );

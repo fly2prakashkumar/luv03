@@ -14,54 +14,80 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 
-const categories: { title: string; href: string; description: string }[] = [
-    {
-      title: "Skincare",
-      href: "/products",
-      description: "Cleansers, moisturizers, serums, and more for your face.",
-    },
-    {
-      title: "Makeup",
-      href: "/products",
-      description: "Foundations, lipsticks, and everything for your look.",
-    },
-    {
-      title: "Hair",
-      href: "/products",
-      description: "Shampoos, conditioners, and treatments for luscious locks.",
-    },
-    {
-      title: "Body",
-      href: "/products",
-      description: "Lotions, scrubs, and oils for the whole body.",
-    },
-     {
-      title: "Fragrance",
-      href: "/products",
-      description: "Discover your signature scent.",
-    },
-     {
-      title: "Tools & Brushes",
-      href: "/products",
-      description: "Perfect your application with our professional tools.",
-    },
+const trendingProducts: { title: string; href: string; description: string }[] = [
+  {
+    title: "Trending 1",
+    href: "/products",
+    description: "Description for trending product 1.",
+  },
+  {
+    title: "Trending 2",
+    href: "/products",
+    description: "Description for trending product 2.",
+  },
+  {
+    title: "Trending 3",
+    href: "/products",
+    description: "Description for trending product 3.",
+  },
 ]
 
-export function MainNav() {
+const navLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/products', label: 'Top Rated' },
+    { href: '/products', label: 'Kids Wear' },
+    { href: '/products', label: 'Mens Wear' },
+    { href: '/products', label: 'Electronics' },
+];
+
+export function MainNav({ isMobile = false }: { isMobile?: boolean }) {
+  if (isMobile) {
+    return (
+      <div className="flex flex-col space-y-3">
+        {navLinks.map((link) => (
+          <Link
+            key={link.href + link.label}
+            href={link.href}
+            className="transition-colors hover:text-foreground/80 text-foreground"
+          >
+            {link.label}
+          </Link>
+        ))}
+         <Link
+            href={'/products'}
+            className="transition-colors hover:text-foreground/80 text-foreground"
+          >
+            Trending Products
+        </Link>
+      </div>
+    );
+  }
+  
   return (
     <NavigationMenu>
       <NavigationMenuList>
+         {navLinks.map((link) => (
+            <NavigationMenuItem key={link.href + link.label}>
+                <Link href={link.href} legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>{link.label}</NavigationMenuLink>
+                </Link>
+            </NavigationMenuItem>
+        ))}
         <NavigationMenuItem>
-          <Link href="/products" passHref legacyBehavior>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Shop
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-         <NavigationMenuItem>
-            <Link href="/recommendations" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>AI Beauty Advisor</NavigationMenuLink>
-            </Link>
+          <NavigationMenuTrigger>Trending Products</NavigationMenuTrigger>
+          <NavigationMenuContent>
+            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+              {trendingProducts.map((component) => (
+                <ListItem
+                  key={component.title}
+                  title={component.title}
+                  href={component.href}
+                >
+                  {component.description}
+                </ListItem>
+              ))}
+            </ul>
+          </NavigationMenuContent>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
