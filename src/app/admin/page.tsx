@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DollarSign, ShoppingCart, Users, Package, ArrowUp, Star, MoreHorizontal } from 'lucide-react';
 import { useState } from "react";
@@ -74,20 +74,17 @@ export default function AdminPage() {
                 <p className="text-muted-foreground">Welcome back! Here's a look at your store's performance.</p>
             </div>
             <div className="flex items-center space-x-2">
-                <Avatar>
-                    <AvatarImage src="https://picsum.photos/seed/admin/100/100" />
-                    <AvatarFallback>A</AvatarFallback>
-                </Avatar>
             </div>
         </div>
-
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 bg-muted/80">
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="products">Products</TabsTrigger>
-                <TabsTrigger value="orders">Orders</TabsTrigger>
-            </TabsList>
-        </Tabs>
+        <div className="mb-8">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <TabsList className="grid w-full grid-cols-3 bg-muted/80">
+                    <TabsTrigger value="overview">Overview</TabsTrigger>
+                    <TabsTrigger value="products">Products</TabsTrigger>
+                    <TabsTrigger value="orders">Orders</TabsTrigger>
+                </TabsList>
+            </Tabs>
+        </div>
 
         {activeTab === 'overview' && (
             <div className="space-y-4">
@@ -98,7 +95,7 @@ export default function AdminPage() {
                             <DollarSign className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">$24,560</div>
+                            <div className="text-2xl font-bold">₹24,560</div>
                             <p className="text-xs text-muted-foreground flex items-center">
                                 <ArrowUp className="h-3 w-3 text-green-500 mr-1"/>
                                 +12% from last month
@@ -147,7 +144,7 @@ export default function AdminPage() {
                                 <LineChart data={salesData}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" />
                                     <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value/1000}k`} />
+                                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `₹${value/1000}k`} />
                                     <Tooltip
                                         contentStyle={{
                                             backgroundColor: "hsl(var(--background))",
