@@ -19,8 +19,8 @@ export default function AdminPage() {
   return (
     <div className="bg-muted/40 flex-1 p-4 sm:p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8 flex justify-center">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-md">
+        <div className="mb-8 flex">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-3">
               {TABS.map((tab) => (
                 <TabsTrigger key={tab} value={tab}>
