@@ -4,17 +4,17 @@ import { ShoppingBag, Instagram, Facebook, Linkedin, MapPin, Phone } from "lucid
 const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/products', label: 'All products' },
-    { href: '/products', label: 'Both&Body' },
-    { href: '/products', label: 'Skin care' },
-    { href: '/products', label: 'Toothpaste' },
-    { href: '/products', label: 'Handwash' },
+    { href: '/products/category/both-and-body', label: 'Both&Body' },
+    { href: '/products/category/skin-care', label: 'Skin care' },
+    { href: '/products/category/toothpaste', label: 'Toothpaste' },
+    { href: '/products/category/handwash', label: 'Handwash' },
 ];
 
 export function AppFooter() {
   return (
     <footer className="bg-foreground text-background">
       <div className="container mx-auto px-4 py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           
           {/* Column 1: Brand */}
           <div className="space-y-4">
@@ -43,6 +43,7 @@ export function AppFooter() {
 
           {/* Column 3: Contact and Socials */}
           <div className="space-y-4">
+            <h3 className="font-bold text-lg">Contact Us</h3>
              <div className="flex space-x-4">
               <Link href="#" className="text-muted-foreground hover:text-primary transition-colors"><Instagram className="h-6 w-6" /></Link>
               <Link href="#" className="text-muted-foreground hover:text-primary transition-colors"><Facebook className="h-6 w-6" /></Link>
