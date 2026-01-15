@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="scroll-smooth">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -45,7 +45,7 @@ export default function RootLayout({
           <CartProvider>
             <div className="relative flex min-h-dvh flex-col bg-background">
               <AppHeader />
-              <main className="flex-1">{children}</main>
+              <main className="flex-1 pt-[104px]">{children}</main>
               <AppFooter />
             </div>
             <Toaster />
