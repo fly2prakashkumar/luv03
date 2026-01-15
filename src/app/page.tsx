@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -53,7 +54,7 @@ export default function Home() {
           <h1 className="text-4xl md:text-6xl font-headline font-bold mb-4 animate-fade-in-up">
             Embrace Your Natural Radiance
           </h1>
-          <p className="text-lg md:text-xl max-w-2xl mb-8 animate-fade-in-up animation-delay-300">
+          <p className="text-lg md:text-xl max-w-2xl mb-8 animate-fade-in-up animation-delay-300 font-semibold">
             Discover bespoke skincare, crafted for you. Powered by intelligence,
             perfected by nature.
           </p>
