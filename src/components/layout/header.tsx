@@ -23,6 +23,7 @@ import type { Product } from '@/lib/types';
 import Image from 'next/image';
 import { getPlaceholderImage } from '@/lib/placeholder-images';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 export function AppHeader() {
     const router = useRouter();
@@ -31,6 +32,7 @@ export function AppHeader() {
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
     const isMobile = useIsMobile();
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     useEffect(() => {
         setIsMounted(true);
@@ -54,6 +56,9 @@ export function AppHeader() {
                 router.push(`/search?q=${encodeURIComponent(query)}`);
                 setIsPopoverOpen(false);
                 setSearchQuery('');
+                if (isMobile) {
+                    setIsSearchOpen(false);
+                }
             }
         }
     };
@@ -65,6 +70,9 @@ export function AppHeader() {
     const handleSuggestionClick = () => {
         setIsPopoverOpen(false);
         setSearchQuery('');
+        if (isMobile) {
+            setIsSearchOpen(false);
+        }
     }
 
   return (
@@ -101,44 +109,58 @@ export function AppHeader() {
             </div>
           )}
           
-          <div className="flex flex-1 items-center justify-end space-x-2 md:space-x-4">
-            <div className="w-full flex-1 md:w-auto md:flex-none">
-              <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-                <PopoverAnchor asChild>
-                    <Input
-                        icon={<Search/>}
-                        type="search"
-                        placeholder="Search..."
-                        className="md:w-64 bg-background text-foreground"
-                        value={searchQuery}
-                        onChange={handleSearchChange}
-                        onKeyDown={handleSearchSubmit}
-                        onFocus={() => searchQuery.length > 1 && setIsPopoverOpen(true)}
-                    />
-                </PopoverAnchor>
-                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
-                    <div className="flex flex-col gap-1 p-2">
-                        {searchResults.map(product => {
-                            const placeholder = getPlaceholderImage(product.imageId);
-                            return (
-                                <Link key={product.id} href={`/products/${product.id}`} className="block" onClick={handleSuggestionClick}>
-                                    <div className="flex items-center gap-4 p-2 rounded-md hover:bg-muted">
-                                        <div className="relative h-12 w-12 rounded-md overflow-hidden">
-                                            {placeholder && <Image src={placeholder.imageUrl} alt={product.name} fill className="object-cover" data-ai-hint={placeholder.imageHint} />}
-                                        </div>
-                                        <div>
-                                            <p className="font-semibold text-sm">{product.name}</p>
-                                            <p className="text-muted-foreground text-sm">₹{product.price.toFixed(2)}</p>
-                                        </div>
-                                    </div>
-                                </Link>
-                            )
-                        })}
-                    </div>
-                </PopoverContent>
-              </Popover>
+          <div className={cn("flex flex-1 items-center justify-end space-x-2 md:space-x-4", isSearchOpen && isMobile && "w-full")}>
+            <div className={cn("w-full flex-1 md:w-auto md:flex-none", isSearchOpen && isMobile && "absolute left-0 top-0 w-full h-full px-4 bg-primary")}>
+              {isMounted && isMobile && !isSearchOpen ? (
+                null
+              ) : (
+                <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+                  <PopoverAnchor asChild>
+                      <Input
+                          icon={<Search/>}
+                          type="search"
+                          placeholder="Search..."
+                          className="md:w-64 bg-background text-foreground h-10 md:h-10"
+                          value={searchQuery}
+                          onChange={handleSearchChange}
+                          onKeyDown={handleSearchSubmit}
+                          onFocus={() => searchQuery.length > 1 && setIsPopoverOpen(true)}
+                          onBlur={() => {
+                            if (isMobile) setIsSearchOpen(false);
+                          }}
+                          autoFocus={isMobile && isSearchOpen}
+                      />
+                  </PopoverAnchor>
+                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
+                      <div className="flex flex-col gap-1 p-2">
+                          {searchResults.map(product => {
+                              const placeholder = getPlaceholderImage(product.imageId);
+                              return (
+                                  <Link key={product.id} href={`/products/${product.id}`} className="block" onClick={handleSuggestionClick}>
+                                      <div className="flex items-center gap-4 p-2 rounded-md">
+                                          <div className="relative h-12 w-12 rounded-md overflow-hidden">
+                                              {placeholder && <Image src={placeholder.imageUrl} alt={product.name} fill className="object-cover" data-ai-hint={placeholder.imageHint} />}
+                                          </div>
+                                          <div>
+                                              <p className="font-semibold text-sm">{product.name}</p>
+                                              <p className="text-muted-foreground text-sm">₹{product.price.toFixed(2)}</p>
+                                          </div>
+                                      </div>
+                                  </Link>
+                              )
+                          })}
+                      </div>
+                  </PopoverContent>
+                </Popover>
+              )}
             </div>
             <nav className="flex items-center">
+              {isMounted && isMobile && !isSearchOpen && (
+                <Button variant="ghost" size="icon" onClick={() => setIsSearchOpen(true)} className='hover:bg-transparent'>
+                  <Search className="h-5 w-5" />
+                  <span className="sr-only">Open Search</span>
+                </Button>
+              )}
               <CartIcon />
               <ThemeToggle />
             </nav>
