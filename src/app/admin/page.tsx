@@ -47,7 +47,6 @@ export default function AdminPage() {
                 className="absolute h-8 w-1/3 bg-blue-100/70 rounded-full z-0 transition-transform duration-300 ease-out flex items-center justify-center"
                 style={{ transform: `translateX(${activeIndex * 100}%)` }}
               >
-                <div className="w-1.5 h-1.5 rounded-full bg-blue-600"></div>
               </div>
             </RadioGroup>
         </div>
