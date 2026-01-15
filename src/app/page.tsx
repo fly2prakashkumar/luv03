@@ -4,7 +4,32 @@ import { Button } from "@/components/ui/button";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { getFeaturedProducts } from "@/lib/products";
 import { ProductCard } from "@/components/products/product-card";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Leaf, FlaskConical, Recycle, Microscope } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+const features = [
+  {
+    icon: <Leaf className="h-8 w-8" />,
+    title: "Organic Ingredients",
+    description: "Pure oils. No harsh chemicals. Skin-safe and earth-friendly.",
+  },
+  {
+    icon: <FlaskConical className="h-8 w-8" />,
+    title: "Lab-Grade Quality",
+    description: "Produced in certified facilities for consistent results.",
+  },
+  {
+    icon: <Recycle className="h-8 w-8" />,
+    title: "Eco Packaging",
+    description: "Recyclable, sustainable, and plastic-conscious choices.",
+  },
+  {
+    icon: <Microscope className="h-8 w-8" />,
+    title: "Science Meets Nature",
+    description: "Advanced skincare inspired by ozone research.",
+  },
+];
+
 
 export default function Home() {
   const heroImage = getPlaceholderImage("hero");
@@ -59,6 +84,37 @@ export default function Home() {
           </div>
         </div>
       </section>
+      
+      <section className="py-12 md:py-20 bg-muted/50">
+        <div className="container mx-auto px-4 text-center">
+            <h2 className="text-3xl md:text-4xl font-headline font-bold">Where Nature Meets Innovation</h2>
+            <p className="mt-4 max-w-3xl mx-auto text-muted-foreground">
+                The ozonia herbs is India's first advanced skin and oral care products using ozonated organic oils. Everything is crafted in-house in labs to guarantee the highest levels of purity, potency, and performance for every skin type.
+            </p>
+        </div>
+      </section>
+
+      <section className="py-12 md:py-20 bg-background">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl md:text-4xl font-headline font-bold text-center mb-10">
+                What Sets Us Apart
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                {features.map((feature, index) => (
+                    <Card key={index} className="text-center bg-card p-6 flex flex-col items-center">
+                        <div className="p-4 bg-primary/10 text-primary rounded-full mb-4">
+                            {feature.icon}
+                        </div>
+                        <CardTitle className="text-xl font-headline mb-2">{feature.title}</CardTitle>
+                        <CardContent className="p-0 text-muted-foreground text-sm">
+                            <p>{feature.description}</p>
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
+          </div>
+      </section>
+
     </div>
   );
 }
