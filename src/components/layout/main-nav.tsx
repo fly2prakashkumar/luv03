@@ -17,6 +17,8 @@ import { SheetClose } from "@/components/ui/sheet"
 const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/products', label: 'All products' },
+    { href: '/about', label: 'About' },
+    { href: '/contact', label: 'Contact' },
     { href: '/products/category/bath-&-body', label: 'Bath & Body' },
     { href: '/products/category/skin-care', label: 'Skin care' },
     { href: '/products/category/toothpaste', label: 'Toothpaste' },
