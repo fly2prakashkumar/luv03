@@ -16,7 +16,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { MainNav } from './main-nav';
 import { ThemeToggle } from './theme-toggle';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover';
 import { searchProducts } from '@/lib/products';
@@ -28,12 +28,15 @@ import { cn } from '@/lib/utils';
 
 export function AppHeader() {
     const router = useRouter();
+    const pathname = usePathname();
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState<Product[]>([]);
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
     const isMobile = useIsMobile();
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+    const isAdminPage = pathname.startsWith('/admin');
 
     useEffect(() => {
         setIsMounted(true);
@@ -188,11 +191,13 @@ export function AppHeader() {
           </div>
         </div>
       </div>
-      <div className="hidden md:block border-b">
-         <div className="container flex justify-center">
-           <MainNav />
-         </div>
-      </div>
+      {!isAdminPage && (
+        <div className="hidden md:block border-b">
+            <div className="container flex justify-center">
+            <MainNav />
+            </div>
+        </div>
+      )}
     </header>
   );
 }
