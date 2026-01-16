@@ -131,7 +131,7 @@ export default function AdminPage() {
                         <CardContent>
                             <div className="text-2xl font-bold">₹24,560</div>
                             <p className="text-xs text-muted-foreground flex items-center">
-                                <ArrowUp className="h-3 w-3 text-primary mr-1"/>
+                                <ArrowUp className="h-3 w-3 text-foreground mr-1"/>
                                 +12% from last month
                             </p>
                         </CardContent>
@@ -187,7 +187,7 @@ export default function AdminPage() {
                                         }}
                                     />
                                     <Legend wrapperStyle={{fontSize: "12px"}}/>
-                                    <Line type="monotone" dataKey="revenue" stroke="hsl(var(--primary))" strokeWidth={2} activeDot={{ r: 8 }} />
+                                    <Line type="monotone" dataKey="revenue" stroke="hsl(var(--foreground))" strokeWidth={2} activeDot={{ r: 8 }} />
                                     <Line type="monotone" dataKey="orders" stroke="hsl(var(--accent))" strokeWidth={2} />
                                 </LineChart>
                             </ResponsiveContainer>
@@ -340,3 +340,4 @@ export default function AdminPage() {
     
 
     
+

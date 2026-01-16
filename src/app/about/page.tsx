@@ -16,7 +16,7 @@ export default function AboutPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 font-headline text-2xl">
-              <Leaf className="text-primary" /> Our Story
+              <Leaf className="text-foreground" /> Our Story
             </CardTitle>
           </CardHeader>
           <CardContent className="text-muted-foreground space-y-4">
@@ -30,7 +30,7 @@ export default function AboutPage() {
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2 font-headline text-2xl">
-                        <Target className="text-primary" /> Our Mission
+                        <Target className="text-foreground" /> Our Mission
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="text-muted-foreground">
@@ -42,7 +42,7 @@ export default function AboutPage() {
              <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2 font-headline text-2xl">
-                        <Eye className="text-primary" /> Our Vision
+                        <Eye className="text-foreground" /> Our Vision
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="text-muted-foreground">

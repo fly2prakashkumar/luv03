@@ -13,7 +13,7 @@ export default function OrderPage({ params }: { params: { id: string } }) {
     <div className="container mx-auto max-w-2xl px-4 py-8 md:py-16">
       <Card className="overflow-hidden">
         <CardHeader className="bg-muted/50 p-6 text-center">
-            <CheckCircle2 className="mx-auto h-12 w-12 text-primary mb-4" />
+            <CheckCircle2 className="mx-auto h-12 w-12 text-foreground mb-4" />
           <h1 className="text-2xl font-bold font-headline">Order Confirmed!</h1>
           <p className="text-muted-foreground">Thank you for your purchase.</p>
         </CardHeader>
