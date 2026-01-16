@@ -131,7 +131,7 @@ export default function AdminPage() {
                         <CardContent>
                             <div className="text-2xl font-bold">₹24,560</div>
                             <p className="text-xs text-muted-foreground flex items-center">
-                                <ArrowUp className="h-3 w-3 text-green-500 mr-1"/>
+                                <ArrowUp className="h-3 w-3 text-primary mr-1"/>
                                 +12% from last month
                             </p>
                         </CardContent>
