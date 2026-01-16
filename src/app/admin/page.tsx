@@ -104,7 +104,7 @@ export default function AdminPage() {
     <div className="flex-1 space-y-4 p-4 sm:p-6 md:p-8 pt-6 bg-muted/20">
         <div className="flex items-center justify-between space-y-2">
             <div>
-                <h2 className="text-3xl font-bold tracking-tight">Skincare Sales Dashboard</h2>
+                <h2 className="text-3xl font-bold tracking-tight">Luv O3 Dashboard</h2>
                 <p className="text-muted-foreground">Welcome back! Here's a look at your store's performance.</p>
             </div>
             <div className="flex items-center space-x-2">
