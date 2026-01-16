@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ShoppingBag, Instagram, Facebook, MapPin, Phone } from "lucide-react";
+import { Instagram, Facebook, MapPin, Phone } from "lucide-react";
 
 const navLinks = [
     { href: '/', label: 'Home' },
@@ -25,6 +25,13 @@ const WhatsappIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
   );
 
+const Logo = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="hsl(var(--primary))"/>
+        <text x="50%" y="50%" dominantBaseline="middle" textAnchor="middle" fill="hsl(var(--primary-foreground))" fontSize="8px" fontWeight="bold" dy=".05em">O3</text>
+    </svg>
+);
+
 export function AppFooter() {
   return (
     <footer id="footer" className="bg-muted text-muted-foreground scroll-mt-20">
@@ -34,11 +41,11 @@ export function AppFooter() {
           {/* Column 1: Brand */}
           <div className="space-y-4">
               <Link href="/" className="flex items-center space-x-2">
-                <ShoppingBag className="h-8 w-8" />
-                <span className="font-bold text-2xl font-headline">Luv O3</span>
+                <Logo />
+                <span className="font-bold text-2xl font-headline text-foreground">Luv O3</span>
               </Link>
             <p className="text-sm max-w-sm">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum in beatae ea recusandae blanditiis veritatis.
+              Pioneers in ozone-infused skincare. We leverage innovative ozone technology to develop high-quality, natural, and skin-friendly products.
             </p>
              <div className="flex space-x-4 pt-2">
               <Link href="#" className="transition-colors"><Instagram className="h-6 w-6" /></Link>

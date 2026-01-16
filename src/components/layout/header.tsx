@@ -3,7 +3,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Search, Menu, ShoppingBag, User, LogOut, LayoutDashboard, LogIn } from 'lucide-react';
+import { Search, Menu, User, LogOut, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CartIcon } from '@/components/cart/cart-icon';
 import {
@@ -29,6 +29,13 @@ import { useUser, useAuth } from '@/firebase';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { signOut } from 'firebase/auth';
+
+const Logo = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="hsl(var(--primary-foreground))"/>
+        <text x="50%" y="50%" dominantBaseline="middle" textAnchor="middle" fill="hsl(var(--primary))" fontSize="8px" fontWeight="bold" dy=".05em">O3</text>
+    </svg>
+);
 
 
 export function AppHeader() {
@@ -97,7 +104,7 @@ export function AppHeader() {
         <div className="container flex h-16 items-center">
           <div className="mr-4 hidden md:flex">
             <Link href="/" className="mr-6 flex items-center space-x-2">
-              <ShoppingBag className="h-6 w-6" />
+              <Logo />
               <span className="font-bold text-xl font-headline">Luv O3</span>
             </Link>
           </div>
@@ -115,7 +122,7 @@ export function AppHeader() {
                   <SheetHeader className="mb-6">
                       <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                       <Link href="/" className="mr-6 flex items-center space-x-2">
-                      <ShoppingBag className="h-6 w-6" />
+                      <Logo />
                       <span className="font-bold text-xl font-headline">Luv O3</span>
                       </Link>
                   </SheetHeader>
