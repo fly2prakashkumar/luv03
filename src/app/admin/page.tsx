@@ -112,10 +112,10 @@ export default function AdminPage() {
         </div>
         <div className="mb-8">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-3 bg-muted/80">
-                    <TabsTrigger value="overview">Overview</TabsTrigger>
-                    <TabsTrigger value="products">Products</TabsTrigger>
-                    <TabsTrigger value="orders">Orders</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-3 bg-muted/80 rounded-none">
+                    <TabsTrigger value="overview" className="rounded-none">Overview</TabsTrigger>
+                    <TabsTrigger value="products" className="rounded-none">Products</TabsTrigger>
+                    <TabsTrigger value="orders" className="rounded-none">Orders</TabsTrigger>
                 </TabsList>
             </Tabs>
         </div>
@@ -336,8 +336,7 @@ export default function AdminPage() {
     </div>
   );
 }
-
+    
     
 
     
-
