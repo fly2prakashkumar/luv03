@@ -30,13 +30,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { signOut } from 'firebase/auth';
 
-const Logo = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="hsl(var(--primary-foreground))" {...props}>
-        <path d="M12 2a10 10 0 1 0 10 10h-2a8 8 0 1 1-8-8V2Z" />
-    </svg>
-);
-
-
 export function AppHeader() {
     const router = useRouter();
     const pathname = usePathname();
@@ -103,7 +96,7 @@ export function AppHeader() {
         <div className="container flex h-16 items-center">
           <div className="mr-4 hidden md:flex">
             <Link href="/" className="mr-6 flex items-center space-x-2">
-              <Logo />
+              <Image src="https://picsum.photos/seed/logo/32/32" alt="Luv O3 Logo" width={28} height={28} className="rounded-full" data-ai-hint="company logo"/>
               <span className="font-bold text-xl font-headline">Luv O3</span>
             </Link>
           </div>
@@ -121,7 +114,7 @@ export function AppHeader() {
                   <SheetHeader className="mb-6">
                       <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                       <Link href="/" className="mr-6 flex items-center space-x-2">
-                      <Logo />
+                      <Image src="https://picsum.photos/seed/logo/32/32" alt="Luv O3 Logo" width={28} height={28} className="rounded-full" data-ai-hint="company logo"/>
                       <span className="font-bold text-xl font-headline">Luv O3</span>
                       </Link>
                   </SheetHeader>

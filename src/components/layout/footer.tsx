@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Instagram, Facebook, MapPin, Phone } from "lucide-react";
+import Image from "next/image";
 
 const navLinks = [
     { href: '/', label: 'Home' },
@@ -25,12 +26,6 @@ const WhatsappIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
   );
 
-const Logo = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="hsl(var(--primary))" {...props}>
-        <path d="M12 2a10 10 0 1 0 10 10h-2a8 8 0 1 1-8-8V2Z" />
-    </svg>
-);
-
 export function AppFooter() {
   return (
     <footer id="footer" className="bg-muted text-muted-foreground scroll-mt-20">
@@ -40,7 +35,7 @@ export function AppFooter() {
           {/* Column 1: Brand */}
           <div className="space-y-4">
               <Link href="/" className="flex items-center space-x-2">
-                <Logo />
+                <Image src="https://picsum.photos/seed/logo/32/32" alt="Luv O3 Logo" width={32} height={32} className="rounded-full" data-ai-hint="company logo" />
                 <span className="font-bold text-2xl font-headline text-foreground">Luv O3</span>
               </Link>
             <p className="text-sm max-w-sm">
