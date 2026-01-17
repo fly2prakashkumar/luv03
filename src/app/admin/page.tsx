@@ -47,6 +47,7 @@ import { EditProductDialog } from "@/components/admin/edit-product-dialog";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
+import { DeleteProductDialog } from "@/components/admin/delete-product-dialog";
 
 const TABS = ["overview", "products", "orders"];
 
@@ -333,9 +334,7 @@ export default function AdminPage() {
                                             <TableCell>
                                                 <div className="flex gap-2">
                                                     <EditProductDialog product={product} />
-                                                    <Button variant="destructive" size="icon">
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
+                                                    <DeleteProductDialog product={product} />
                                                 </div>
                                             </TableCell>
                                         </TableRow>
@@ -365,4 +364,5 @@ export default function AdminPage() {
     
 
     
+
 
