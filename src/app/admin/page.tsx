@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { DollarSign, ShoppingCart, Users, Package, ArrowUp, Star, MoreHorizontal, Pencil, Trash2, Plus } from 'lucide-react';
+import { DollarSign, ShoppingCart, Users, Package, ArrowUp, Star, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import { useState } from "react";
 import Image from "next/image";
 import {
@@ -42,6 +42,7 @@ import {
 import { getAllProducts } from "@/lib/products";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import type { Product } from "@/lib/types";
+import { AddProductDialog } from "@/components/admin/add-product-dialog";
 
 const TABS = ["overview", "products", "orders"];
 
@@ -256,9 +257,7 @@ export default function AdminPage() {
                         <CardTitle>Product Management</CardTitle>
                         <CardDescription>Add, edit, or remove products from your catalog.</CardDescription>
                     </div>
-                    <Button>
-                        <Plus className="mr-2 h-4 w-4" /> Add Product
-                    </Button>
+                    <AddProductDialog />
                 </CardHeader>
                 <CardContent>
                     <div className="mb-4">

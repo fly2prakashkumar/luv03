@@ -12,8 +12,7 @@
  * - User Isolation: Users can only read or write documents within their own data tree (e.g., `/users/THEIR_OWN_ID/...`).
  * - No User Listing: It is not possible for any client to list all documents in the `/users` collection.
  * - Public Catalog: The `/products` collection is publicly readable to allow anonymous browsing of the e-commerce store.
- * - Restricted Product Writes: Direct writes to the `/products` collection from clients are disabled as a security
- *   precaution, as an admin role or ownership model for products is not defined.
+ * - Admin-Only Product Writes: Only an authenticated admin user (admin@gmail.com) can create, update, or delete products.
  *
  * Denormalization for Authorization: The rules rely on path-based ownership (`/users/{userId}`), which
  * is a highly performant authorization strategy that avoids costly `get()` calls. For documents
@@ -46,6 +45,10 @@ service cloud.firestore {
     // Combines ownership and existence checks for state-changing operations.
     function isExistingOwner(userId) {
       return isOwner(userId) && isExistingDocument();
+    }
+    
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.email == 'admin@gmail.com';
     }
 
     /**
@@ -112,17 +115,15 @@ service cloud.firestore {
      * @description Rules for Product documents, which are part of the public product catalog.
      * @path /products/{productId}
      * @allow (get, list) Any user, including unauthenticated users, can view products.
-     * @deny (create, update, delete) All write operations are denied directly from clients to protect catalog integrity.
-     * @principle Provides public read access for catalog data while preventing unauthorized modification.
+     * @deny (create, update, delete) Write operations are restricted to admin users to protect catalog integrity.
+     * @principle Provides public read access while securing write operations.
      */
     match /products/{productId} {
       allow get: if true;
       allow list: if true;
-      // CRITICAL: Cannot implement owner-only writes. The 'Product' entity is missing an 'ownerId' or 'authorId' field.
-      // Disabling writes until an admin role or ownership model is added to the application.
-      allow create: if false; // TODO: Add admin validation or ownership check once the schema is updated.
-      allow update: if false; // TODO: Add admin validation or ownership check once the schema is updated.
-      allow delete: if false; // TODO: Add admin validation or ownership check once the schema is updated.
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
     }
   }
 }
