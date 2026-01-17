@@ -20,6 +20,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -189,6 +190,9 @@ export function AddProductDialog() {
                   <FormControl>
                     <Input placeholder="e.g., product-13" {...field} />
                   </FormControl>
+                  <FormDescription>
+                    This ID must correspond to an entry in `src/lib/placeholder-images.json`.
+                  </FormDescription>
                    <FormMessage />
                 </FormItem>
               )}
