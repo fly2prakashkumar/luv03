@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import {
@@ -11,7 +12,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DollarSign, ShoppingCart, Users, Package, ArrowUp, Star, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import {
   ResponsiveContainer,
@@ -39,10 +40,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getAllProducts } from "@/lib/products";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import type { Product } from "@/lib/types";
 import { AddProductDialog } from "@/components/admin/add-product-dialog";
+import { EditProductDialog } from "@/components/admin/edit-product-dialog";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection } from "firebase/firestore";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const TABS = ["overview", "products", "orders"];
 
@@ -83,16 +87,28 @@ const reviews = [
     },
 ];
 
-const allProducts = getAllProducts();
-const allCategories = ["All Categories", ...Array.from(new Set(allProducts.map(p => p.category)))];
-
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("overview");
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>(allProducts);
+  
+  const firestore = useFirestore();
+  const productsCollection = useMemoFirebase(() => firestore ? collection(firestore, 'products') : null, [firestore]);
+  const { data: allProducts, isLoading: isLoadingProducts } = useCollection<Omit<Product, 'id'>>(productsCollection);
+
+  const [filteredProducts, setFilteredProducts] = useState<Product[] | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [allCategories, setAllCategories] = useState<string[]>(["All Categories"]);
+
+  useEffect(() => {
+    if (allProducts) {
+      setFilteredProducts(allProducts);
+      const categories = ["All Categories", ...Array.from(new Set(allProducts.map(p => p.category)))];
+      setAllCategories(categories);
+    }
+  }, [allProducts]);
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
+    if (!allProducts) return;
     if (category === "All Categories") {
       setFilteredProducts(allProducts);
     } else {
@@ -283,39 +299,49 @@ export default function AdminPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {filteredProducts.map(product => {
-                                const placeholder = getPlaceholderImage(product.imageId);
-                                return (
-                                    <TableRow key={product.id}>
-                                        <TableCell>
-                                            <div className="relative h-12 w-12 rounded-md overflow-hidden">
-                                                 {placeholder && (
-                                                    <Image 
-                                                        src={placeholder.imageUrl} 
-                                                        alt={product.name} 
-                                                        fill 
-                                                        className="object-cover"
-                                                        data-ai-hint={placeholder.imageHint}
-                                                    />
-                                                )}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="font-medium">{product.name}</TableCell>
-                                        <TableCell>{product.category}</TableCell>
-                                        <TableCell>₹{product.price.toFixed(2)}</TableCell>
-                                        <TableCell>
-                                            <div className="flex gap-2">
-                                                <Button variant="outline" size="icon">
-                                                    <Pencil className="h-4 w-4" />
-                                                </Button>
-                                                <Button variant="destructive" size="icon">
-                                                    <Trash2 className="h-4 w-4" />
-                                                </Button>
-                                            </div>
-                                        </TableCell>
+                            {isLoadingProducts ? (
+                                Array.from({ length: 5 }).map((_, i) => (
+                                    <TableRow key={i}>
+                                        <TableCell><Skeleton className="h-12 w-12 rounded-md" /></TableCell>
+                                        <TableCell><Skeleton className="h-4 w-[250px]" /></TableCell>
+                                        <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+                                        <TableCell><Skeleton className="h-4 w-[80px]" /></TableCell>
+                                        <TableCell><div className="flex gap-2"><Skeleton className="h-10 w-10" /><Skeleton className="h-10 w-10" /></div></TableCell>
                                     </TableRow>
-                                );
-                            })}
+                                ))
+                            ) : (
+                                filteredProducts?.map(product => {
+                                    const placeholder = getPlaceholderImage(product.imageId);
+                                    return (
+                                        <TableRow key={product.id}>
+                                            <TableCell>
+                                                <div className="relative h-12 w-12 rounded-md overflow-hidden">
+                                                    {placeholder && (
+                                                        <Image 
+                                                            src={placeholder.imageUrl} 
+                                                            alt={product.name} 
+                                                            fill 
+                                                            className="object-cover"
+                                                            data-ai-hint={placeholder.imageHint}
+                                                        />
+                                                    )}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="font-medium">{product.name}</TableCell>
+                                            <TableCell>{product.category}</TableCell>
+                                            <TableCell>₹{product.price.toFixed(2)}</TableCell>
+                                            <TableCell>
+                                                <div className="flex gap-2">
+                                                    <EditProductDialog product={product} />
+                                                    <Button variant="destructive" size="icon">
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })
+                            )}
                         </TableBody>
                     </Table>
                 </CardContent>
@@ -339,3 +365,4 @@ export default function AdminPage() {
     
 
     
+
