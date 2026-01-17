@@ -12,7 +12,7 @@
  * - User Isolation: Users can only read or write documents within their own data tree (e.g., `/users/THEIR_OWN_ID/...`).
  * - No User Listing: It is not possible for any client to list all documents in the `/users` collection.
  * - Public Catalog: The `/products` collection is publicly readable to allow anonymous browsing of the e-commerce store.
- * - Admin-Only Product Writes: Only an authenticated admin user (admin@gmail.com) can create, update, or delete products.
+ * - Admin-Only Product Writes: Only an authenticated admin user (with a specific UID) can create, update, or delete products.
  *
  * Denormalization for Authorization: The rules rely on path-based ownership (`/users/{userId}`), which
  * is a highly performant authorization strategy that avoids costly `get()` calls. For documents
@@ -48,7 +48,8 @@ service cloud.firestore {
     }
     
     function isAdmin() {
-      return isSignedIn() && request.auth.token.email == 'admin@gmail.com';
+      // Using UID for admin check is more secure than email.
+      return isSignedIn() && request.auth.uid == 'K9wYgsFQBFYIZUZlmsLNAIIcYqF3';
     }
 
     /**
