@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -77,14 +76,6 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
       });
       return;
     }
-    if (user.email !== 'admin@gmail.com') {
-      toast({
-        variant: 'destructive',
-        title: 'Permission Denied',
-        description: 'You do not have permission to edit products.',
-      });
-      return;
-    }
 
     setIsSubmitting(true);
     const productRef = doc(firestore, 'products', product.id);
@@ -98,7 +89,6 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
         setOpen(false);
       })
       .catch((serverError) => {
-        console.error('Error updating product:', serverError);
         const permissionError = new FirestorePermissionError({
           path: productRef.path,
           operation: 'update',

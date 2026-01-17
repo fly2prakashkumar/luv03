@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -42,14 +41,6 @@ export function DeleteProductDialog({ product }: DeleteProductDialogProps) {
       });
       return;
     }
-    if (user.email !== 'admin@gmail.com') {
-      toast({
-        variant: 'destructive',
-        title: 'Permission Denied',
-        description: 'You do not have permission to delete products.',
-      });
-      return;
-    }
 
     setIsDeleting(true);
     const productRef = doc(firestore, 'products', product.id);
@@ -62,7 +53,6 @@ export function DeleteProductDialog({ product }: DeleteProductDialogProps) {
         });
       })
       .catch((serverError) => {
-        console.error('Error deleting product:', serverError);
         const permissionError = new FirestorePermissionError({
           path: productRef.path,
           operation: 'delete',

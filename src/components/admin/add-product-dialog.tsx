@@ -71,14 +71,6 @@ export function AddProductDialog() {
         });
         return;
     }
-    if (user.email !== 'admin@gmail.com') {
-        toast({
-            variant: 'destructive',
-            title: 'Permission Denied',
-            description: 'You do not have permission to add products.',
-        });
-        return;
-    }
     
     setIsSubmitting(true);
     const productsCollection = collection(firestore, 'products');
@@ -93,7 +85,6 @@ export function AddProductDialog() {
         setOpen(false);
       })
       .catch((serverError) => {
-        console.error('Error adding product:', serverError);
         const permissionError = new FirestorePermissionError({
             path: productsCollection.path,
             operation: 'create',
