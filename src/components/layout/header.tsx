@@ -31,9 +31,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { signOut } from 'firebase/auth';
 
 const Logo = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
-        <circle cx="12" cy="12" r="12" fill="hsl(var(--primary-foreground))"/>
-        <text x="50%" y="50%" dominantBaseline="middle" textAnchor="middle" fill="hsl(var(--primary))" fontSize="8px" fontWeight="bold" dy=".05em">O3</text>
+    <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="hsl(var(--primary-foreground))" {...props}>
+        <path d="M12 2a10 10 0 1 0 10 10h-2a8 8 0 1 1-8-8V2Z" />
     </svg>
 );
 

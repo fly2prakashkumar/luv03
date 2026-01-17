@@ -26,9 +26,8 @@ const WhatsappIcon = (props: React.SVGProps<SVGSVGElement>) => (
   );
 
 const Logo = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
-        <circle cx="12" cy="12" r="12" fill="hsl(var(--primary))"/>
-        <text x="50%" y="50%" dominantBaseline="middle" textAnchor="middle" fill="hsl(var(--primary-foreground))" fontSize="8px" fontWeight="bold" dy=".05em">O3</text>
+    <svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="hsl(var(--primary))" {...props}>
+        <path d="M12 2a10 10 0 1 0 10 10h-2a8 8 0 1 1-8-8V2Z" />
     </svg>
 );
 
@@ -45,7 +44,7 @@ export function AppFooter() {
                 <span className="font-bold text-2xl font-headline text-foreground">Luv O3</span>
               </Link>
             <p className="text-sm max-w-sm">
-              Pioneers in ozone-infused skincare. We leverage innovative ozone technology to develop high-quality, natural, and skin-friendly products.
+              Pioneers in ozone-infused skincare, inspired by the motto "Luv skin, Breathe skin". We leverage innovative ozone technology to develop high-quality, natural, and skin-friendly products.
             </p>
              <div className="flex space-x-4 pt-2">
               <Link href="#" className="transition-colors"><Instagram className="h-6 w-6" /></Link>
