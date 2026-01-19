@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -47,6 +46,7 @@ import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DeleteProductDialog } from "@/components/admin/delete-product-dialog";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const salesData = [
   { name: 'Jan', revenue: 4000, orders: 2400 },
@@ -93,6 +93,8 @@ export default function AdminPage() {
   const [filteredProducts, setFilteredProducts] = useState<Product[] | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [allCategories, setAllCategories] = useState<string[]>(["All Categories"]);
+  const [activeTab, setActiveTab] = useState("overview");
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (allProducts) {
@@ -123,13 +125,28 @@ export default function AdminPage() {
             <div className="flex items-center space-x-2">
             </div>
         </div>
-        <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 bg-muted/80">
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="products">Products</TabsTrigger>
-                <TabsTrigger value="orders">Orders</TabsTrigger>
-            </TabsList>
-            <TabsContent value="overview" className="mt-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            {isMobile ? (
+                <div className="mb-4">
+                    <Select value={activeTab} onValueChange={setActiveTab}>
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select a view" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="overview">Overview</SelectItem>
+                            <SelectItem value="products">Products</SelectItem>
+                            <SelectItem value="orders">Orders</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+            ) : (
+                <TabsList className="grid w-full grid-cols-3 bg-muted/80 mb-4">
+                    <TabsTrigger value="overview">Overview</TabsTrigger>
+                    <TabsTrigger value="products">Products</TabsTrigger>
+                    <TabsTrigger value="orders">Orders</TabsTrigger>
+                </TabsList>
+            )}
+            <TabsContent value="overview">
                 <div className="space-y-4">
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                         <Card>
@@ -258,7 +275,7 @@ export default function AdminPage() {
                     </div>
                 </div>
             </TabsContent>
-            <TabsContent value="products" className="mt-4">
+            <TabsContent value="products">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
                         <div>
@@ -283,7 +300,7 @@ export default function AdminPage() {
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Image</TableHead>
+                                    <TableHead className="hidden sm:table-cell">Image</TableHead>
                                     <TableHead>Name</TableHead>
                                     <TableHead className="hidden md:table-cell">Category</TableHead>
                                     <TableHead>Price</TableHead>
@@ -294,7 +311,7 @@ export default function AdminPage() {
                                 {isLoadingProducts ? (
                                     Array.from({ length: 5 }).map((_, i) => (
                                         <TableRow key={i}>
-                                            <TableCell><Skeleton className="h-12 w-12 rounded-md" /></TableCell>
+                                            <TableCell className="hidden sm:table-cell"><Skeleton className="h-12 w-12 rounded-md" /></TableCell>
                                             <TableCell><Skeleton className="h-4 w-[150px] md:w-[250px]" /></TableCell>
                                             <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-[100px]" /></TableCell>
                                             <TableCell><Skeleton className="h-4 w-[80px]" /></TableCell>
@@ -306,7 +323,7 @@ export default function AdminPage() {
                                         const placeholder = getPlaceholderImage(product.imageId);
                                         return (
                                             <TableRow key={product.id}>
-                                                <TableCell>
+                                                <TableCell className="hidden sm:table-cell">
                                                     <div className="relative h-12 w-12 rounded-md overflow-hidden">
                                                         {placeholder && (
                                                             <Image 
@@ -337,7 +354,7 @@ export default function AdminPage() {
                     </CardContent>
                 </Card>
             </TabsContent>
-            <TabsContent value="orders" className="mt-4">
+            <TabsContent value="orders">
                 <Card>
                     <CardHeader>
                         <CardTitle>Manage Orders</CardTitle>
@@ -352,5 +369,3 @@ export default function AdminPage() {
     </div>
   );
 }
-    
-    
