@@ -112,12 +112,12 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-1">
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="space-y-1">
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input placeholder="e.g., Radiant Glow Serum" {...field} />
@@ -130,7 +130,7 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
               control={form.control}
               name="description"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="space-y-1">
                   <FormLabel>Description</FormLabel>
                   <FormControl>
                     <Textarea placeholder="e.g., A potent Vitamin C serum..." {...field} />
@@ -143,7 +143,7 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
               control={form.control}
               name="price"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="space-y-1">
                   <FormLabel>Price</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="e.g., 1250.00" step="0.01" {...field} />
@@ -156,7 +156,7 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
               control={form.control}
               name="category"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="space-y-1">
                   <FormLabel>Category</FormLabel>
                   <FormControl>
                     <Input placeholder="e.g., Skin care" {...field} />
@@ -169,7 +169,7 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
               control={form.control}
               name="imageId"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="space-y-1">
                   <FormLabel>Image ID</FormLabel>
                   <FormControl>
                     <Input placeholder="e.g., product-13" {...field} />
@@ -181,7 +181,7 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
                 </FormItem>
               )}
             />
-            <DialogFooter>
+            <DialogFooter className="pt-2">
               <DialogClose asChild><Button variant="outline">Cancel</Button></DialogClose>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? 'Saving...' : 'Save Changes'}
