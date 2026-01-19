@@ -64,12 +64,7 @@ export function AddProductDialog() {
 
   const onSubmit = (values: ProductFormValues) => {
     if (!firestore || !user) {
-        toast({
-            variant: 'destructive',
-            title: 'Error',
-            description: 'You must be logged in to add a product.',
-        });
-        return;
+      return;
     }
     
     setIsSubmitting(true);
@@ -92,12 +87,6 @@ export function AddProductDialog() {
         });
 
         errorEmitter.emit('permission-error', permissionError);
-
-        toast({
-            variant: 'destructive',
-            title: 'Error adding product',
-            description: serverError.message || 'You may not have the required permissions.',
-        });
       })
       .finally(() => {
         setIsSubmitting(false);
@@ -119,7 +108,7 @@ export function AddProductDialog() {
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
             <FormField
               control={form.control}
               name="name"
