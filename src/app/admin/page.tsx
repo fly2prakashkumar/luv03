@@ -130,10 +130,10 @@ export default function AdminPage() {
         </div>
         <div className="mb-8">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-3 bg-muted/80 rounded-none">
-                    <TabsTrigger value="overview" className="rounded-none">Overview</TabsTrigger>
-                    <TabsTrigger value="products" className="rounded-none">Products</TabsTrigger>
-                    <TabsTrigger value="orders" className="rounded-none">Orders</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 bg-muted/80">
+                    <TabsTrigger value="overview">Overview</TabsTrigger>
+                    <TabsTrigger value="products">Products</TabsTrigger>
+                    <TabsTrigger value="orders">Orders</TabsTrigger>
                 </TabsList>
             </Tabs>
         </div>
@@ -294,7 +294,7 @@ export default function AdminPage() {
                             <TableRow>
                                 <TableHead>Image</TableHead>
                                 <TableHead>Name</TableHead>
-                                <TableHead>Category</TableHead>
+                                <TableHead className="hidden md:table-cell">Category</TableHead>
                                 <TableHead>Price</TableHead>
                                 <TableHead>Actions</TableHead>
                             </TableRow>
@@ -304,8 +304,8 @@ export default function AdminPage() {
                                 Array.from({ length: 5 }).map((_, i) => (
                                     <TableRow key={i}>
                                         <TableCell><Skeleton className="h-12 w-12 rounded-md" /></TableCell>
-                                        <TableCell><Skeleton className="h-4 w-[250px]" /></TableCell>
-                                        <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+                                        <TableCell><Skeleton className="h-4 w-[150px] md:w-[250px]" /></TableCell>
+                                        <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-[100px]" /></TableCell>
                                         <TableCell><Skeleton className="h-4 w-[80px]" /></TableCell>
                                         <TableCell><div className="flex gap-2"><Skeleton className="h-10 w-10" /><Skeleton className="h-10 w-10" /></div></TableCell>
                                     </TableRow>
@@ -329,7 +329,7 @@ export default function AdminPage() {
                                                 </div>
                                             </TableCell>
                                             <TableCell className="font-medium">{product.name}</TableCell>
-                                            <TableCell>{product.category}</TableCell>
+                                            <TableCell className="hidden md:table-cell">{product.category}</TableCell>
                                             <TableCell>₹{product.price.toFixed(2)}</TableCell>
                                             <TableCell>
                                                 <div className="flex gap-2">
@@ -366,3 +366,6 @@ export default function AdminPage() {
     
 
 
+
+
+    
