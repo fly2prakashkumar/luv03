@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import {
@@ -49,8 +48,6 @@ import { collection } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DeleteProductDialog } from "@/components/admin/delete-product-dialog";
 
-const TABS = ["overview", "products", "orders"];
-
 const salesData = [
   { name: 'Jan', revenue: 4000, orders: 2400 },
   { name: 'Feb', revenue: 3000, orders: 1398 },
@@ -89,8 +86,6 @@ const reviews = [
 ];
 
 export default function AdminPage() {
-  const [activeTab, setActiveTab] = useState("overview");
-  
   const firestore = useFirestore();
   const productsCollection = useMemoFirebase(() => firestore ? collection(firestore, 'products') : null, [firestore]);
   const { data: allProducts, isLoading: isLoadingProducts } = useCollection<Omit<Product, 'id'>>(productsCollection);
@@ -128,244 +123,234 @@ export default function AdminPage() {
             <div className="flex items-center space-x-2">
             </div>
         </div>
-        <div className="mb-8">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 bg-muted/80">
-                    <TabsTrigger value="overview">Overview</TabsTrigger>
-                    <TabsTrigger value="products">Products</TabsTrigger>
-                    <TabsTrigger value="orders">Orders</TabsTrigger>
-                </TabsList>
-            </Tabs>
-        </div>
-
-        {activeTab === 'overview' && (
-            <div className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
-                            <DollarSign className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">₹24,560</div>
-                            <p className="text-xs text-muted-foreground flex items-center">
-                                <ArrowUp className="h-3 w-3 text-foreground mr-1"/>
-                                +12% from last month
-                            </p>
-                        </CardContent>
-                    </Card>
-                     <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Total Sales</CardTitle>
-                            <ShoppingCart className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">+1,245</div>
-                             <p className="text-xs text-muted-foreground">+18.2% from last month</p>
-                        </CardContent>
-                    </Card>
-                     <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">New Customers</CardTitle>
-                            <Users className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">+320</div>
-                             <p className="text-xs text-muted-foreground">+25% from last month</p>
-                        </CardContent>
-                    </Card>
-                     <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Inventory Stock</CardTitle>
-                            <Package className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">8,450</div>
-                             <p className="text-xs text-muted-foreground">Units available</p>
-                        </CardContent>
-                    </Card>
-                </div>
-                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                    <Card className="lg:col-span-4">
-                        <CardHeader>
-                            <CardTitle>Sales Overview</CardTitle>
-                             <CardDescription>Revenue vs. Orders over the last 30 days.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="pl-2">
-                            <ResponsiveContainer width="100%" height={350}>
-                                <LineChart data={salesData}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" />
-                                    <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `₹${value/1000}k`} />
-                                    <Tooltip
-                                        contentStyle={{
-                                            backgroundColor: "hsl(var(--background))",
-                                            borderColor: "hsl(var(--border))",
-                                            borderRadius: "var(--radius)",
-                                        }}
-                                    />
-                                    <Legend wrapperStyle={{fontSize: "12px"}}/>
-                                    <Line type="monotone" dataKey="revenue" stroke="hsl(var(--foreground))" strokeWidth={2} activeDot={{ r: 8 }} />
-                                    <Line type="monotone" dataKey="orders" stroke="hsl(var(--accent))" strokeWidth={2} />
-                                </LineChart>
-                            </ResponsiveContainer>
-                        </CardContent>
-                    </Card>
-                    <Card className="lg:col-span-3">
-                         <CardHeader>
-                            <CardTitle>Best Sellers</CardTitle>
-                            <CardDescription>Your top-performing products this month.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-4">
-                                {bestSellers.map(product => (
-                                     <div key={product.name} className="flex items-center">
-                                        <Avatar className="h-9 w-9">
-                                            <AvatarImage src={`https://picsum.photos/seed/${product.imageId}/100/100`} alt={product.name}/>
-                                            <AvatarFallback>{product.name.charAt(0)}</AvatarFallback>
-                                        </Avatar>
-                                        <div className="ml-4 space-y-1">
-                                            <p className="text-sm font-medium leading-none">{product.name}</p>
-                                        </div>
-                                        <div className="ml-auto font-medium">{product.sales} sales</div>
-                                    </div>
-                                ))}
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Recent Customer Reviews</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-6">
-                            {reviews.map((review, index) => (
-                                <div key={index} className="flex items-start space-x-4">
-                                    <Avatar>
-                                        <AvatarImage src={`https://picsum.photos/seed/${review.avatarId}/100/100`} />
-                                        <AvatarFallback>{review.name.charAt(0)}</AvatarFallback>
-                                    </Avatar>
-                                    <div className="flex-1">
-                                        <div className="flex items-center justify-between">
-                                            <p className="font-semibold">{review.name}</p>
-                                            <div className="flex items-center">
-                                                {Array(5).fill(0).map((_, i) => (
-                                                    <Star key={i} className={`h-4 w-4 ${i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground'}`}/>
-                                                ))}
+        <Tabs defaultValue="overview" className="w-full">
+            <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 bg-muted/80">
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="products">Products</TabsTrigger>
+                <TabsTrigger value="orders">Orders</TabsTrigger>
+            </TabsList>
+            <TabsContent value="overview" className="mt-4">
+                <div className="space-y-4">
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
+                                <DollarSign className="h-4 w-4 text-muted-foreground" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">₹24,560</div>
+                                <p className="text-xs text-muted-foreground flex items-center">
+                                    <ArrowUp className="h-3 w-3 text-foreground mr-1"/>
+                                    +12% from last month
+                                </p>
+                            </CardContent>
+                        </Card>
+                         <Card>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">Total Sales</CardTitle>
+                                <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">+1,245</div>
+                                 <p className="text-xs text-muted-foreground">+18.2% from last month</p>
+                            </CardContent>
+                        </Card>
+                         <Card>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">New Customers</CardTitle>
+                                <Users className="h-4 w-4 text-muted-foreground" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">+320</div>
+                                 <p className="text-xs text-muted-foreground">+25% from last month</p>
+                            </CardContent>
+                        </Card>
+                         <Card>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">Inventory Stock</CardTitle>
+                                <Package className="h-4 w-4 text-muted-foreground" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">8,450</div>
+                                 <p className="text-xs text-muted-foreground">Units available</p>
+                            </CardContent>
+                        </Card>
+                    </div>
+                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+                        <Card className="lg:col-span-4">
+                            <CardHeader>
+                                <CardTitle>Sales Overview</CardTitle>
+                                 <CardDescription>Revenue vs. Orders over the last 30 days.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="pl-2">
+                                <ResponsiveContainer width="100%" height={350}>
+                                    <LineChart data={salesData}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" />
+                                        <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                                        <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `₹${value/1000}k`} />
+                                        <Tooltip
+                                            contentStyle={{
+                                                backgroundColor: "hsl(var(--background))",
+                                                borderColor: "hsl(var(--border))",
+                                                borderRadius: "var(--radius)",
+                                            }}
+                                        />
+                                        <Legend wrapperStyle={{fontSize: "12px"}}/>
+                                        <Line type="monotone" dataKey="revenue" stroke="hsl(var(--foreground))" strokeWidth={2} activeDot={{ r: 8 }} />
+                                        <Line type="monotone" dataKey="orders" stroke="hsl(var(--accent))" strokeWidth={2} />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            </CardContent>
+                        </Card>
+                        <Card className="lg:col-span-3">
+                             <CardHeader>
+                                <CardTitle>Best Sellers</CardTitle>
+                                <CardDescription>Your top-performing products this month.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="space-y-4">
+                                    {bestSellers.map(product => (
+                                         <div key={product.name} className="flex items-center">
+                                            <Avatar className="h-9 w-9">
+                                                <AvatarImage src={`https://picsum.photos/seed/${product.imageId}/100/100`} alt={product.name}/>
+                                                <AvatarFallback>{product.name.charAt(0)}</AvatarFallback>
+                                            </Avatar>
+                                            <div className="ml-4 space-y-1">
+                                                <p className="text-sm font-medium leading-none">{product.name}</p>
                                             </div>
+                                            <div className="ml-auto font-medium">{product.sales} sales</div>
                                         </div>
-                                        <p className="text-sm text-muted-foreground mt-1">{review.review}</p>
-                                    </div>
-                                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                                        <MoreHorizontal className="h-4 w-4"/>
-                                    </Button>
+                                    ))}
                                 </div>
-                            ))}
-                        </CardContent>
-                    </Card>
-                </div>
-            </div>
-        )}
-         {activeTab === 'products' && (
-            <Card className="mt-4">
-                <CardHeader className="flex flex-row items-center justify-between">
-                    <div>
-                        <CardTitle>Product Management</CardTitle>
-                        <CardDescription>Add, edit, or remove products from your catalog.</CardDescription>
+                            </CardContent>
+                        </Card>
                     </div>
-                    <AddProductDialog />
-                </CardHeader>
-                <CardContent>
-                    <div className="mb-4">
-                         <Select value={selectedCategory} onValueChange={handleCategoryChange}>
-                            <SelectTrigger className="w-full md:w-64">
-                                <SelectValue placeholder="All Categories" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {allCategories.map(category => (
-                                    <SelectItem key={category} value={category}>{category}</SelectItem>
+                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Recent Customer Reviews</CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-6">
+                                {reviews.map((review, index) => (
+                                    <div key={index} className="flex items-start space-x-4">
+                                        <Avatar>
+                                            <AvatarImage src={`https://picsum.photos/seed/${review.avatarId}/100/100`} />
+                                            <AvatarFallback>{review.name.charAt(0)}</AvatarFallback>
+                                        </Avatar>
+                                        <div className="flex-1">
+                                            <div className="flex items-center justify-between">
+                                                <p className="font-semibold">{review.name}</p>
+                                                <div className="flex items-center">
+                                                    {Array(5).fill(0).map((_, i) => (
+                                                        <Star key={i} className={`h-4 w-4 ${i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground'}`}/>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                            <p className="text-sm text-muted-foreground mt-1">{review.review}</p>
+                                        </div>
+                                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                                            <MoreHorizontal className="h-4 w-4"/>
+                                        </Button>
+                                    </div>
                                 ))}
-                            </SelectContent>
-                        </Select>
+                            </CardContent>
+                        </Card>
                     </div>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Image</TableHead>
-                                <TableHead>Name</TableHead>
-                                <TableHead className="hidden md:table-cell">Category</TableHead>
-                                <TableHead>Price</TableHead>
-                                <TableHead>Actions</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {isLoadingProducts ? (
-                                Array.from({ length: 5 }).map((_, i) => (
-                                    <TableRow key={i}>
-                                        <TableCell><Skeleton className="h-12 w-12 rounded-md" /></TableCell>
-                                        <TableCell><Skeleton className="h-4 w-[150px] md:w-[250px]" /></TableCell>
-                                        <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-[100px]" /></TableCell>
-                                        <TableCell><Skeleton className="h-4 w-[80px]" /></TableCell>
-                                        <TableCell><div className="flex gap-2"><Skeleton className="h-10 w-10" /><Skeleton className="h-10 w-10" /></div></TableCell>
-                                    </TableRow>
-                                ))
-                            ) : (
-                                filteredProducts?.map(product => {
-                                    const placeholder = getPlaceholderImage(product.imageId);
-                                    return (
-                                        <TableRow key={product.id}>
-                                            <TableCell>
-                                                <div className="relative h-12 w-12 rounded-md overflow-hidden">
-                                                    {placeholder && (
-                                                        <Image 
-                                                            src={placeholder.imageUrl} 
-                                                            alt={product.name} 
-                                                            fill 
-                                                            className="object-cover"
-                                                            data-ai-hint={placeholder.imageHint}
-                                                        />
-                                                    )}
-                                                </div>
-                                            </TableCell>
-                                            <TableCell className="font-medium">{product.name}</TableCell>
-                                            <TableCell className="hidden md:table-cell">{product.category}</TableCell>
-                                            <TableCell>₹{product.price.toFixed(2)}</TableCell>
-                                            <TableCell>
-                                                <div className="flex gap-2">
-                                                    <EditProductDialog product={product} />
-                                                    <DeleteProductDialog product={product} />
-                                                </div>
-                                            </TableCell>
+                </div>
+            </TabsContent>
+            <TabsContent value="products" className="mt-4">
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                        <div>
+                            <CardTitle>Product Management</CardTitle>
+                            <CardDescription>Add, edit, or remove products from your catalog.</CardDescription>
+                        </div>
+                        <AddProductDialog />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="mb-4">
+                             <Select value={selectedCategory} onValueChange={handleCategoryChange}>
+                                <SelectTrigger className="w-full md:w-64">
+                                    <SelectValue placeholder="All Categories" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {allCategories.map(category => (
+                                        <SelectItem key={category} value={category}>{category}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Image</TableHead>
+                                    <TableHead>Name</TableHead>
+                                    <TableHead className="hidden md:table-cell">Category</TableHead>
+                                    <TableHead>Price</TableHead>
+                                    <TableHead>Actions</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {isLoadingProducts ? (
+                                    Array.from({ length: 5 }).map((_, i) => (
+                                        <TableRow key={i}>
+                                            <TableCell><Skeleton className="h-12 w-12 rounded-md" /></TableCell>
+                                            <TableCell><Skeleton className="h-4 w-[150px] md:w-[250px]" /></TableCell>
+                                            <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-[100px]" /></TableCell>
+                                            <TableCell><Skeleton className="h-4 w-[80px]" /></TableCell>
+                                            <TableCell><div className="flex gap-2"><Skeleton className="h-10 w-10" /><Skeleton className="h-10 w-10" /></div></TableCell>
                                         </TableRow>
-                                    );
-                                })
-                            )}
-                        </TableBody>
-                    </Table>
-                </CardContent>
-            </Card>
-        )}
-        {activeTab === 'orders' && (
-            <Card className="mt-4">
-                <CardHeader>
-                    <CardTitle>Manage Orders</CardTitle>
-                    <CardDescription>View and process customer orders.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-muted-foreground">Order management interface coming soon.</p>
-                </CardContent>
-            </Card>
-        )}
+                                    ))
+                                ) : (
+                                    filteredProducts?.map(product => {
+                                        const placeholder = getPlaceholderImage(product.imageId);
+                                        return (
+                                            <TableRow key={product.id}>
+                                                <TableCell>
+                                                    <div className="relative h-12 w-12 rounded-md overflow-hidden">
+                                                        {placeholder && (
+                                                            <Image 
+                                                                src={placeholder.imageUrl} 
+                                                                alt={product.name} 
+                                                                fill 
+                                                                className="object-cover"
+                                                                data-ai-hint={placeholder.imageHint}
+                                                            />
+                                                        )}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="font-medium">{product.name}</TableCell>
+                                                <TableCell className="hidden md:table-cell">{product.category}</TableCell>
+                                                <TableCell>₹{product.price.toFixed(2)}</TableCell>
+                                                <TableCell>
+                                                    <div className="flex gap-2">
+                                                        <EditProductDialog product={product} />
+                                                        <DeleteProductDialog product={product} />
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })
+                                )}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
+            </TabsContent>
+            <TabsContent value="orders" className="mt-4">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Manage Orders</CardTitle>
+                        <CardDescription>View and process customer orders.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-muted-foreground">Order management interface coming soon.</p>
+                    </CardContent>
+                </Card>
+            </TabsContent>
+        </Tabs>
     </div>
   );
 }
     
-    
-
-    
-
-
-
-
     
