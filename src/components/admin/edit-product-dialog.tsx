@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -58,12 +59,24 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productFormSchema),
-    defaultValues: product,
+    defaultValues: {
+      name: '',
+      description: '',
+      price: 0,
+      category: '',
+      imageUrl: '',
+    },
   });
 
   useEffect(() => {
-    if (product) {
-      form.reset(product);
+    if (open) {
+      form.reset({
+        name: product.name || '',
+        description: product.description || '',
+        price: product.price || 0,
+        category: product.category || '',
+        imageUrl: product.imageUrl || '',
+      });
     }
   }, [product, form, open]);
 
@@ -195,5 +208,3 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
     </Dialog>
   );
 }
-
-    
