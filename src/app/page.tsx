@@ -16,6 +16,7 @@ import {
     CarouselPrevious,
 } from "@/components/ui/carousel";
 import React from "react";
+import Autoplay from "embla-carousel-autoplay";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
 import { collection, query, limit } from "firebase/firestore";
@@ -116,6 +117,10 @@ export default function Home() {
     [firestore]
   );
   const { data: featuredProducts, isLoading } = useCollection<Product>(featuredProductsQuery);
+  
+  const plugin = React.useRef(
+    Autoplay({ delay: 4000, stopOnInteraction: true })
+  );
 
 
   return (
@@ -123,7 +128,10 @@ export default function Home() {
        <section className="relative w-full h-[60vh] md:h-[70vh] text-white">
         <Carousel
           opts={{ loop: true }}
+          plugins={[plugin.current]}
           className="w-full h-full"
+          onMouseEnter={plugin.current.stop}
+          onMouseLeave={plugin.current.reset}
         >
           <CarouselContent>
             {heroSlides.map((slide) => {
@@ -277,5 +285,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
