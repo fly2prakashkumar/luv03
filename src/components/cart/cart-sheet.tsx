@@ -37,9 +37,9 @@ export function CartSheet() {
         <Separator />
       </SheetHeader>
       {state.cartItems.length > 0 ? (
-        <>
-          <ScrollArea className="flex-1">
-            <div className="flex flex-col gap-6 pr-6">
+        <div className="flex-1 flex flex-col justify-between">
+          <ScrollArea className="pr-6">
+            <div className="flex flex-col gap-6">
               {state.cartItems.map((item) => {
                 return (
                   <div key={item.product.id} className="flex items-start gap-4">
@@ -68,8 +68,7 @@ export function CartSheet() {
               })}
             </div>
           </ScrollArea>
-          <SheetFooter className="mt-auto flex-col space-y-4 pr-6">
-            <Separator />
+          <SheetFooter className="flex-col space-y-4 pr-6 border-t pt-4 mt-4">
             <div className="flex justify-between font-semibold">
               <span>Subtotal</span>
               <span>₹{subtotal.toFixed(2)}</span>
@@ -83,7 +82,7 @@ export function CartSheet() {
               </Button>
             </SheetClose>
           </SheetFooter>
-        </>
+        </div>
       ) : (
         <div className="flex h-full flex-col items-center justify-center space-y-4">
           <ShoppingCart className="h-16 w-16 text-muted-foreground" />
@@ -98,5 +97,3 @@ export function CartSheet() {
     </SheetContent>
   );
 }
-
-    
