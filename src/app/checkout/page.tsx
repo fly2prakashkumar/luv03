@@ -21,6 +21,10 @@ import { useToast } from "@/hooks/use-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useEffect } from "react";
+import { useUser, useFirestore, useCollection, useMemoFirebase } from "@/firebase";
+import { collection } from "firebase/firestore";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -34,6 +38,15 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+interface Address {
+    id: string;
+    firstName: string;
+    lastName: string;
+    address: string;
+    city: string;
+    postalCode: string;
+    country: string;
+}
 
 const UpiIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 256 256" {...props}>
@@ -48,6 +61,14 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { state, dispatch } = useCart();
   const { toast } = useToast();
+  const { user } = useUser();
+  const firestore = useFirestore();
+
+  const addressesCollection = useMemoFirebase(
+    () => (firestore && user ? collection(firestore, 'users', user.uid, 'addresses') : null),
+    [firestore, user]
+  );
+  const { data: addresses } = useCollection<Address>(addressesCollection);
   
   const subtotal = state.cartItems.reduce(
     (acc, item) => acc + item.product.price * item.quantity,
@@ -69,6 +90,19 @@ export default function CheckoutPage() {
     }
   });
 
+  useEffect(() => {
+    if (user) {
+        if(user.email) form.setValue('email', user.email);
+        if (user.displayName) {
+            const nameParts = user.displayName.split(' ');
+            const firstName = nameParts[0];
+            const lastName = nameParts.slice(1).join(' ');
+            if(!form.getValues('firstName')) form.setValue('firstName', firstName);
+            if(!form.getValues('lastName')) form.setValue('lastName', lastName);
+        }
+    }
+  }, [user, form]);
+
   function onSubmit(values: FormValues) {
     console.log("Order submitted:", values);
     toast({
@@ -88,6 +122,18 @@ export default function CheckoutPage() {
       router.push('/products');
     }
   }, [state.cartItems.length, router]);
+
+  const handleAddressSelect = (addressId: string) => {
+    const selectedAddress = addresses?.find(a => a.id === addressId);
+    if (selectedAddress) {
+      form.setValue('firstName', selectedAddress.firstName);
+      form.setValue('lastName', selectedAddress.lastName);
+      form.setValue('address', selectedAddress.address);
+      form.setValue('city', selectedAddress.city);
+      form.setValue('postalCode', selectedAddress.postalCode);
+      form.setValue('country', selectedAddress.country);
+    }
+  };
 
   // If the cart is empty, we can return null to prevent rendering the checkout form
   // while the redirection is in progress.
@@ -141,6 +187,33 @@ export default function CheckoutPage() {
                  <Card>
                     <CardHeader><CardTitle className="text-lg md:text-xl font-headline">Shipping Address</CardTitle></CardHeader>
                     <CardContent className="space-y-4">
+                        {user && addresses && addresses.length > 0 && (
+                            <div className="space-y-2">
+                                <Label>Use a saved address</Label>
+                                <Select onValueChange={handleAddressSelect}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select a saved address" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {addresses.map((addr) => (
+                                            <SelectItem key={addr.id} value={addr.id}>
+                                                {`${addr.firstName} ${addr.lastName}, ${addr.address}, ${addr.city}`}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                 <div className="relative my-4">
+                                    <div className="absolute inset-0 flex items-center">
+                                        <span className="w-full border-t" />
+                                    </div>
+                                    <div className="relative flex justify-center text-xs uppercase">
+                                        <span className="bg-card px-2 text-muted-foreground">
+                                        Or enter a new one
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                         <div className="flex flex-col md:flex-row gap-4"><FormField control={form.control} name="firstName" render={({ field }) => (
                             <FormItem className="flex-1"><FormLabel>First Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                         )}/><FormField control={form.control} name="lastName" render={({ field }) => (
