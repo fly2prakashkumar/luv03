@@ -110,7 +110,7 @@ export default function ProductDetailPage() {
 
   const activeSize = sizes.find((s) => s.id === selectedSize) || sizes[1];
 
-  if (isLoading) {
+  if (isLoading || !id) {
     return <ProductDetailSkeleton />;
   }
 

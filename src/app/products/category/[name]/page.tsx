@@ -35,7 +35,6 @@ export default function CategoryPage() {
 
     const filteredProducts = allProducts.filter(p => {
       if (!p.category) return false;
-      // Normalize both the product category and the page title for comparison
       const normalizedProductCategory = p.category.toLowerCase().trim();
       const normalizedPageTitle = pageTitle.toLowerCase().trim();
       return normalizedProductCategory === normalizedPageTitle;
@@ -44,12 +43,10 @@ export default function CategoryPage() {
     return { categoryName: pageTitle, products: filteredProducts };
   }, [name, allProducts]);
 
-  if (!isLoading && products.length === 0) {
-    // We only call notFound if we are not loading and we have attempted to fetch allProducts.
-    // If allProducts is null, it might still be loading or initializing.
-    if (allProducts) {
-      notFound();
-    }
+  const showLoading = isLoading || !name;
+
+  if (!showLoading && products.length === 0) {
+    notFound();
   }
 
   return (
@@ -70,7 +67,7 @@ export default function CategoryPage() {
           </p>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
-          {isLoading
+          {showLoading
             ? Array.from({ length: 4 }).map((_, i) => (
                 <Card key={i}>
                   <CardHeader className="p-0">
