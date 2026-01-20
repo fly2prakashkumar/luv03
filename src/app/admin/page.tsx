@@ -94,6 +94,11 @@ export default function AdminPage() {
   const [allCategories, setAllCategories] = useState<string[]>(["All Categories"]);
   const [activeTab, setActiveTab] = useState("overview");
   const isMobile = useIsMobile();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     if (allProducts) {
@@ -124,7 +129,7 @@ export default function AdminPage() {
             </div>
         </div>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            {isMobile ? (
+            {isMounted && isMobile ? (
                 <div className="mb-4">
                     <Select value={activeTab} onValueChange={setActiveTab}>
                         <SelectTrigger className="w-full">
