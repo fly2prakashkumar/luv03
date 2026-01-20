@@ -1,20 +1,40 @@
 
 "use client";
 
-import { getProductsByCategory } from "@/lib/products";
 import { ProductCard } from "@/components/products/product-card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useRouter, useParams, notFound } from "next/navigation";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection } from "firebase/firestore";
+import type { Product } from "@/lib/types";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useMemo } from "react";
 
 export default function CategoryPage() {
   const router = useRouter();
   const params = useParams();
   const name = Array.isArray(params.name) ? params.name[0] : params.name;
-  const categoryName = decodeURIComponent(name || '').replace(/-/g, ' ');
-  const products = getProductsByCategory(categoryName);
+  
+  const firestore = useFirestore();
+  const productsCollection = useMemoFirebase(
+    () => (firestore ? collection(firestore, 'products') : null),
+    [firestore]
+  );
+  const { data: allProducts, isLoading } = useCollection<Product>(productsCollection);
 
-  if (!name || products.length === 0) {
+  const { categoryName, products } = useMemo(() => {
+    if (!name) return { categoryName: '', products: [] };
+    const decodedName = decodeURIComponent(name).replace(/-/g, ' ');
+    const filteredProducts = allProducts?.filter(p => 
+      p.category.toLowerCase().replace(/&/g, 'and') === decodedName.toLowerCase().replace(/&/g, 'and')
+    ) || [];
+
+    return { categoryName: decodedName, products: filteredProducts };
+  }, [name, allProducts]);
+
+  if (!isLoading && products.length === 0) {
     notFound();
   }
 
@@ -36,11 +56,28 @@ export default function CategoryPage() {
           </p>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          {isLoading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <Card key={i}>
+                  <CardHeader className="p-0">
+                    <Skeleton className="aspect-square w-full" />
+                  </CardHeader>
+                  <CardContent className="p-4 space-y-2">
+                    <Skeleton className="h-5 w-4/5" />
+                    <Skeleton className="h-5 w-1/2" />
+                  </CardContent>
+                  <CardFooter className="p-4 pt-0">
+                    <Skeleton className="h-10 w-full" />
+                  </CardFooter>
+                </Card>
+              ))
+            : products.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
         </div>
       </div>
     </div>
   );
 }
+
+    

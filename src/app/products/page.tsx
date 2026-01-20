@@ -1,14 +1,24 @@
+
 "use client";
 
-import { getAllProducts } from "@/lib/products";
 import { ProductCard } from "@/components/products/product-card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection } from "firebase/firestore";
+import type { Product } from "@/lib/types";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProductsPage() {
-  const products = getAllProducts();
   const router = useRouter();
+  const firestore = useFirestore();
+  const productsCollection = useMemoFirebase(
+    () => (firestore ? collection(firestore, 'products') : null),
+    [firestore]
+  );
+  const { data: products, isLoading } = useCollection<Product>(productsCollection);
 
   return (
     <div className="bg-background">
@@ -28,11 +38,28 @@ export default function ProductsPage() {
           </p>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          {isLoading
+            ? Array.from({ length: 8 }).map((_, i) => (
+                <Card key={i}>
+                  <CardHeader className="p-0">
+                    <Skeleton className="aspect-square w-full" />
+                  </CardHeader>
+                  <CardContent className="p-4 space-y-2">
+                    <Skeleton className="h-5 w-4/5" />
+                    <Skeleton className="h-5 w-1/2" />
+                  </CardContent>
+                  <CardFooter className="p-4 pt-0">
+                    <Skeleton className="h-10 w-full" />
+                  </CardFooter>
+                </Card>
+              ))
+            : products?.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
         </div>
       </div>
     </div>
   );
 }
+
+    

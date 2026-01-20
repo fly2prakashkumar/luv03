@@ -5,10 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
-import { getFeaturedProducts } from "@/lib/products";
 import { ProductCard } from "@/components/products/product-card";
 import { ArrowRight, Leaf, FlaskConical, Recycle, Microscope } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import {
     Carousel,
     CarouselContent,
@@ -18,6 +17,10 @@ import {
 } from "@/components/ui/carousel";
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, query, limit } from "firebase/firestore";
+import type { Product } from "@/lib/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const features = [
   {
@@ -107,7 +110,13 @@ const heroSlides = [
 
 
 export default function Home() {
-  const featuredProducts = getFeaturedProducts(4);
+  const firestore = useFirestore();
+  const featuredProductsQuery = useMemoFirebase(
+    () => (firestore ? query(collection(firestore, 'products'), limit(4)) : null),
+    [firestore]
+  );
+  const { data: featuredProducts, isLoading } = useCollection<Product>(featuredProductsQuery);
+
 
   return (
     <div className="flex flex-col">
@@ -160,9 +169,24 @@ export default function Home() {
             Featured Collection
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+            {isLoading
+              ? Array.from({ length: 4 }).map((_, i) => (
+                  <Card key={i}>
+                    <CardHeader className="p-0">
+                      <Skeleton className="aspect-square w-full" />
+                    </CardHeader>
+                    <CardContent className="p-4 space-y-2">
+                      <Skeleton className="h-5 w-4/5" />
+                      <Skeleton className="h-5 w-1/2" />
+                    </CardContent>
+                    <CardFooter className="p-4 pt-0">
+                      <Skeleton className="h-10 w-full" />
+                    </CardFooter>
+                  </Card>
+                ))
+              : featuredProducts?.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
           </div>
           <div className="text-center mt-12">
             <Button asChild variant="outline">
@@ -253,3 +277,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
