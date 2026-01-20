@@ -339,7 +339,7 @@ export default function ProductDetailPage() {
 
 function ProductDetailSkeleton() {
   return (
-    <div className="container mx-auto px-4 py-8 md:py-16">
+    <div className="container mx-auto px-4 py-8 md:py-12">
       <div className="mb-4">
         <Skeleton className="h-10 w-24" />
       </div>
@@ -378,3 +378,5 @@ function ProductDetailSkeleton() {
     </div>
   );
 }
+
+    
