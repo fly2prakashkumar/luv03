@@ -26,16 +26,30 @@ export default function CategoryPage() {
 
   const { categoryName, products } = useMemo(() => {
     if (!name) return { categoryName: '', products: [] };
-    const decodedName = decodeURIComponent(name).replace(/-/g, ' ');
-    const filteredProducts = allProducts?.filter(p => 
-      p.category.toLowerCase().replace(/&/g, 'and') === decodedName.toLowerCase().replace(/&/g, 'and')
-    ) || [];
+    
+    const pageTitle = decodeURIComponent(name).replace(/-/g, ' ');
 
-    return { categoryName: decodedName, products: filteredProducts };
+    if (!allProducts) {
+        return { categoryName: pageTitle, products: [] };
+    }
+
+    const filteredProducts = allProducts.filter(p => {
+      if (!p.category) return false;
+      // Normalize both the product category and the page title for comparison
+      const normalizedProductCategory = p.category.toLowerCase().trim();
+      const normalizedPageTitle = pageTitle.toLowerCase().trim();
+      return normalizedProductCategory === normalizedPageTitle;
+    });
+
+    return { categoryName: pageTitle, products: filteredProducts };
   }, [name, allProducts]);
 
   if (!isLoading && products.length === 0) {
-    notFound();
+    // We only call notFound if we are not loading and we have attempted to fetch allProducts.
+    // If allProducts is null, it might still be loading or initializing.
+    if (allProducts) {
+      notFound();
+    }
   }
 
   return (
@@ -79,5 +93,3 @@ export default function CategoryPage() {
     </div>
   );
 }
-
-    
