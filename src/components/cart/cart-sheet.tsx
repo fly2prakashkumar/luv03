@@ -44,7 +44,7 @@ export function CartSheet() {
                 return (
                   <div key={item.product.id} className="flex items-start gap-4">
                     <div className="relative h-20 w-20 rounded-md overflow-hidden">
-                       {item.product.imageUrl && <Image src={item.product.imageUrl} alt={item.product.name} fill className="object-cover" />}
+                       {item.product.imageUrls && item.product.imageUrls[0] && <Image src={item.product.imageUrls[0]} alt={item.product.name} fill className="object-cover" />}
                     </div>
                     <div className="flex-1">
                       <h3 className="font-semibold text-sm">{item.product.name}</h3>

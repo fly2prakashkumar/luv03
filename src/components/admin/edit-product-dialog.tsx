@@ -47,7 +47,11 @@ const productFormSchema = z.object({
   description: z.string().min(1, 'Description is required'),
   price: z.coerce.number().positive('Price must be a positive number'),
   category: z.string().min(1, 'Category is required'),
-  imageUrl: z.string().url('Please enter a valid image URL.'),
+  imageUrl1: z.string().url('Please enter a valid image URL.').min(1, 'At least one image is required.'),
+  imageUrl2: z.string().url('Please enter a valid image URL.').optional().or(z.literal('')),
+  imageUrl3: z.string().url('Please enter a valid image URL.').optional().or(z.literal('')),
+  imageUrl4: z.string().url('Please enter a valid image URL.').optional().or(z.literal('')),
+  imageUrl5: z.string().url('Please enter a valid image URL.').optional().or(z.literal('')),
 });
 
 type ProductFormValues = z.infer<typeof productFormSchema>;
@@ -72,7 +76,11 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
       description: product.description || '',
       price: product.price || 0,
       category: product.category || '',
-      imageUrl: product.imageUrl || '',
+      imageUrl1: product.imageUrls?.[0] || '',
+      imageUrl2: product.imageUrls?.[1] || '',
+      imageUrl3: product.imageUrls?.[2] || '',
+      imageUrl4: product.imageUrls?.[3] || '',
+      imageUrl5: product.imageUrls?.[4] || '',
     },
   });
 
@@ -83,7 +91,11 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
         description: product.description || '',
         price: product.price || 0,
         category: product.category || '',
-        imageUrl: product.imageUrl || '',
+        imageUrl1: product.imageUrls?.[0] || '',
+        imageUrl2: product.imageUrls?.[1] || '',
+        imageUrl3: product.imageUrls?.[2] || '',
+        imageUrl4: product.imageUrls?.[3] || '',
+        imageUrl5: product.imageUrls?.[4] || '',
       });
     }
   }, [product, form, open]);
@@ -96,7 +108,10 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
     setIsSubmitting(true);
     const productRef = doc(firestore, 'products', product.id);
 
-    updateDoc(productRef, values)
+    const { imageUrl1, imageUrl2, imageUrl3, imageUrl4, imageUrl5, ...rest } = values;
+    const imageUrls = [imageUrl1, imageUrl2, imageUrl3, imageUrl4, imageUrl5].filter(url => url && url.trim() !== '');
+
+    updateDoc(productRef, { ...rest, imageUrls })
       .then(() => {
         toast({
           title: 'Product Updated',
@@ -108,7 +123,7 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
         const permissionError = new FirestorePermissionError({
           path: productRef.path,
           operation: 'update',
-          requestResourceData: values,
+          requestResourceData: { ...rest, imageUrls },
         });
 
         errorEmitter.emit('permission-error', permissionError);
@@ -196,18 +211,67 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
                   </FormItem>
                 )}
               />
-              <FormField
+               <FormField
                 control={form.control}
-                name="imageUrl"
+                name="imageUrl1"
                 render={({ field }) => (
                   <FormItem className="space-y-1">
-                    <FormLabel>Image URL</FormLabel>
+                    <FormLabel>Image URL 1</FormLabel>
                     <FormControl>
                       <Input placeholder="https://example.com/image.png" {...field} />
                     </FormControl>
-                    <FormDescription>
-                      Enter the full URL for the product image.
-                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="imageUrl2"
+                render={({ field }) => (
+                  <FormItem className="space-y-1">
+                    <FormLabel>Image URL 2</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/image.png" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="imageUrl3"
+                render={({ field }) => (
+                  <FormItem className="space-y-1">
+                    <FormLabel>Image URL 3</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/image.png" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="imageUrl4"
+                render={({ field }) => (
+                  <FormItem className="space-y-1">
+                    <FormLabel>Image URL 4</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/image.png" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="imageUrl5"
+                render={({ field }) => (
+                  <FormItem className="space-y-1">
+                    <FormLabel>Image URL 5</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/image.png" {...field} />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}

@@ -40,7 +40,11 @@ const productFormSchema = z.object({
   description: z.string().min(1, 'Description is required'),
   price: z.coerce.number().positive('Price must be a positive number'),
   category: z.string().min(1, 'Category is required'),
-  imageUrl: z.string().url('Please enter a valid image URL.'),
+  imageUrl1: z.string().url('Please enter a valid image URL.').min(1, 'At least one image is required.'),
+  imageUrl2: z.string().url('Please enter a valid image URL.').optional().or(z.literal('')),
+  imageUrl3: z.string().url('Please enter a valid image URL.').optional().or(z.literal('')),
+  imageUrl4: z.string().url('Please enter a valid image URL.').optional().or(z.literal('')),
+  imageUrl5: z.string().url('Please enter a valid image URL.').optional().or(z.literal('')),
 });
 
 type ProductFormValues = z.infer<typeof productFormSchema>;
@@ -61,7 +65,11 @@ export function AddProductDialog() {
       description: '',
       price: 0,
       category: '',
-      imageUrl: '',
+      imageUrl1: '',
+      imageUrl2: '',
+      imageUrl3: '',
+      imageUrl4: '',
+      imageUrl5: '',
     },
   });
 
@@ -72,8 +80,11 @@ export function AddProductDialog() {
     
     setIsSubmitting(true);
     const productsCollection = collection(firestore, 'products');
+
+    const { imageUrl1, imageUrl2, imageUrl3, imageUrl4, imageUrl5, ...rest } = values;
+    const imageUrls = [imageUrl1, imageUrl2, imageUrl3, imageUrl4, imageUrl5].filter(url => url && url.trim() !== '');
     
-    addDoc(productsCollection, values)
+    addDoc(productsCollection, { ...rest, imageUrls })
       .then(() => {
         toast({
           title: 'Product Added',
@@ -86,7 +97,7 @@ export function AddProductDialog() {
         const permissionError = new FirestorePermissionError({
             path: productsCollection.path,
             operation: 'create',
-            requestResourceData: values,
+            requestResourceData: { ...rest, imageUrls },
         });
 
         errorEmitter.emit('permission-error', permissionError);
@@ -176,16 +187,65 @@ export function AddProductDialog() {
               />
               <FormField
                 control={form.control}
-                name="imageUrl"
+                name="imageUrl1"
                 render={({ field }) => (
                   <FormItem className="space-y-1">
-                    <FormLabel>Image URL</FormLabel>
+                    <FormLabel>Image URL 1</FormLabel>
                     <FormControl>
                       <Input placeholder="https://example.com/image.png" {...field} />
                     </FormControl>
-                    <FormDescription>
-                      Enter the full URL for the product image.
-                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="imageUrl2"
+                render={({ field }) => (
+                  <FormItem className="space-y-1">
+                    <FormLabel>Image URL 2</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/image.png" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="imageUrl3"
+                render={({ field }) => (
+                  <FormItem className="space-y-1">
+                    <FormLabel>Image URL 3</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/image.png" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="imageUrl4"
+                render={({ field }) => (
+                  <FormItem className="space-y-1">
+                    <FormLabel>Image URL 4</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/image.png" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="imageUrl5"
+                render={({ field }) => (
+                  <FormItem className="space-y-1">
+                    <FormLabel>Image URL 5</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/image.png" {...field} />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}

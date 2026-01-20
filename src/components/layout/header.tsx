@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -177,7 +176,7 @@ export function AppHeader() {
                                   <Link key={product.id} href={`/products/${product.id}`} className="block" onClick={handleSuggestionClick}>
                                       <div className="flex items-center gap-4 p-2 rounded-md">
                                           <div className="relative h-12 w-12 rounded-md overflow-hidden">
-                                              {product.imageUrl && <Image src={product.imageUrl} alt={product.name} fill className="object-cover" />}
+                                              {product.imageUrls && product.imageUrls[0] && <Image src={product.imageUrls[0]} alt={product.name} fill className="object-cover" />}
                                           </div>
                                           <div>
                                               <p className="font-semibold text-sm">{product.name}</p>

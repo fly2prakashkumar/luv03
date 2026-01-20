@@ -20,9 +20,9 @@ export function ProductCard({ product }: ProductCardProps) {
       </Link>
       <CardHeader className="p-0">
         <div className="aspect-square relative">
-          {product.imageUrl && (
+          {product.imageUrls && product.imageUrls[0] && (
             <Image
-              src={product.imageUrl}
+              src={product.imageUrls[0]}
               alt={product.name}
               fill
               className="object-cover"

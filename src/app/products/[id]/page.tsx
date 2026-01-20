@@ -1,4 +1,3 @@
-
 'use client';
 
 import { notFound, useRouter, useParams } from 'next/navigation';
@@ -22,15 +21,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
-
-// Mock data based on the image
-const productImages = (imageUrl: string) => [
-  imageUrl,
-  'https://picsum.photos/seed/gallery1/1000/1000',
-  'https://picsum.photos/seed/gallery2/1000/1000',
-  'https://picsum.photos/seed/gallery3/1000/1000',
-  'https://picsum.photos/seed/gallery4/1000/1000',
-];
 
 const tags = [
   'All Skin types',
@@ -103,8 +93,8 @@ export default function ProductDetailPage() {
   const [selectedSize, setSelectedSize] = useState(sizes[1].id);
 
   useEffect(() => {
-    if (product?.imageUrl) {
-      setMainImage(product.imageUrl);
+    if (product?.imageUrls && product.imageUrls.length > 0) {
+      setMainImage(product.imageUrls[0]);
     }
   }, [product]);
 
@@ -117,8 +107,8 @@ export default function ProductDetailPage() {
   if (!product) {
     notFound();
   }
-
-  const galleryImages = productImages(product.imageUrl);
+  
+  const galleryImages = product.imageUrls || [];
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">

@@ -45,10 +45,6 @@
       "type": "object",
       "description": "Represents a skincare product in the catalog.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the product."
-        },
         "name": {
           "type": "string",
           "description": "Name of the product."
@@ -57,22 +53,29 @@
           "type": "string",
           "description": "Detailed description of the product."
         },
-        "imageUrl": {
-          "type": "string",
-          "description": "URL of the product image.",
-          "format": "uri"
+        "imageUrls": {
+          "type": "array",
+          "description": "URLs of the product images.",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          }
         },
         "price": {
           "type": "number",
           "description": "Price of the product."
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the product."
         }
       },
       "required": [
-        "id",
         "name",
         "description",
-        "imageUrl",
-        "price"
+        "imageUrls",
+        "price",
+        "category"
       ]
     },
     "ShoppingCart": {

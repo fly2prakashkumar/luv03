@@ -322,9 +322,9 @@ export default function AdminPage() {
                                             <TableRow key={product.id}>
                                                 <TableCell className="hidden sm:table-cell">
                                                     <div className="relative h-12 w-12 rounded-md overflow-hidden">
-                                                        {product.imageUrl && (
+                                                        {product.imageUrls && product.imageUrls[0] && (
                                                             <Image 
-                                                                src={product.imageUrl} 
+                                                                src={product.imageUrls[0]} 
                                                                 alt={product.name} 
                                                                 fill 
                                                                 className="object-cover"
