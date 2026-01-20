@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -31,7 +32,7 @@ export function AppHeader() {
     const router = useRouter();
     const pathname = usePathname();
     const [searchQuery, setSearchQuery] = useState('');
-    const [searchResults, setSearchResults] = useState<Product[]>([]);
+    const [searchResults, setSearchResults] = useState<(Product & { id: string })[]>([]);
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
     const isMobile = useIsMobile();

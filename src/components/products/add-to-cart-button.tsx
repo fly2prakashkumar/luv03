@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useCart } from "@/contexts/cart-context";
@@ -6,7 +7,7 @@ import type { Product } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 
 interface AddToCartButtonProps {
-    product: Product;
+    product: Product & { id: string };
     quantity?: number;
     className?: string;
 }

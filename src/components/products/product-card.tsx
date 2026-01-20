@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/types";
@@ -6,7 +7,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { AddToCartButton } from "./add-to-cart-button";
 
 interface ProductCardProps {
-  product: Product;
+  product: Product & { id: string };
 }
 
 export function ProductCard({ product }: ProductCardProps) {
@@ -40,5 +41,3 @@ export function ProductCard({ product }: ProductCardProps) {
     </Card>
   );
 }
-
-    

@@ -47,7 +47,7 @@ const productFormSchema = z.object({
 type ProductFormValues = z.infer<typeof productFormSchema>;
 
 interface EditProductDialogProps {
-  product: Product;
+  product: Product & { id: string };
 }
 
 export function EditProductDialog({ product }: EditProductDialogProps) {

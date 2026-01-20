@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -87,9 +88,9 @@ const reviews = [
 export default function AdminPage() {
   const firestore = useFirestore();
   const productsCollection = useMemoFirebase(() => firestore ? collection(firestore, 'products') : null, [firestore]);
-  const { data: allProducts, isLoading: isLoadingProducts } = useCollection<Omit<Product, 'id'>>(productsCollection);
+  const { data: allProducts, isLoading: isLoadingProducts } = useCollection<Product>(productsCollection);
 
-  const [filteredProducts, setFilteredProducts] = useState<Product[] | null>(null);
+  const [filteredProducts, setFilteredProducts] = useState<(Product & { id: string })[] | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [allCategories, setAllCategories] = useState<string[]>(["All Categories"]);
   const [activeTab, setActiveTab] = useState("overview");
@@ -366,4 +367,3 @@ export default function AdminPage() {
     </div>
   );
 }
-    

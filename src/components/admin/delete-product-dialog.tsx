@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -23,7 +24,7 @@ import { FirestorePermissionError } from '@/firebase/errors';
 import { errorEmitter } from '@/firebase/error-emitter';
 
 interface DeleteProductDialogProps {
-  product: Product;
+  product: Product & { id: string };
 }
 
 export function DeleteProductDialog({ product }: DeleteProductDialogProps) {

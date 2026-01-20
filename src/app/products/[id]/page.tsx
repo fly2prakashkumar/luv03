@@ -264,7 +264,7 @@ export default function ProductDetailPage() {
           </div>
 
           <AddToCartButton
-            product={{ ...product, price: activeSize.price }}
+            product={{ ...product, price: activeSize.price, id: id }}
             className="w-full h-12 text-lg"
           />
 
@@ -378,5 +378,3 @@ function ProductDetailSkeleton() {
     </div>
   );
 }
-
-    

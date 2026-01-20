@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { createContext, useReducer, useContext, ReactNode } from 'react';
@@ -8,7 +9,7 @@ interface CartState {
 }
 
 type CartAction =
-  | { type: 'ADD_ITEM'; payload: { product: Product; quantity: number } }
+  | { type: 'ADD_ITEM'; payload: { product: Product & { id: string }; quantity: number } }
   | { type: 'REMOVE_ITEM'; payload: { productId: string } }
   | { type: 'UPDATE_QUANTITY'; payload: { productId: string; quantity: number } }
   | { type: 'CLEAR_CART' };
