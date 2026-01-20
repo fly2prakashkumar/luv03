@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -113,9 +112,6 @@ export default function AdminPage() {
       setFilteredProducts(allProducts.filter(p => p.category === category));
     }
   };
-
-  const productCategories = allCategories.filter(c => c !== "All Categories");
-
 
   return (
     <div className="flex-1 space-y-4 p-4 sm:p-6 md:p-8 pt-6 bg-muted/20">
@@ -341,7 +337,7 @@ export default function AdminPage() {
                                                 <TableCell>₹{product.price.toFixed(2)}</TableCell>
                                                 <TableCell>
                                                     <div className="flex gap-2">
-                                                        <EditProductDialog product={product} categories={productCategories} />
+                                                        <EditProductDialog product={product} />
                                                         <DeleteProductDialog product={product} />
                                                     </div>
                                                 </TableCell>

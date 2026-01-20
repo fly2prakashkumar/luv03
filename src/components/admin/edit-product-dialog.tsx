@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -55,10 +54,11 @@ type ProductFormValues = z.infer<typeof productFormSchema>;
 
 interface EditProductDialogProps {
   product: Product & { id: string };
-  categories: string[];
 }
 
-export function EditProductDialog({ product, categories }: EditProductDialogProps) {
+const productCategories = ["Bath & Body", "Skin care", "Toothpaste", "Handwash"];
+
+export function EditProductDialog({ product }: EditProductDialogProps) {
   const [open, setOpen] = useState(false);
   const firestore = useFirestore();
   const { toast } = useToast();
@@ -187,14 +187,11 @@ export function EditProductDialog({ product, categories }: EditProductDialogProp
                             </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                            {categories.map(category => (
+                            {productCategories.map(category => (
                                 <SelectItem key={category} value={category}>{category}</SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
-                    <FormDescription>
-                      To add a new category, use the "Add Product" dialog.
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

@@ -33,6 +33,7 @@ import { Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { errorEmitter } from '@/firebase/error-emitter';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 const productFormSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -43,6 +44,8 @@ const productFormSchema = z.object({
 });
 
 type ProductFormValues = z.infer<typeof productFormSchema>;
+
+const productCategories = ["Bath & Body", "Skin care", "Toothpaste", "Handwash"];
 
 export function AddProductDialog() {
   const [open, setOpen] = useState(false);
@@ -155,9 +158,18 @@ export function AddProductDialog() {
                 render={({ field }) => (
                   <FormItem className="space-y-1">
                     <FormLabel>Category</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., Skin care" {...field} />
-                    </FormControl>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a category" />
+                            </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                            {productCategories.map(category => (
+                                <SelectItem key={category} value={category}>{category}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -191,5 +203,3 @@ export function AddProductDialog() {
     </Dialog>
   );
 }
-
-    
