@@ -12,6 +12,15 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMemo } from "react";
 
+const slugify = (text: string) => {
+  if (!text) return '';
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/\s*&\s*/g, ' and ') // "Bath & Body" -> "bath and body"
+    .replace(/\s+/g, '-');       // "bath and body" -> "bath-and-body"
+}
+
 export default function CategoryPage() {
   const router = useRouter();
   const params = useParams();
@@ -25,29 +34,21 @@ export default function CategoryPage() {
   const { data: allProducts, isLoading } = useCollection<Product>(productsCollection);
 
   const { categoryName, products } = useMemo(() => {
-    if (!name) return { categoryName: '', products: [] };
-    
-    const urlCategoryName = decodeURIComponent(name).replace(/-/g, ' ');
-
-    if (!allProducts) {
-        return { categoryName: urlCategoryName, products: [] };
+    if (!name || !allProducts) {
+      const title = name ? name.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : "";
+      return { categoryName: title, products: [] };
     }
 
     const filteredProducts = allProducts.filter(p => {
       if (!p.category) return false;
-      // Normalize both strings for comparison
-      // "Bath & Body" -> "bath and body"
-      const normalizedProductCategory = p.category.toLowerCase().trim().replace(/\s*&\s*/g, ' and ');
-      // "bath and body" from URL
-      const normalizedUrlCategory = urlCategoryName.toLowerCase().trim();
-
-      return normalizedProductCategory === normalizedUrlCategory;
+      // Slugify the product's category and compare with the slug from the URL
+      return slugify(p.category) === name;
     });
     
-    // Create a display-friendly name from the URL slug
-    const displayTitle = urlCategoryName
-      .replace(/ and /g, ' & ')
-      .replace(/\b\w/g, l => l.toUpperCase());
+    // Try to find the original category name from the first matching product for the title
+    const displayTitle = filteredProducts.length > 0
+        ? filteredProducts[0].category
+        : name.replace(/-/g, ' ').replace(/ and /g, ' & ').replace(/\b\w/g, l => l.toUpperCase());
 
     return { categoryName: displayTitle, products: filteredProducts };
   }, [name, allProducts]);
@@ -55,7 +56,13 @@ export default function CategoryPage() {
   const showLoading = isLoading || !name;
 
   if (!showLoading && products.length === 0) {
-    notFound();
+    // If we have a category name but no products are found after loading, show 404.
+    // This prevents showing 404 for valid categories that are temporarily empty.
+    // To make this more robust, you might check if the category itself is a valid one against a predefined list.
+    // For now, if allProducts have loaded and we still find no matches, we assume it's a page not found.
+    if(allProducts) {
+       notFound();
+    }
   }
 
   return (
