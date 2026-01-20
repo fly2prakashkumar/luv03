@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Card,
   CardContent,
@@ -7,8 +9,24 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
+import { useUser } from "@/firebase";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function AccountPage() {
+  const { user, isUserLoading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isUserLoading && !user) {
+      router.push('/login');
+    }
+  }, [user, isUserLoading, router]);
+
+  if (isUserLoading || !user) {
+    return <div className="flex justify-center items-center min-h-[calc(100vh-8rem)]">Loading...</div>;
+  }
+
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 md:py-12">
       <div className="mb-8">
@@ -32,12 +50,12 @@ export default function AccountPage() {
             <CardContent className="space-y-4">
               <div className="flex justify-between items-center">
                   <p className="text-sm font-medium">Name</p>
-                  <p className="text-sm text-muted-foreground">Jane Doe</p>
+                  <p className="text-sm text-muted-foreground">{user.displayName || 'N/A'}</p>
               </div>
               <Separator/>
               <div className="flex justify-between items-center">
                   <p className="text-sm font-medium">Email</p>
-                  <p className="text-sm text-muted-foreground">jane.doe@example.com</p>
+                  <p className="text-sm text-muted-foreground">{user.email || 'N/A'}</p>
               </div>
             </CardContent>
           </Card>
