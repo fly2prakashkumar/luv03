@@ -20,6 +20,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -99,8 +100,17 @@ export default function CheckoutPage() {
     router.push(`/orders/${mockOrderId}`);
   }
 
-  if (state.cartItems.length === 0 && typeof window !== 'undefined') {
-    router.push('/products');
+  useEffect(() => {
+    // This effect will run on the client side after the component mounts.
+    // If the cart is empty, it redirects the user to the products page.
+    if (state.cartItems.length === 0) {
+      router.push('/products');
+    }
+  }, [state.cartItems.length, router]);
+
+  // If the cart is empty, we can return null to prevent rendering the checkout form
+  // while the redirection is in progress.
+  if (state.cartItems.length === 0) {
     return null;
   }
   
