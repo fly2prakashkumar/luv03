@@ -3,139 +3,139 @@
     {
       "id": "hero",
       "description": "Elegant hero image with skincare products laid out on a soft background",
-      "imageUrl": "https://images.unsplash.com/photo-1643168343279-3f93c2e592ef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxza2luY2FyZSUyMGZsYXRsYXl8ZW58MHx8fHwxNzY3NjE0NjI4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1743931370903-8a5ca3807e2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxza2luY2FyZSUyMGZsYXRsYXl8ZW58MHx8fHwxNzY4ODk3OTAyfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "skincare flatlay"
     },
     {
       "id": "hero-2",
       "description": "A woman with glowing skin, representing natural radiance",
-      "imageUrl": "https://images.unsplash.com/photo-1590439471364-192aa70c0b53?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxnbG93aW5nJTIwc2tpbnxlbnwwfHx8fDE3Njg1MDEzODF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1581182800629-7d90925ad072?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxnbG93aW5nJTIwc2tpbnxlbnwwfHx8fDE3Njg4Mjc0MDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "glowing skin"
     },
     {
       "id": "hero-3",
       "description": "A minimal arrangement of natural ingredients and skincare bottles",
-      "imageUrl": "https://images.unsplash.com/photo-1556228723-8c4c5f3261a3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxuYXR1cmFsJTIwc2tpbmNhcmV8ZW58MHx8fHwxNzY4NTAxMzgxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1599847935464-fde3827639c2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxuYXR1cmFsJTIwc2tpbmNhcmV8ZW58MHx8fHwxNzY4ODk3OTAyfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "natural skincare"
     },
     {
       "id": "product-1",
       "description": "Bottle of Radiant Glow Serum",
-      "imageUrl": "https://images.unsplash.com/photo-1699373381667-a325cbf60dfe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzZXJ1bSUyMGJvdHRsZXxlbnwwfHx8fDE3Njc1NjE3NDZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1715027155125-810cb995203f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzZXJ1bSUyMGJvdHRsZXxlbnwwfHx8fDE3Njg3OTQzODd8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "serum bottle"
     },
     {
       "id": "product-2",
       "description": "Jar of Hydro-Boost Moisturizer",
-      "imageUrl": "https://images.unsplash.com/photo-1667242003558-e42942d2b911?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjcmVhbSUyMGphcnxlbnwwfHx8fDE3Njc1OTQ4MTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1667242003558-e42942d2b911?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjcmVhbSUyMGphcnxlbnwwfHx8fDE3Njg4MzA3ODV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "cream jar"
     },
     {
       "id": "product-3",
       "description": "Bottle of Gentle Purifying Cleanser",
-      "imageUrl": "https://images.unsplash.com/photo-1642429948029-19d6dadcea5a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjbGVhbnNlciUyMGJvdHRsZXxlbnwwfHx8fDE3Njc1OTQ4MTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1642429948029-19d6dadcea5a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjbGVhbnNlciUyMGJvdHRsZXxlbnwwfHx8fDE3Njg4ODQ0MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "cleanser bottle"
     },
     {
       "id": "product-4",
       "description": "Bottle of Revitalizing Eye Cream",
-      "imageUrl": "https://images.unsplash.com/photo-1711280219887-c0fd5fcada0e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZXllJTIwY3JlYW18ZW58MHx8fHwxNzY3NjIwMTA3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1601049505392-eebe867c4329?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxleWUlMjBjcmVhbXxlbnwwfHx8fDE3Njg3OTg3Nzd8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "eye cream"
     },
     {
       "id": "product-5",
       "description": "Bottle of Vitamin C Brightening Toner",
-      "imageUrl": "https://images.unsplash.com/photo-1556227703-ab57dbc6f839?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0b25lciUyMGJvdHRsZXxlbnwwfHx8fDE3Njc2MjExNzZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1556227702-b89ac3b94ff9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx0b25lciUyMGJvdHRsZXxlbnwwfHx8fDE3Njg4ODQ0MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "toner bottle"
     },
     {
       "id": "product-6",
       "description": "Tube of Sun-Kissed SPF 50 Sunscreen",
-      "imageUrl": "https://images.unsplash.com/photo-1658387518136-703378fb6f48?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxzdW5zY3JlZW4lMjB0dWJlfGVufDB8fHx8MTc2NzU5NDgxMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1658387518136-703378fb6f48?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzdW5zY3JlZW4lMjB0dWJlfGVufDB8fHx8MTc2ODg4NDQwNHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "sunscreen tube"
     },
     {
       "id": "product-7",
       "description": "Jar of Overnight Repair Night Cream",
-      "imageUrl": "https://images.unsplash.com/photo-1585232350744-974fc9804d65?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxuaWdodCUyMGNyZWFtfGVufDB8fHx8MTc2NzYyMTE3Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1584949514123-474cfa705dfe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxuaWdodCUyMGNyZWFtfGVufDB8fHx8MTc2ODg5NzkwMnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "night cream"
     },
     {
       "id": "product-8",
       "description": "Detoxifying Clay Mask in a jar",
-      "imageUrl": "https://images.unsplash.com/photo-1760679673134-ec50fe724567?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjbGF5JTIwbWFza3xlbnwwfHx8fDE3Njc2MjExNzZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1626783416763-67a92e5e7266?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjbGF5JTIwbWFza3xlbnwwfHx8fDE3Njg4MzA3ODV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "clay mask"
     },
     {
       "id": "product-9",
       "description": "Bottle of handwash",
-      "imageUrl": "https://images.unsplash.com/photo-1611861317409-7dcc62856a8a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxoYW5kd2FzaCUyMGJvdHRsZXxlbnwwfHx8fDE3Njg0NDYzMTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1633521249723-8aec8acea34b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8aGFuZHdhc2glMjBib3R0bGV8ZW58MHx8fHwxNzY4ODk3OTAyfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "handwash bottle"
     },
     {
       "id": "product-10",
       "description": "Tube of toothpaste",
-      "imageUrl": "https://images.unsplash.com/photo-1759910548177-638d4e6ee0d5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx0b290aHBhc3RlJTIwdHViZXxlbnwwfHx8fDE3Njg0NDYzMTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1584743578805-d7991ca2d5d4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx0b290aHBhc3RlJTIwdHViZXxlbnwwfHx8fDE3Njg4OTc5MDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "toothpaste tube"
     },
     {
       "id": "product-11",
       "description": "Bottle of body wash",
-      "imageUrl": "https://images.unsplash.com/photo-1677726050511-48866c4a64d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxib2R5d2FzaCUyMGJvdHRsZXxlbnwwfHx8fDE3Njg0NDYzMTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1592999641298-434e28c11d14?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxib2R5d2FzaCUyMGJvdHRsZXxlbnwwfHx8fDE3Njg4OTc5MDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "bodywash bottle"
     },
     {
       "id": "product-12",
       "description": "Bottle of shampoo",
-      "imageUrl": "https://images.unsplash.com/photo-1585232350744-974fc9804d65?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzaGFtcG9vJTIwYm90dGxlfGVufDB8fHx8MTc2ODM2MDkwN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c2hhbXBvbyUyMGJvdHRsZXxlbnwwfHx8fDE3Njg3OTQzODd8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "shampoo bottle"
     },
     {
       "id": "login-hero",
       "description": "A minimalist image with a single leaf",
-      "imageUrl": "https://images.unsplash.com/photo-1483354483454-4cd359948304?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtaW5pbWFsaXN0JTIwbmF0dXJlfGVufDB8fHx8MTc2NzYyMTE3NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1483354483454-4cd359948304?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtaW5pbWFsaXN0JTIwbmF0dXJlfGVufDB8fHx8MTc2ODg5NzkwMnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "minimalist nature"
     },
     {
       "id": "order-confirmed",
       "description": "A package being prepared for shipping",
-      "imageUrl": "https://images.unsplash.com/photo-1656543802898-41c8c46683a7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzaGlwcGluZyUyMGJveHxlbnwwfHx8fDE3Njc1MjA2NTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1700165644892-3dd6b67b25bc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c2hpcHBpbmclMjBib3h8ZW58MHx8fHwxNzY4ODYxOTA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "shipping box"
     },
     {
       "id": "testimonial-1",
       "description": "Portrait of a smiling woman",
-      "imageUrl": "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwb3J0cmFpdCUyMGZlbWFsZXxlbnwwfHx8fDE3Njg0OTU5ODJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1610655507808-a59293f4e332?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2ODg3ODgwOXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "woman portrait"
     },
     {
       "id": "testimonial-2",
       "description": "Portrait of a smiling man",
-      "imageUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwb3J0cmFpdCUyMG1hbGV8ZW58MHx8fHwxNzY4NDk1OTgyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1522556189639-b150ed9c4330?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3Njg4OTA1NjV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "man portrait"
     },
     {
       "id": "testimonial-3",
       "description": "Portrait of another smiling woman",
-      "imageUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwb3J0cmFpdCUyMHdvbWFufGVufDB8fHx8MTc2ODQ5NTk4Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1546961329-78bef0414d7c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2ODg3ODgwOXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "woman portrait"
     },
     {
       "id": "testimonial-4",
       "description": "Portrait of a man with glasses",
-      "imageUrl": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwb3J0cmFpdCUyMG1hbGV8ZW58MHx8fHwxNzY4OTI0OTkzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3Njg4OTA1NjV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "man portrait"
     },
     {
       "id": "testimonial-5",
       "description": "Portrait of a woman in a natural setting",
-      "imageUrl": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwb3J0cmFpdCUyMHBlcnNvbnxlbnwwfHx8fDE3Njg5MjQ5OTN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3Njg4NzU1MzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "person portrait"
     },
     {
       "id": "testimonial-6",
       "description": "Close-up portrait of a smiling man",
-      "imageUrl": "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwb3J0cmFpdCUyMG1hbGV8ZW58MHx8fHwxNzY4OTI0OTkzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3Njg4OTA1NjV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "man portrait"
     }
   ]

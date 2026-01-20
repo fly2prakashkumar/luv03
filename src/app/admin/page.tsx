@@ -58,9 +58,9 @@ const salesData = [
 ];
 
 const bestSellers = [
-  { name: 'Radiant Glow Serum', sales: 1203, imageUrl: 'https://images.unsplash.com/photo-1699373381667-a325cbf60dfe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzZXJ1bSUyMGJvdHRsZXxlbnwwfHx8fDE3Njc1NjE3NDZ8MA&ixlib=rb-4.1.0&q=80&w=1080' },
-  { name: 'Hydro-Boost Moisturizer', sales: 987, imageUrl: 'https://images.unsplash.com/photo-1667242003558-e42942d2b911?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjcmVhbSUyMGphcnxlbnwwfHx8fDE3Njc1OTQ4MTF8MA&ixlib=rb-4.1.0&q=80&w=1080' },
-  { name: 'Gentle Purifying Cleanser', sales: 754, imageUrl: 'https://images.unsplash.com/photo-1642429948029-19d6dadcea5a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjbGVhbnNlciUyMGJvdHRsZXxlbnwwfHx8fDE3Njc1OTQ4MTB8MA&ixlib=rb-4.1.0&q=80&w=1080' },
+  { name: 'Radiant Glow Serum', sales: 1203, imageUrl: 'https://picsum.photos/seed/bestseller1/100/100' },
+  { name: 'Hydro-Boost Moisturizer', sales: 987, imageUrl: 'https://picsum.photos/seed/bestseller2/100/100' },
+  { name: 'Gentle Purifying Cleanser', sales: 754, imageUrl: 'https://picsum.photos/seed/bestseller3/100/100' },
 ];
 
 const reviews = [
