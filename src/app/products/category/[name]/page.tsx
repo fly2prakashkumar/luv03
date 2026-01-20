@@ -27,20 +27,29 @@ export default function CategoryPage() {
   const { categoryName, products } = useMemo(() => {
     if (!name) return { categoryName: '', products: [] };
     
-    const pageTitle = decodeURIComponent(name).replace(/-/g, ' ');
+    const urlCategoryName = decodeURIComponent(name).replace(/-/g, ' ');
 
     if (!allProducts) {
-        return { categoryName: pageTitle, products: [] };
+        return { categoryName: urlCategoryName, products: [] };
     }
 
     const filteredProducts = allProducts.filter(p => {
       if (!p.category) return false;
-      const normalizedProductCategory = p.category.toLowerCase().trim();
-      const normalizedPageTitle = pageTitle.toLowerCase().trim();
-      return normalizedProductCategory === normalizedPageTitle;
-    });
+      // Normalize both strings for comparison
+      // "Bath & Body" -> "bath and body"
+      const normalizedProductCategory = p.category.toLowerCase().trim().replace(/\s*&\s*/g, ' and ');
+      // "bath and body" from URL
+      const normalizedUrlCategory = urlCategoryName.toLowerCase().trim();
 
-    return { categoryName: pageTitle, products: filteredProducts };
+      return normalizedProductCategory === normalizedUrlCategory;
+    });
+    
+    // Create a display-friendly name from the URL slug
+    const displayTitle = urlCategoryName
+      .replace(/ and /g, ' & ')
+      .replace(/\b\w/g, l => l.toUpperCase());
+
+    return { categoryName: displayTitle, products: filteredProducts };
   }, [name, allProducts]);
 
   const showLoading = isLoading || !name;

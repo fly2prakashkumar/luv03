@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import { Instagram, Facebook, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
@@ -5,7 +6,7 @@ import Image from "next/image";
 const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/products', label: 'All products' },
-    { href: '/products/category/bath-&-body', label: 'Bath & Body' },
+    { href: '/products/category/bath-and-body', label: 'Bath & Body' },
     { href: '/products/category/skin-care', label: 'Skin care' },
     { href: '/products/category/toothpaste', label: 'Toothpaste' },
     { href: '/products/category/handwash', label: 'Handwash' },
