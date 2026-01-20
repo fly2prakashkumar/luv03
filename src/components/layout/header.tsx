@@ -1,5 +1,3 @@
-
-
 'use client';
 
 import Link from 'next/link';
@@ -19,13 +17,12 @@ import { ThemeToggle } from './theme-toggle';
 import { useRouter, usePathname } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import { Popover, PopoverContent, PopoverAnchor, PopoverTrigger } from '@/components/ui/popover';
-import { searchProducts } from '@/lib/products';
 import type { Product } from '@/lib/types';
 import Image from 'next/image';
-import { getPlaceholderImage } from '@/lib/placeholder-images';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import { useUser, useAuth } from '@/firebase';
+import { useUser, useAuth, useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection } from 'firebase/firestore';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { signOut } from 'firebase/auth';
@@ -41,6 +38,10 @@ export function AppHeader() {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const { user } = useUser();
     const auth = useAuth();
+    
+    const firestore = useFirestore();
+    const productsCollection = useMemoFirebase(() => firestore ? collection(firestore, 'products') : null, [firestore]);
+    const { data: allProducts } = useCollection<Product>(productsCollection);
 
     const isAdminPage = pathname.startsWith('/admin');
 
@@ -49,15 +50,21 @@ export function AppHeader() {
     }, []);
 
     useEffect(() => {
-        if (searchQuery.length > 1) {
-            const results = searchProducts(searchQuery).slice(0, 5); // Limit to 5 results
+        if (searchQuery.length > 1 && allProducts) {
+            const lowerCaseQuery = searchQuery.toLowerCase();
+            const results = allProducts.filter(
+              (product) =>
+                product.name.toLowerCase().includes(lowerCaseQuery) ||
+                product.description.toLowerCase().includes(lowerCaseQuery) ||
+                product.category.toLowerCase().includes(lowerCaseQuery)
+            ).slice(0, 5);
             setSearchResults(results);
             setIsPopoverOpen(results.length > 0);
         } else {
             setSearchResults([]);
             setIsPopoverOpen(false);
         }
-    }, [searchQuery]);
+    }, [searchQuery, allProducts]);
 
     const handleSearchSubmit = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
@@ -86,6 +93,7 @@ export function AppHeader() {
     }
     
     const handleLogout = async () => {
+      if (!auth) return;
       await signOut(auth);
       router.push('/');
     }
@@ -164,12 +172,11 @@ export function AppHeader() {
                   <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
                       <div className="flex flex-col gap-1 p-2">
                           {searchResults.map(product => {
-                              const placeholder = getPlaceholderImage(product.imageId);
                               return (
                                   <Link key={product.id} href={`/products/${product.id}`} className="block" onClick={handleSuggestionClick}>
                                       <div className="flex items-center gap-4 p-2 rounded-md">
                                           <div className="relative h-12 w-12 rounded-md overflow-hidden">
-                                              {placeholder && <Image src={placeholder.imageUrl} alt={product.name} fill className="object-cover" data-ai-hint={placeholder.imageHint} />}
+                                              {product.imageUrl && <Image src={product.imageUrl} alt={product.name} fill className="object-cover" />}
                                           </div>
                                           <div>
                                               <p className="font-semibold text-sm">{product.name}</p>
