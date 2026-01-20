@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { useUser } from "@/firebase";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function AccountPage() {
   const { user, isUserLoading } = useUser();
@@ -68,8 +69,9 @@ export default function AccountPage() {
                 Manage your shipping and billing addresses.
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">No saved addresses found.</p>
+            <CardContent className="text-center py-10">
+              <p className="text-muted-foreground mb-4">No saved addresses found.</p>
+              <Button>Add Address</Button>
             </CardContent>
           </Card>
         </TabsContent>
