@@ -16,7 +16,8 @@ export function AddToCartButton({ product, quantity = 1, className }: AddToCartB
     const { dispatch } = useCart();
     const { toast } = useToast();
 
-    const handleAddToCart = () => {
+    const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
         dispatch({ type: 'ADD_ITEM', payload: { product, quantity } });
         toast({
             title: "Added to cart",

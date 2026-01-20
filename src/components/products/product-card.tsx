@@ -11,11 +11,15 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+  if (!product?.id) return null;
 
   return (
-    <Card className="flex flex-col overflow-hidden h-full">
+    <Card className="flex flex-col overflow-hidden h-full group relative border-border hover:border-primary transition-all">
+      <Link href={`/products/${product.id}`} className="absolute inset-0 z-10">
+          <span className="sr-only">View product: {product.name}</span>
+      </Link>
       <CardHeader className="p-0">
-        <Link href={`/products/${product.id}`} className="block aspect-square relative">
+        <div className="aspect-square relative">
           {product.imageUrl && (
             <Image
               src={product.imageUrl}
@@ -25,18 +29,16 @@ export function ProductCard({ product }: ProductCardProps) {
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           )}
-        </Link>
+        </div>
       </CardHeader>
       <CardContent className="p-4 flex-grow">
-        <CardTitle className="text-lg font-headline leading-tight mb-1">
-          <Link href={`/products/${product.id}`} className="transition-colors">
-            {product.name}
-          </Link>
+        <CardTitle className="text-lg font-headline leading-tight mb-1 transition-colors group-hover:text-primary">
+          {product.name}
         </CardTitle>
         <p className="font-semibold text-md">₹{product.price.toFixed(2)}</p>
       </CardContent>
-      <CardFooter className="p-4 pt-0">
-        <AddToCartButton product={product} />
+      <CardFooter className="p-4 pt-0 z-20 bg-background">
+        <AddToCartButton product={product} className="w-full" />
       </CardFooter>
     </Card>
   );
