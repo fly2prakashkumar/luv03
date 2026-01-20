@@ -18,9 +18,10 @@ import { useToast } from '@/hooks/use-toast';
 import { useUser, useAuth } from '@/firebase';
 import {
   createUserWithEmailAndPassword,
-  signInWithPopup,
+  signInWithRedirect,
   GoogleAuthProvider,
   updateProfile,
+  getRedirectResult,
 } from 'firebase/auth';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -40,12 +41,40 @@ export default function SignupPage() {
   const { toast } = useToast();
   const auth = useAuth();
   const { user, isUserLoading } = useUser();
+  const [isSigningIn, setIsSigningIn] = useState(true);
 
   useEffect(() => {
-    if (!isUserLoading && user) {
+    if (auth) {
+      getRedirectResult(auth)
+        .then((result) => {
+          if (result) {
+            toast({
+              title: "Sign-in Successful",
+              description: "Welcome!",
+            });
+          }
+          setIsSigningIn(false);
+        })
+        .catch((error) => {
+          if (error.code !== 'auth/no-redirect-operation') {
+            toast({
+              variant: "destructive",
+              title: "Google Sign-In Failed",
+              description: error.message || "Could not sign in with Google.",
+            });
+          }
+          setIsSigningIn(false);
+        });
+    } else {
+      setIsSigningIn(false);
+    }
+  }, [auth, toast]);
+
+  useEffect(() => {
+    if (!isUserLoading && !isSigningIn && user) {
         router.push('/account');
     }
-  }, [user, isUserLoading, router]);
+  }, [user, isUserLoading, isSigningIn, router]);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,23 +111,10 @@ export default function SignupPage() {
   const handleGoogleSignIn = async () => {
     if (!auth) return;
     const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-      toast({
-        title: "Sign-in Successful",
-        description: "Welcome!",
-      });
-       // The useEffect will handle the redirect
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Google Sign-In Failed",
-        description: error.message || "Could not sign in with Google.",
-      });
-    }
+    await signInWithRedirect(auth, provider);
   };
 
-  if (isUserLoading || user) {
+  if (isUserLoading || isSigningIn || user) {
     return <div className="flex justify-center items-center min-h-[calc(100vh-8rem)]">Loading...</div>;
   }
 
