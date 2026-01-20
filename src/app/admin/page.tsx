@@ -38,7 +38,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getPlaceholderImage } from "@/lib/placeholder-images";
 import type { Product } from "@/lib/types";
 import { AddProductDialog } from "@/components/admin/add-product-dialog";
 import { EditProductDialog } from "@/components/admin/edit-product-dialog";
@@ -59,9 +58,9 @@ const salesData = [
 ];
 
 const bestSellers = [
-  { name: 'Radiant Glow Serum', sales: 1203, imageId: 'product-1' },
-  { name: 'Hydro-Boost Moisturizer', sales: 987, imageId: 'product-2' },
-  { name: 'Gentle Purifying Cleanser', sales: 754, imageId: 'product-3' },
+  { name: 'Radiant Glow Serum', sales: 1203, imageUrl: 'https://images.unsplash.com/photo-1699373381667-a325cbf60dfe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzZXJ1bSUyMGJvdHRsZXxlbnwwfHx8fDE3Njc1NjE3NDZ8MA&ixlib=rb-4.1.0&q=80&w=1080' },
+  { name: 'Hydro-Boost Moisturizer', sales: 987, imageUrl: 'https://images.unsplash.com/photo-1667242003558-e42942d2b911?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjcmVhbSUyMGphcnxlbnwwfHx8fDE3Njc1OTQ4MTF8MA&ixlib=rb-4.1.0&q=80&w=1080' },
+  { name: 'Gentle Purifying Cleanser', sales: 754, imageUrl: 'https://images.unsplash.com/photo-1642429948029-19d6dadcea5a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjbGVhbnNlciUyMGJvdHRsZXxlbnwwfHx8fDE3Njc1OTQ4MTB8MA&ixlib=rb-4.1.0&q=80&w=1080' },
 ];
 
 const reviews = [
@@ -229,7 +228,7 @@ export default function AdminPage() {
                                     {bestSellers.map(product => (
                                          <div key={product.name} className="flex items-center">
                                             <Avatar className="h-9 w-9">
-                                                <AvatarImage src={`https://picsum.photos/seed/${product.imageId}/100/100`} alt={product.name}/>
+                                                <AvatarImage src={product.imageUrl} alt={product.name}/>
                                                 <AvatarFallback>{product.name.charAt(0)}</AvatarFallback>
                                             </Avatar>
                                             <div className="ml-4 space-y-1">
@@ -320,18 +319,16 @@ export default function AdminPage() {
                                     ))
                                 ) : (
                                     filteredProducts?.map(product => {
-                                        const placeholder = getPlaceholderImage(product.imageId);
                                         return (
                                             <TableRow key={product.id}>
                                                 <TableCell className="hidden sm:table-cell">
                                                     <div className="relative h-12 w-12 rounded-md overflow-hidden">
-                                                        {placeholder && (
+                                                        {product.imageUrl && (
                                                             <Image 
-                                                                src={placeholder.imageUrl} 
+                                                                src={product.imageUrl} 
                                                                 alt={product.name} 
                                                                 fill 
                                                                 className="object-cover"
-                                                                data-ai-hint={placeholder.imageHint}
                                                             />
                                                         )}
                                                     </div>
@@ -369,3 +366,4 @@ export default function AdminPage() {
     </div>
   );
 }
+    

@@ -39,7 +39,7 @@ const productFormSchema = z.object({
   description: z.string().min(1, 'Description is required'),
   price: z.coerce.number().positive('Price must be a positive number'),
   category: z.string().min(1, 'Category is required'),
-  imageId: z.string().min(1, 'Image ID is required. E.g., product-13'),
+  imageUrl: z.string().url('Please enter a valid image URL.'),
 });
 
 type ProductFormValues = z.infer<typeof productFormSchema>;
@@ -58,7 +58,7 @@ export function AddProductDialog() {
       description: '',
       price: 0,
       category: '',
-      imageId: '',
+      imageUrl: '',
     },
   });
 
@@ -164,15 +164,15 @@ export function AddProductDialog() {
               />
               <FormField
                 control={form.control}
-                name="imageId"
+                name="imageUrl"
                 render={({ field }) => (
                   <FormItem className="space-y-1">
-                    <FormLabel>Image ID</FormLabel>
+                    <FormLabel>Image URL</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., product-13" {...field} />
+                      <Input placeholder="https://example.com/image.png" {...field} />
                     </FormControl>
                     <FormDescription>
-                      This ID must correspond to an entry in `src/lib/placeholder-images.json`.
+                      Enter the full URL for the product image.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -191,3 +191,5 @@ export function AddProductDialog() {
     </Dialog>
   );
 }
+
+    

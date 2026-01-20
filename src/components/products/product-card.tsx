@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/types";
-import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AddToCartButton } from "./add-to-cart-button";
@@ -11,20 +10,18 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const placeholder = getPlaceholderImage(product.imageId);
 
   return (
     <Card className="flex flex-col overflow-hidden h-full">
       <CardHeader className="p-0">
         <Link href={`/products/${product.id}`} className="block aspect-square relative">
-          {placeholder && (
+          {product.imageUrl && (
             <Image
-              src={placeholder.imageUrl}
+              src={product.imageUrl}
               alt={product.name}
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              data-ai-hint={placeholder.imageHint}
             />
           )}
         </Link>
@@ -43,3 +40,5 @@ export function ProductCard({ product }: ProductCardProps) {
     </Card>
   );
 }
+
+    

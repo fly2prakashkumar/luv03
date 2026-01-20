@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/contexts/cart-context";
-import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -42,11 +41,10 @@ export function CartSheet() {
           <ScrollArea className="flex-1">
             <div className="flex flex-col gap-6 pr-6">
               {state.cartItems.map((item) => {
-                const placeholder = getPlaceholderImage(item.product.imageId);
                 return (
                   <div key={item.product.id} className="flex items-start gap-4">
                     <div className="relative h-20 w-20 rounded-md overflow-hidden">
-                       {placeholder && <Image src={placeholder.imageUrl} alt={item.product.name} fill className="object-cover" data-ai-hint={placeholder.imageHint} />}
+                       {item.product.imageUrl && <Image src={item.product.imageUrl} alt={item.product.name} fill className="object-cover" />}
                     </div>
                     <div className="flex-1">
                       <h3 className="font-semibold text-sm">{item.product.name}</h3>
@@ -100,3 +98,5 @@ export function CartSheet() {
     </SheetContent>
   );
 }
+
+    

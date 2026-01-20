@@ -4,7 +4,6 @@
 import { getProductById } from "@/lib/products";
 import { notFound, useRouter, useParams } from "next/navigation";
 import Image from "next/image";
-import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { AddToCartButton } from "@/components/products/add-to-cart-button";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
@@ -20,8 +19,6 @@ export default function ProductDetailPage() {
     notFound();
   }
 
-  const placeholder = getPlaceholderImage(product.imageId);
-
   return (
     <div className="container mx-auto px-4 py-8 md:py-16">
        <div className="mb-4">
@@ -32,14 +29,13 @@ export default function ProductDetailPage() {
         </div>
       <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-start">
         <div className="aspect-square relative rounded-lg overflow-hidden shadow-lg">
-          {placeholder && (
+          {product.imageUrl && (
             <Image
-              src={placeholder.imageUrl}
+              src={product.imageUrl}
               alt={product.name}
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
-              data-ai-hint={placeholder.imageHint}
             />
           )}
         </div>
@@ -56,3 +52,5 @@ export default function ProductDetailPage() {
     </div>
   );
 }
+
+    
