@@ -22,14 +22,6 @@
         "lastName": {
           "type": "string",
           "description": "Last name of the user."
-        },
-        "shippingAddress": {
-          "type": "string",
-          "description": "Shipping address of the user."
-        },
-        "billingAddress": {
-          "type": "string",
-          "description": "Billing address of the user."
         }
       },
       "required": [
@@ -37,6 +29,45 @@
         "email",
         "firstName",
         "lastName"
+      ]
+    },
+    "Address": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Address",
+      "type": "object",
+      "description": "Represents a user's address.",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who owns this address."
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "postalCode": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "userId",
+        "firstName",
+        "lastName",
+        "address",
+        "city",
+        "postalCode",
+        "country"
       ]
     },
     "Product": {
@@ -209,6 +240,26 @@
         }
       },
       {
+        "path": "/users/{userId}/addresses/{addressId}",
+        "definition": {
+          "entityName": "Address",
+          "schema": {
+            "$ref": "#/backend/entities/Address"
+          },
+          "description": "Stores user's saved addresses. Path-based ownership for user data.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "addressId",
+              "description": "The unique identifier for the address."
+            }
+          ]
+        }
+      },
+      {
         "path": "/products/{productId}",
         "definition": {
           "entityName": "Product",
@@ -285,7 +336,6 @@
         }
       }
     ],
-    "reasoning": "The Firestore structure is designed to align with the application's core features and prioritize security, scalability, and debuggability, following the principles of Authorization Independence, Clarity of Intent, DBAC, and QAPs. It leverages Structural Segregation to maintain a homogeneous security posture within collections and employs Access Modeling for standardized authorization patterns.\n\n*   **User Accounts:** User data is stored under `/users/{userId}`, providing path-based ownership and simplifying security rules.\n*   **Products:** Product information is stored in the `/products` collection. List operations are secured using rules.\n*   **Shopping Carts:** Shopping carts are stored as a subcollection of users, `/users/{userId}/shoppingCarts/{shoppingCartId}`. This reflects the `User 1:1 ShoppingCart` relationship and provides clear ownership.\n*   **Orders:** Orders are stored as a subcollection of users, `/users/{userId}/orders/{orderId}`, reflecting the `User 1:N Order` relationship and clear ownership.\n*   **AI Recommendations:** Recommendations are stored as a subcollection of users, `/users/{userId}/aiRecommendations/{recommendationId}`, reflecting the `User 1:N AiRecommendation` relationship and clear ownership.\n\n**Authorization Independence:**\nAll data is structured to avoid `get()` calls in security rules. Ownership is determined by path-based ownership (e.g., `/users/{userId}/*`).\n\n**QAPs:**\nSecure list operations are supported by Structural Segregation. Each top-level collection and subcollection has a clearly defined security posture, enabling rules to be written without filtering based on document content."
+    "reasoning": "The Firestore structure is designed to align with the application's core features and prioritize security, scalability, and debuggability, following the principles of Authorization Independence, Clarity of Intent, DBAC, and QAPs. It leverages Structural Segregation to maintain a homogeneous security posture within collections and employs Access Modeling for standardized authorization patterns.\n\n*   **User Accounts:** User data is stored under `/users/{userId}`, providing path-based ownership and simplifying security rules.\n*   **Products:** Product information is stored in the `/products` collection. List operations are secured using rules.\n*   **Shopping Carts:** Shopping carts are stored as a subcollection of users, `/users/{userId}/shoppingCarts/{shoppingCartId}`. This reflects the `User 1:1 ShoppingCart` relationship and clear ownership.\n*   **Orders:** Orders are stored as a subcollection of users, `/users/{userId}/orders/{orderId}`, reflecting the `User 1:N Order` relationship and clear ownership.\n*   **AI Recommendations:** Recommendations are stored as a subcollection of users, `/users/{userId}/aiRecommendations/{recommendationId}`, reflecting the `User 1:N AiRecommendation` relationship and clear ownership."
   }
 }
-    

@@ -67,6 +67,18 @@ service cloud.firestore {
       allow delete: if isExistingOwner(userId);
 
       /**
+       * @description Rules for a user's saved addresses.
+       * @path /users/{userId}/addresses/{addressId}
+       * @allow (read, write) The owner of the user document accessing their own addresses.
+       * @deny A user trying to access another user's addresses.
+       * @principle Enforces document ownership for all operations within a user's private subcollection.
+       */
+      match /addresses/{addressId} {
+        allow read, update, delete: if isOwner(userId);
+        allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      }
+
+      /**
        * @description Rules for a user's ShoppingCart, containing product references.
        * @path /users/{userId}/shoppingCarts/{shoppingCartId}
        * @allow (get, list, create, update, delete) The owner of the user document accessing their own shopping cart.
