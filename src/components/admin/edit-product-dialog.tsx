@@ -27,6 +27,13 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -48,9 +55,10 @@ type ProductFormValues = z.infer<typeof productFormSchema>;
 
 interface EditProductDialogProps {
   product: Product & { id: string };
+  categories: string[];
 }
 
-export function EditProductDialog({ product }: EditProductDialogProps) {
+export function EditProductDialog({ product, categories }: EditProductDialogProps) {
   const [open, setOpen] = useState(false);
   const firestore = useFirestore();
   const { toast } = useToast();
@@ -60,11 +68,11 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productFormSchema),
     defaultValues: {
-      name: '',
-      description: '',
-      price: 0,
-      category: '',
-      imageUrl: '',
+      name: product.name || '',
+      description: product.description || '',
+      price: product.price || 0,
+      category: product.category || '',
+      imageUrl: product.imageUrl || '',
     },
   });
 
@@ -172,9 +180,21 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
                 render={({ field }) => (
                   <FormItem className="space-y-1">
                     <FormLabel>Category</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., Skin care" {...field} />
-                    </FormControl>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a category" />
+                            </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                            {categories.map(category => (
+                                <SelectItem key={category} value={category}>{category}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      To add a new category, use the "Add Product" dialog.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

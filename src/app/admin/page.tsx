@@ -99,7 +99,7 @@ export default function AdminPage() {
   useEffect(() => {
     if (allProducts) {
       setFilteredProducts(allProducts);
-      const categories = ["All Categories", ...Array.from(new Set(allProducts.map(p => p.category)))];
+      const categories = ["All Categories", ...Array.from(new Set(allProducts.map(p => p.category).filter(Boolean)))];
       setAllCategories(categories);
     }
   }, [allProducts]);
@@ -113,6 +113,8 @@ export default function AdminPage() {
       setFilteredProducts(allProducts.filter(p => p.category === category));
     }
   };
+
+  const productCategories = allCategories.filter(c => c !== "All Categories");
 
 
   return (
@@ -339,7 +341,7 @@ export default function AdminPage() {
                                                 <TableCell>₹{product.price.toFixed(2)}</TableCell>
                                                 <TableCell>
                                                     <div className="flex gap-2">
-                                                        <EditProductDialog product={product} />
+                                                        <EditProductDialog product={product} categories={productCategories} />
                                                         <DeleteProductDialog product={product} />
                                                     </div>
                                                 </TableCell>
