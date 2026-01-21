@@ -53,14 +53,12 @@ service cloud.firestore {
     }
 
     /**
-     * @description Rules for UserAccount documents, which store user profile and address information.
-     * @path /users/{userId}
-     * @allow (create) An authenticated user creating their own user account document. `request.auth.uid == userId`.
-     * @deny (get) An authenticated user trying to read another user's account document.
-     * @principle Restricts access to a user's own data tree and prevents user enumeration.
+     * @description Rules for UserAccount documents.
+     * Admins need `get` access to user documents so that collection group queries can work.
+     * A collection group query needs to check the parent document's existence.
      */
     match /users/{userId} {
-      allow get: if isOwner(userId);
+      allow get: if isOwner(userId) || isAdmin();
       allow list: if false; // Disallow listing all users for security and privacy.
       allow create: if isOwner(userId) && request.resource.data.id == userId;
       allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
@@ -68,10 +66,6 @@ service cloud.firestore {
 
       /**
        * @description Rules for a user's saved addresses.
-       * @path /users/{userId}/addresses/{addressId}
-       * @allow (read, write) The owner of the user document accessing their own addresses.
-       * @deny A user trying to access another user's addresses.
-       * @principle Enforces document ownership for all operations within a user's private subcollection.
        */
       match /addresses/{addressId} {
         allow read, update, delete: if isOwner(userId);
@@ -79,11 +73,7 @@ service cloud.firestore {
       }
 
       /**
-       * @description Rules for a user's ShoppingCart, containing product references.
-       * @path /users/{userId}/shoppingCarts/{shoppingCartId}
-       * @allow (get, list, create, update, delete) The owner of the user document accessing their own shopping cart.
-       * @deny (get) A user trying to access another user's shopping cart.
-       * @principle Enforces document ownership for all operations within a user's private subcollection.
+       * @description Rules for a user's ShoppingCart.
        */
       match /shoppingCarts/{shoppingCartId} {
         allow get: if isOwner(userId);
@@ -92,28 +82,9 @@ service cloud.firestore {
         allow update: if isExistingOwner(userId) && request.resource.data.userAccountId == resource.data.userAccountId;
         allow delete: if isExistingOwner(userId);
       }
-
-      /**
-       * @description Rules for a user's Orders, representing their purchase history.
-       * @path /users/{userId}/orders/{orderId}
-       * @allow (get, list, create, update, delete) The owner of the user document accessing their own orders.
-       * @deny (update) A user trying to modify another user's order history.
-       * @principle Enforces document ownership for all operations within a user's private subcollection.
-       */
-      match /orders/{orderId} {
-        allow get: if isOwner(userId);
-        allow list: if isOwner(userId);
-        allow create: if isOwner(userId) && request.resource.data.userAccountId == userId;
-        allow update: if isExistingOwner(userId) && request.resource.data.userAccountId == resource.data.userAccountId;
-        allow delete: if isExistingOwner(userId);
-      }
-
+      
       /**
        * @description Rules for AI-generated product recommendations for a specific user.
-       * @path /users/{userId}/aiRecommendations/{recommendationId}
-       * @allow (get, list, create, update, delete) The owner of the user document accessing their own recommendations.
-       * @deny (create) A user trying to create a recommendation for another user.
-       * @principle Enforces document ownership for all operations within a user's private subcollection.
        */
       match /aiRecommendations/{recommendationId} {
         allow get: if isOwner(userId);
@@ -125,11 +96,22 @@ service cloud.firestore {
     }
 
     /**
+     * @description Collection group rules for all `orders` collections.
+     * This is required for the admin dashboard to query all orders across all users.
+     */
+    match /{path=**}/orders/{orderId} {
+        // Admin can list all orders for the dashboard.
+        allow list, update: if isAdmin();
+        // An admin can get any order. A user can only get their own order.
+        allow get: if isAdmin() || isOwner(resource.data.userAccountId);
+        // A user can create an order for themselves.
+        allow create: if isOwner(request.resource.data.userAccountId);
+        // Nobody can delete orders from the client-side for data integrity.
+        allow delete: if false;
+    }
+
+    /**
      * @description Rules for Product documents, which are part of the public product catalog.
-     * @path /products/{productId}
-     * @allow (get, list) Any user, including unauthenticated users, can view products.
-     * @deny (create, update, delete) Write operations are restricted to admin users to protect catalog integrity.
-     * @principle Provides public read access while securing write operations.
      */
     match /products/{productId} {
       allow get: if true;

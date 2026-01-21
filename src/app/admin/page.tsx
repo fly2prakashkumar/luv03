@@ -38,11 +38,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Product } from "@/lib/types";
+import type { Product, Order } from "@/lib/types";
 import { AddProductDialog } from "@/components/admin/add-product-dialog";
 import { EditProductDialog } from "@/components/admin/edit-product-dialog";
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection } from "firebase/firestore";
+import { collection, collectionGroup } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DeleteProductDialog } from "@/components/admin/delete-product-dialog";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -89,10 +89,23 @@ export default function AdminPage() {
   const productsCollection = useMemoFirebase(() => firestore ? collection(firestore, 'products') : null, [firestore]);
   const { data: allProducts, isLoading: isLoadingProducts } = useCollection<Product>(productsCollection);
 
+  const ordersCollectionGroup = useMemoFirebase(() => firestore ? collectionGroup(firestore, 'orders') : null, [firestore]);
+  const { data: allOrders, isLoading: isLoadingOrders } = useCollection<Order>(ordersCollectionGroup);
+
   const totalStock = useMemo(() => {
     if (!allProducts) return 0;
     return allProducts.reduce((sum, product) => sum + (Number(product.stock) || 0), 0);
   }, [allProducts]);
+
+  const totalSales = useMemo(() => {
+    if (!allOrders) return 0;
+    return allOrders.length;
+  }, [allOrders]);
+
+  const totalRevenue = useMemo(() => {
+    if (!allOrders) return 0;
+    return allOrders.reduce((sum, order) => sum + order.totalAmount, 0);
+  }, [allOrders]);
 
   const [filteredProducts, setFilteredProducts] = useState<(Product & { id: string })[] | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
@@ -159,15 +172,23 @@ export default function AdminPage() {
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
+                                <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
                                 <DollarSign className="h-4 w-4 text-muted-foreground" />
                             </CardHeader>
                             <CardContent>
-                                <div className="text-2xl font-bold">₹24,560</div>
-                                <p className="text-xs text-muted-foreground flex items-center">
-                                    <ArrowUp className="h-3 w-3 text-foreground mr-1"/>
-                                    +12% from last month
-                                </p>
+                                {isLoadingOrders ? (
+                                    <div className="space-y-1">
+                                        <Skeleton className="h-8 w-24" />
+                                        <Skeleton className="h-4 w-28" />
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="text-2xl font-bold">₹{totalRevenue.toLocaleString('en-IN')}</div>
+                                        <p className="text-xs text-muted-foreground">
+                                            From {totalSales} orders
+                                        </p>
+                                    </>
+                                )}
                             </CardContent>
                         </Card>
                          <Card>
@@ -176,8 +197,17 @@ export default function AdminPage() {
                                 <ShoppingCart className="h-4 w-4 text-muted-foreground" />
                             </CardHeader>
                             <CardContent>
-                                <div className="text-2xl font-bold">+1,245</div>
-                                 <p className="text-xs text-muted-foreground">+18.2% from last month</p>
+                                {isLoadingOrders ? (
+                                    <div className="space-y-1">
+                                        <Skeleton className="h-8 w-20" />
+                                        <Skeleton className="h-4 w-24" />
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="text-2xl font-bold">+{totalSales}</div>
+                                        <p className="text-xs text-muted-foreground">Total orders placed</p>
+                                    </>
+                                )}
                             </CardContent>
                         </Card>
                          <Card>
@@ -387,5 +417,4 @@ export default function AdminPage() {
     </div>
   );
 }
-
     

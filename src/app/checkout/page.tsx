@@ -22,8 +22,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useEffect } from "react";
 import { useUser, useFirestore, useCollection, useMemoFirebase } from "@/firebase";
-import { collection } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { errorEmitter } from "@/firebase/error-emitter";
+import { FirestorePermissionError } from "@/firebase/errors";
 
 
 const formSchema = z.object({
@@ -103,16 +105,58 @@ export default function CheckoutPage() {
     }
   }, [user, form]);
 
-  function onSubmit(values: FormValues) {
-    console.log("Order submitted:", values);
-    toast({
-      title: "Order Placed!",
-      description: "Thank you for your purchase. We are preparing your order.",
-    });
-    dispatch({ type: 'CLEAR_CART' });
-    // In a real app, you would create an order and get an ID
-    const mockOrderId = `luv-${Date.now()}`;
-    router.push(`/orders/${mockOrderId}`);
+  async function onSubmit(values: FormValues) {
+    if (!user || !firestore) {
+      toast({
+        variant: 'destructive',
+        title: 'Authentication Error',
+        description: 'You must be logged in to place an order.',
+      });
+      return;
+    }
+
+    const orderPayload = {
+      userAccountId: user.uid,
+      items: state.cartItems.map((item) => ({
+        productId: item.product.id,
+        name: item.product.name,
+        quantity: item.quantity,
+        price: item.product.price,
+        imageUrls: item.product.imageUrls,
+      })),
+      totalAmount: total,
+      shippingAddress: {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        address: values.address,
+        city: values.city,
+        postalCode: values.postalCode,
+        country: values.country,
+      },
+      orderDate: serverTimestamp(),
+      status: 'placed',
+    };
+
+    try {
+      const ordersCollection = collection(firestore, 'users', user.uid, 'orders');
+      const docRef = await addDoc(ordersCollection, orderPayload);
+      
+      toast({
+        title: 'Order Placed!',
+        description: 'Thank you for your purchase. We are preparing your order.',
+      });
+      dispatch({ type: 'CLEAR_CART' });
+      router.push(`/orders/${docRef.id}`);
+
+    } catch (serverError) {
+        const ordersCollection = collection(firestore, 'users', user.uid, 'orders');
+        const permissionError = new FirestorePermissionError({
+            path: ordersCollection.path,
+            operation: 'create',
+            requestResourceData: orderPayload,
+        });
+        errorEmitter.emit('permission-error', permissionError);
+    }
   }
 
   useEffect(() => {

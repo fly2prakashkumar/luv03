@@ -156,25 +156,44 @@
       "type": "object",
       "description": "Represents a user's order.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the order."
-        },
         "userAccountId": {
           "type": "string",
-          "description": "Reference to UserAccount. (Relationship: UserAccount 1:N Order)"
+          "description": "Reference to UserAccount."
         },
-        "productIds": {
+        "items": {
           "type": "array",
-          "description": "References to Products. (Relationship: Order 1:N Product)",
+          "description": "The items included in the order.",
           "items": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "productId": { "type": "string" },
+              "name": { "type": "string" },
+              "quantity": { "type": "number" },
+              "price": { "type": "number" },
+              "imageUrls": { "type": "array", "items": { "type": "string" } }
+            },
+            "required": ["productId", "name", "quantity", "price"]
           }
         },
+        "totalAmount": {
+          "type": "number",
+          "description": "The total amount of the order."
+        },
+        "shippingAddress": {
+          "type": "object",
+          "properties": {
+            "firstName": { "type": "string" },
+            "lastName": { "type": "string" },
+            "address": { "type": "string" },
+            "city": { "type": "string" },
+            "postalCode": { "type": "string" },
+            "country": { "type": "string" }
+          },
+          "required": ["firstName", "lastName", "address", "city", "postalCode", "country"]
+        },
         "orderDate": {
-          "type": "string",
-          "description": "Date the order was placed.",
-          "format": "date-time"
+          "type": "object",
+          "description": "Date the order was placed (Firestore Server Timestamp)."
         },
         "status": {
           "type": "string",
@@ -182,9 +201,10 @@
         }
       },
       "required": [
-        "id",
         "userAccountId",
-        "productIds",
+        "items",
+        "totalAmount",
+        "shippingAddress",
         "orderDate",
         "status"
       ]

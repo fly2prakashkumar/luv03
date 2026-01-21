@@ -13,4 +13,32 @@ export type CartItem = {
   quantity: number;
 };
 
-    
+export interface OrderItem {
+  productId: string;
+  name: string;
+  quantity: number;
+  price: number;
+  imageUrls: string[];
+}
+
+export interface ShippingAddress {
+    firstName: string;
+    lastName: string;
+    address: string;
+    city: string;
+    postalCode: string;
+    country: string;
+}
+
+export type Order = {
+  id: string; // Firestore document ID
+  userAccountId: string;
+  items: OrderItem[];
+  totalAmount: number;
+  shippingAddress: ShippingAddress;
+  orderDate: {
+    seconds: number;
+    nanoseconds: number;
+  }; // Firestore Timestamp
+  status: 'placed' | 'shipped' | 'delivered' | 'cancelled';
+};
