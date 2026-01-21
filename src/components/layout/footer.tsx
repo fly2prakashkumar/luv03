@@ -76,7 +76,7 @@ export function AppFooter() {
                   </li>
                   <li className="flex items-center space-x-2">
                       <Mail className="h-4 w-4"/>
-                      <a href="mailto:contact@luvo3.com" className="transition-colors">contact@luvo3.com</a>
+                      <a href="mailto:info@luvo3.com" className="transition-colors">info@luvo3.com</a>
                   </li>
               </ul>
             </div>
