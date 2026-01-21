@@ -504,19 +504,19 @@ export default function AdminPage() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {allOrders.sort((a, b) => b.orderDate.seconds - a.orderDate.seconds).map(order => (
+                                    {allOrders.sort((a, b) => (b.orderDate?.seconds || 0) - (a.orderDate?.seconds || 0)).map(order => (
                                         <TableRow key={order.id}>
                                             <TableCell className="font-mono text-xs sm:text-sm truncate">{order.id}</TableCell>
-                                            <TableCell>{order.shippingAddress.firstName} {order.shippingAddress.lastName}</TableCell>
-                                            <TableCell className="hidden md:table-cell">{format(new Date(order.orderDate.seconds * 1000), 'PP')}</TableCell>
+                                            <TableCell>{order.shippingAddress?.firstName} {order.shippingAddress?.lastName}</TableCell>
+                                            <TableCell className="hidden md:table-cell">{order.orderDate?.seconds ? format(new Date(order.orderDate.seconds * 1000), 'PP') : 'N/A'}</TableCell>
                                             <TableCell className="hidden md:table-cell">
                                                 <Badge variant={
                                                     order.status === 'placed' ? 'default' : 
                                                     order.status === 'shipped' ? 'secondary' :
                                                     'outline'
-                                                } className="capitalize">{order.status}</Badge>
+                                                } className="capitalize">{order.status || 'unknown'}</Badge>
                                             </TableCell>
-                                            <TableCell className="text-right">₹{order.totalAmount.toFixed(2)}</TableCell>
+                                            <TableCell className="text-right">₹{(order.totalAmount || 0).toFixed(2)}</TableCell>
                                             <TableCell className="text-right">
                                                 <Button asChild variant="outline" size="sm">
                                                     <Link href={`/orders/${order.id}`}>View</Link>
