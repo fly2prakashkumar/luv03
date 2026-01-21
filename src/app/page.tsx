@@ -210,7 +210,7 @@ export default function Home() {
         <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl md:text-4xl font-headline font-bold">Where Nature Meets Innovation</h2>
             <p className="mt-4 max-w-3xl mx-auto text-muted-foreground">
-                The ozonia herbs is India's first advanced skin and oral care products using ozonated organic oils. Everything is crafted in-house in labs to guarantee the highest levels of purity, potency, and performance for every skin type.
+                Luv O3 is India's first advanced skin and oral care products using ozonated organic oils. Everything is crafted in-house in labs to guarantee the highest levels of purity, potency, and performance for every skin type.
             </p>
         </div>
       </section>
