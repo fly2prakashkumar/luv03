@@ -85,11 +85,11 @@ function OrderDetails() {
                     </div>
                     <div className="text-sm text-muted-foreground">
                         <p>Placed on: {order.orderDate?.seconds ? format(new Date(order.orderDate.seconds * 1000), 'PPP') : 'N/A'}</p>
-                        <p>Status: <Badge variant={
+                        <div>Status: <Badge variant={
                             order.status === 'placed' ? 'default' : 
                             order.status === 'shipped' ? 'secondary' :
                             'outline'
-                        } className="capitalize ml-1">{order.status || 'unknown'}</Badge></p>
+                        } className="capitalize ml-1">{order.status || 'unknown'}</Badge></div>
                     </div>
                 </div>
             </CardHeader>
