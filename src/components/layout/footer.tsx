@@ -72,7 +72,7 @@ export function AppFooter() {
                   </li>
                   <li className="flex items-center space-x-2">
                       <Phone className="h-4 w-4"/>
-                      <span>+91 123456789</span>
+                      <span>+91 97893 23107</span>
                   </li>
                   <li className="flex items-center space-x-2">
                       <Mail className="h-4 w-4"/>
