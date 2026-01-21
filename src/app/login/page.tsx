@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from "next/link";
@@ -8,13 +7,15 @@ import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { useUser, useAuth } from "@/firebase";
+import { useUser, useAuth, useFirestore } from "@/firebase";
 import {
   signInWithEmailAndPassword,
   signInWithRedirect,
   GoogleAuthProvider,
   getRedirectResult,
+  User,
 } from 'firebase/auth';
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512" {...props} fill="currentColor">
@@ -28,19 +29,39 @@ export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
   const auth = useAuth();
+  const firestore = useFirestore();
   const { user, isUserLoading } = useUser();
   const [isSigningIn, setIsSigningIn] = useState(true);
 
+  const ensureUserDocument = async (user: User) => {
+    if (!firestore) return;
+    const userDocRef = doc(firestore, 'users', user.uid);
+    const userDoc = await getDoc(userDocRef);
+
+    if (!userDoc.exists()) {
+      const nameParts = user.displayName?.split(' ') || [];
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+
+      await setDoc(userDocRef, {
+        id: user.uid,
+        email: user.email,
+        firstName: firstName,
+        lastName: lastName,
+      });
+    }
+  };
+
   useEffect(() => {
-    if (auth) {
+    if (auth && firestore) {
       getRedirectResult(auth)
-        .then((result) => {
+        .then(async (result) => {
           if (result) {
+            await ensureUserDocument(result.user);
             toast({
               title: "Login Successful",
               description: "Welcome!",
             });
-            // The other useEffect will handle the redirect.
           }
           setIsSigningIn(false);
         })
@@ -57,7 +78,7 @@ export default function LoginPage() {
     } else {
       setIsSigningIn(false);
     }
-  }, [auth, toast]);
+  }, [auth, firestore, toast]);
 
   useEffect(() => {
     if (!isUserLoading && !isSigningIn && user) {
@@ -73,12 +94,12 @@ export default function LoginPage() {
     e.preventDefault();
     if (!auth) return;
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      await ensureUserDocument(userCredential.user);
       toast({
         title: "Login Successful",
         description: "Welcome back!",
       });
-      // The useEffect will handle the redirect
     } catch (error: any) {
       toast({
         variant: "destructive",

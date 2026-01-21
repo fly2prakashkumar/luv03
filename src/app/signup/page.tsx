@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -15,14 +14,16 @@ import { Label } from '@/components/ui/label';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { useUser, useAuth } from '@/firebase';
+import { useUser, useAuth, useFirestore } from '@/firebase';
 import {
   createUserWithEmailAndPassword,
   signInWithRedirect,
   GoogleAuthProvider,
   updateProfile,
   getRedirectResult,
+  User,
 } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512" {...props} fill="currentColor">
@@ -40,14 +41,35 @@ export default function SignupPage() {
   const router = useRouter();
   const { toast } = useToast();
   const auth = useAuth();
+  const firestore = useFirestore();
   const { user, isUserLoading } = useUser();
   const [isSigningIn, setIsSigningIn] = useState(true);
 
+  const ensureUserDocument = async (user: User, fName?: string, lName?: string) => {
+    if (!firestore) return;
+    const userDocRef = doc(firestore, 'users', user.uid);
+    const userDoc = await getDoc(userDocRef);
+
+    if (!userDoc.exists()) {
+      const nameParts = user.displayName?.split(' ') || [];
+      const finalFirstName = fName || nameParts[0] || '';
+      const finalLastName = lName || nameParts.slice(1).join(' ') || '';
+
+      await setDoc(userDocRef, {
+        id: user.uid,
+        email: user.email,
+        firstName: finalFirstName,
+        lastName: finalLastName,
+      });
+    }
+  };
+
   useEffect(() => {
-    if (auth) {
+    if (auth && firestore) {
       getRedirectResult(auth)
-        .then((result) => {
+        .then(async (result) => {
           if (result) {
+            await ensureUserDocument(result.user);
             toast({
               title: "Sign-in Successful",
               description: "Welcome!",
@@ -68,7 +90,7 @@ export default function SignupPage() {
     } else {
       setIsSigningIn(false);
     }
-  }, [auth, toast]);
+  }, [auth, firestore, toast]);
 
   useEffect(() => {
     if (!isUserLoading && !isSigningIn && user) {
@@ -93,12 +115,12 @@ export default function SignupPage() {
         await updateProfile(userCredential.user, {
           displayName: `${firstName} ${lastName}`.trim()
         });
+        await ensureUserDocument(userCredential.user, firstName, lastName);
       }
       toast({
         title: "Account Created",
         description: "Welcome! You are now signed in.",
       });
-      // The useEffect will handle the redirect
     } catch (error: any) {
       toast({
         variant: "destructive",
