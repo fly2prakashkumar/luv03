@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -9,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { DollarSign, ShoppingCart, Package, ArrowUp, Star, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { DollarSign, ShoppingCart, Package, Star, MoreHorizontal } from 'lucide-react';
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import {
@@ -55,12 +56,6 @@ const salesData = [
   { name: 'May', revenue: 5890, orders: 4800 },
   { name: 'Jun', revenue: 4390, orders: 3800 },
   { name: 'Jul', revenue: 5490, orders: 4300 },
-];
-
-const bestSellers = [
-  { name: 'Radiant Glow Serum', sales: 1203, imageUrl: 'https://picsum.photos/seed/bestseller1/100/100' },
-  { name: 'Hydro-Boost Moisturizer', sales: 987, imageUrl: 'https://picsum.photos/seed/bestseller2/100/100' },
-  { name: 'Gentle Purifying Cleanser', sales: 754, imageUrl: 'https://picsum.photos/seed/bestseller3/100/100' },
 ];
 
 const reviews = [
@@ -133,6 +128,36 @@ export default function AdminPage() {
       return orderDate >= startOfDay;
     }).length;
   }, [allOrders, today]);
+  
+  const bestSellers = useMemo(() => {
+    if (!allOrders || !allProducts) return [];
+
+    const productSales: { [key: string]: number } = {};
+
+    allOrders.forEach(order => {
+      order.items.forEach(item => {
+        if (productSales[item.productId]) {
+          productSales[item.productId] += item.quantity;
+        } else {
+          productSales[item.productId] = item.quantity;
+        }
+      });
+    });
+
+    const sortedProducts = Object.entries(productSales)
+      .sort(([, salesA], [, salesB]) => salesB - salesA)
+      .slice(0, 3);
+
+    return sortedProducts.map(([productId, sales]) => {
+      const productDetails = allProducts.find(p => p.id === productId);
+      return {
+        id: productId,
+        name: productDetails?.name || 'Unknown Product',
+        sales,
+        imageUrl: productDetails?.imageUrls?.[0] || 'https://picsum.photos/seed/placeholder/100/100',
+      };
+    });
+  }, [allOrders, allProducts]);
 
   const [filteredProducts, setFilteredProducts] = useState<(Product & { id: string })[] | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
@@ -303,25 +328,35 @@ export default function AdminPage() {
                             </CardContent>
                         </Card>
                         <Card className="lg:col-span-3">
-                             <CardHeader>
+                            <CardHeader>
                                 <CardTitle>Best Sellers</CardTitle>
                                 <CardDescription>Your top-performing products this month.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <div className="space-y-4">
-                                    {bestSellers.map(product => (
-                                         <div key={product.name} className="flex items-center">
-                                            <Avatar className="h-9 w-9">
-                                                <AvatarImage src={product.imageUrl} alt={product.name}/>
-                                                <AvatarFallback>{product.name.charAt(0)}</AvatarFallback>
-                                            </Avatar>
-                                            <div className="ml-4 space-y-1">
-                                                <p className="text-sm font-medium leading-none">{product.name}</p>
+                                {isLoadingOrders || isLoadingProducts ? (
+                                    <div className="space-y-4">
+                                        <div className="flex items-center"><Skeleton className="h-9 w-9 rounded-full" /><div className="ml-4 space-y-1"><Skeleton className="h-4 w-32" /></div><Skeleton className="ml-auto h-4 w-12" /></div>
+                                        <div className="flex items-center"><Skeleton className="h-9 w-9 rounded-full" /><div className="ml-4 space-y-1"><Skeleton className="h-4 w-32" /></div><Skeleton className="ml-auto h-4 w-12" /></div>
+                                        <div className="flex items-center"><Skeleton className="h-9 w-9 rounded-full" /><div className="ml-4 space-y-1"><Skeleton className="h-4 w-32" /></div><Skeleton className="ml-auto h-4 w-12" /></div>
+                                    </div>
+                                ) : bestSellers.length > 0 ? (
+                                    <div className="space-y-4">
+                                        {bestSellers.map(product => (
+                                            <div key={product.id} className="flex items-center">
+                                                <Avatar className="h-9 w-9">
+                                                    <AvatarImage src={product.imageUrl} alt={product.name}/>
+                                                    <AvatarFallback>{product.name.charAt(0)}</AvatarFallback>
+                                                </Avatar>
+                                                <div className="ml-4 space-y-1">
+                                                    <p className="text-sm font-medium leading-none">{product.name}</p>
+                                                </div>
+                                                <div className="ml-auto font-medium">{product.sales} sales</div>
                                             </div>
-                                            <div className="ml-auto font-medium">{product.sales} sales</div>
-                                        </div>
-                                    ))}
-                                </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="text-sm text-muted-foreground text-center py-4">No sales data yet.</p>
+                                )}
                             </CardContent>
                         </Card>
                     </div>
