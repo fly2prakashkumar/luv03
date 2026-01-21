@@ -119,7 +119,7 @@ export default function AdminPage() {
 
   const totalRevenue = useMemo(() => {
     if (!allOrders) return 0;
-    return allOrders.reduce((sum, order) => sum + order.totalAmount, 0);
+    return allOrders.reduce((sum, order) => sum + (Number(order.totalAmount) || 0), 0);
   }, [allOrders]);
 
   const todaysOrdersCount = useMemo(() => {
