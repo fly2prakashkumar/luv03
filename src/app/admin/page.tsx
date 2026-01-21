@@ -48,18 +48,8 @@ import { collection, collectionGroup } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DeleteProductDialog } from "@/components/admin/delete-product-dialog";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { format } from "date-fns";
+import { format, subMonths } from "date-fns";
 import { Badge } from "@/components/ui/badge";
-
-const salesData = [
-  { name: 'Jan', revenue: 4000, orders: 2400 },
-  { name: 'Feb', revenue: 3000, orders: 1398 },
-  { name: 'Mar', revenue: 5000, orders: 9800 },
-  { name: 'Apr', revenue: 4780, orders: 3908 },
-  { name: 'May', revenue: 5890, orders: 4800 },
-  { name: 'Jun', revenue: 4390, orders: 3800 },
-  { name: 'Jul', revenue: 5490, orders: 4300 },
-];
 
 const reviews = [
     {
@@ -161,6 +151,43 @@ export default function AdminPage() {
       };
     });
   }, [allOrders, allProducts]);
+
+  const salesData = useMemo(() => {
+    const defaultData = Array.from({ length: 6 }).map((_, i) => {
+        const date = subMonths(new Date(), 5 - i);
+        return { name: format(date, 'MMM'), revenue: 0, orders: 0 };
+    });
+
+    if (!allOrders) return defaultData;
+
+    const salesByMonth: { [key: string]: { revenue: number, orders: number } } = {};
+
+    allOrders.forEach(order => {
+      if (!order.orderDate?.seconds) return;
+      const orderDate = new Date(order.orderDate.seconds * 1000);
+      const monthKey = format(orderDate, 'yyyy-MM');
+      
+      if (!salesByMonth[monthKey]) {
+        salesByMonth[monthKey] = { revenue: 0, orders: 0 };
+      }
+      
+      salesByMonth[monthKey].revenue += order.totalAmount || 0;
+      salesByMonth[monthKey].orders += 1;
+    });
+
+    const chartData = Array.from({ length: 6 }).map((_, i) => {
+        const date = subMonths(new Date(), 5 - i);
+        const monthKey = format(date, 'yyyy-MM');
+        const monthName = format(date, 'MMM');
+        return {
+            name: monthName,
+            revenue: salesByMonth[monthKey]?.revenue || 0,
+            orders: salesByMonth[monthKey]?.orders || 0,
+        };
+    });
+    
+    return chartData;
+  }, [allOrders]);
 
   const [filteredProducts, setFilteredProducts] = useState<(Product & { id: string })[] | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
@@ -308,26 +335,33 @@ export default function AdminPage() {
                         <Card className="lg:col-span-4">
                             <CardHeader>
                                 <CardTitle>Sales Overview</CardTitle>
-                                 <CardDescription>Revenue vs. Orders over the last 30 days.</CardDescription>
+                                 <CardDescription>Revenue vs. Orders over the last 6 months.</CardDescription>
                             </CardHeader>
                             <CardContent className="pl-2">
-                                <ResponsiveContainer width="100%" height={350}>
-                                    <LineChart data={salesData}>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" />
-                                        <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                                        <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `₹${value/1000}k`} />
-                                        <Tooltip
-                                            contentStyle={{
-                                                backgroundColor: "hsl(var(--background))",
-                                                borderColor: "hsl(var(--border))",
-                                                borderRadius: "var(--radius)",
-                                            }}
-                                        />
-                                        <Legend wrapperStyle={{fontSize: "12px"}}/>
-                                        <Line type="monotone" dataKey="revenue" stroke="hsl(var(--foreground))" strokeWidth={2} activeDot={{ r: 8 }} />
-                                        <Line type="monotone" dataKey="orders" stroke="hsl(var(--accent))" strokeWidth={2} />
-                                    </LineChart>
-                                </ResponsiveContainer>
+                                {isLoadingOrders ? (
+                                    <div className="flex items-center justify-center h-[350px]">
+                                        <Skeleton className="h-full w-full" />
+                                    </div>
+                                ) : (
+                                    <ResponsiveContainer width="100%" height={350}>
+                                        <LineChart data={salesData}>
+                                            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" />
+                                            <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                                            <YAxis yAxisId="left" stroke="hsl(var(--foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `₹${Math.round(value/1000)}k`} />
+                                            <YAxis yAxisId="right" orientation="right" stroke="hsl(var(--accent))" fontSize={12} tickLine={false} axisLine={false} />
+                                            <Tooltip
+                                                contentStyle={{
+                                                    backgroundColor: "hsl(var(--background))",
+                                                    borderColor: "hsl(var(--border))",
+                                                    borderRadius: "var(--radius)",
+                                                }}
+                                            />
+                                            <Legend wrapperStyle={{fontSize: "12px"}}/>
+                                            <Line yAxisId="left" type="monotone" dataKey="revenue" stroke="hsl(var(--foreground))" strokeWidth={2} activeDot={{ r: 8 }} name="Revenue" />
+                                            <Line yAxisId="right" type="monotone" dataKey="orders" stroke="hsl(var(--accent))" strokeWidth={2} name="Orders" />
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                )}
                             </CardContent>
                         </Card>
                         <Card className="lg:col-span-3">
