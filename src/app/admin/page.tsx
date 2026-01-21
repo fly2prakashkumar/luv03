@@ -93,6 +93,20 @@ export default function AdminPage() {
   const ordersCollectionGroup = useMemoFirebase(() => (firestore && !isUserLoading) ? collectionGroup(firestore, 'orders') : null, [firestore, isUserLoading]);
   const { data: allOrders, isLoading: isLoadingOrders } = useCollection<Order>(ordersCollectionGroup);
 
+  const [today, setToday] = useState(new Date());
+
+  useEffect(() => {
+    const now = new Date();
+    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    const msUntilMidnight = tomorrow.getTime() - now.getTime();
+
+    const timerId = setTimeout(() => {
+      setToday(new Date()); // This will trigger a re-render at midnight
+    }, msUntilMidnight);
+
+    return () => clearTimeout(timerId);
+  }, [today]); // Re-calculate timer when `today` changes (i.e., at every midnight)
+
   const totalStock = useMemo(() => {
     if (!allProducts) return 0;
     return allProducts.reduce((sum, product) => sum + (Number(product.stock) || 0), 0);
@@ -110,15 +124,15 @@ export default function AdminPage() {
 
   const todaysOrdersCount = useMemo(() => {
     if (!allOrders) return 0;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const startOfDay = new Date(today);
+    startOfDay.setHours(0, 0, 0, 0);
 
     return allOrders.filter(order => {
       if (!order.orderDate?.seconds) return false;
       const orderDate = new Date(order.orderDate.seconds * 1000);
-      return orderDate >= today;
+      return orderDate >= startOfDay;
     }).length;
-  }, [allOrders]);
+  }, [allOrders, today]);
 
   const [filteredProducts, setFilteredProducts] = useState<(Product & { id: string })[] | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
