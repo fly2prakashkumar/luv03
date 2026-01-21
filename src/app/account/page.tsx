@@ -42,6 +42,7 @@ interface Address {
   city: string;
   postalCode: string;
   country: string;
+  phone: string;
 }
 
 export default function AccountPage() {
@@ -139,6 +140,7 @@ export default function AccountPage() {
                     <Card key={address.id} className="p-4 flex justify-between items-start">
                       <div>
                         <p className="font-semibold">{address.firstName} {address.lastName}</p>
+                        <p className="text-sm text-muted-foreground">{address.phone}</p>
                         <p className="text-sm text-muted-foreground">{address.address}</p>
                         <p className="text-sm text-muted-foreground">{address.city}, {address.postalCode}</p>
                         <p className="text-sm text-muted-foreground">{address.country}</p>

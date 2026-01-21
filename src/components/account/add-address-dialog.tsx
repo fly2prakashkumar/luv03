@@ -39,6 +39,7 @@ const addressFormSchema = z.object({
   city: z.string().min(1, 'City is required'),
   postalCode: z.string().min(1, 'Postal code is required'),
   country: z.string().min(1, 'Country is required'),
+  phone: z.string().min(10, 'Please enter a valid 10-digit phone number.').max(10, 'Please enter a valid 10-digit phone number.'),
 });
 
 type AddressFormValues = z.infer<typeof addressFormSchema>;
@@ -59,6 +60,7 @@ export function AddAddressDialog() {
       city: '',
       postalCode: '',
       country: '',
+      phone: '',
     },
   });
 
@@ -150,6 +152,19 @@ export function AddAddressDialog() {
                   <FormLabel>Address</FormLabel>
                   <FormControl>
                     <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone</FormLabel>
+                  <FormControl>
+                    <Input type="tel" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

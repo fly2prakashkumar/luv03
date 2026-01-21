@@ -28,6 +28,7 @@ export interface ShippingAddress {
     city: string;
     postalCode: string;
     country: string;
+    phone: string;
 }
 
 export type Order = {

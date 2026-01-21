@@ -36,6 +36,7 @@ const formSchema = z.object({
   city: z.string().min(1, "City is required"),
   postalCode: z.string().min(1, "Postal code is required"),
   country: z.string().min(1, "Country is required"),
+  phone: z.string().min(10, 'Please enter a valid 10-digit phone number.').max(10, 'Please enter a valid 10-digit phone number.'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -48,6 +49,7 @@ interface Address {
     city: string;
     postalCode: string;
     country: string;
+    phone: string;
 }
 
 const UpiIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -89,6 +91,7 @@ export default function CheckoutPage() {
         city: "",
         postalCode: "",
         country: "",
+        phone: "",
     }
   });
 
@@ -132,6 +135,7 @@ export default function CheckoutPage() {
         city: values.city,
         postalCode: values.postalCode,
         country: values.country,
+        phone: values.phone,
       },
       orderDate: serverTimestamp(),
       status: 'placed',
@@ -205,6 +209,7 @@ export default function CheckoutPage() {
       form.setValue('city', selectedAddress.city);
       form.setValue('postalCode', selectedAddress.postalCode);
       form.setValue('country', selectedAddress.country);
+      form.setValue('phone', selectedAddress.phone);
     }
   };
 
@@ -294,6 +299,9 @@ export default function CheckoutPage() {
                         )}/></div>
                         <FormField control={form.control} name="address" render={({ field }) => (
                             <FormItem><FormLabel>Address</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                        )}/>
+                        <FormField control={form.control} name="phone" render={({ field }) => (
+                            <FormItem><FormLabel>Phone</FormLabel><FormControl><Input type="tel" {...field} /></FormControl><FormMessage /></FormItem>
                         )}/>
                         <div className="flex flex-col md:flex-row gap-4"><FormField control={form.control} name="city" render={({ field }) => (
                             <FormItem className="flex-1"><FormLabel>City</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>

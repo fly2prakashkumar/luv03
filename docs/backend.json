@@ -58,6 +58,9 @@
         },
         "country": {
           "type": "string"
+        },
+        "phone": {
+          "type": "string"
         }
       },
       "required": [
@@ -67,7 +70,8 @@
         "address",
         "city",
         "postalCode",
-        "country"
+        "country",
+        "phone"
       ]
     },
     "Product": {
@@ -187,9 +191,10 @@
             "address": { "type": "string" },
             "city": { "type": "string" },
             "postalCode": { "type": "string" },
-            "country": { "type": "string" }
+            "country": { "type": "string" },
+            "phone": { "type": "string" }
           },
-          "required": ["firstName", "lastName", "address", "city", "postalCode", "country"]
+          "required": ["firstName", "lastName", "address", "city", "postalCode", "country", "phone"]
         },
         "orderDate": {
           "type": "object",
