@@ -91,6 +91,14 @@ export default function AdminPage() {
 
   const ordersCollectionGroup = useMemoFirebase(() => firestore ? collectionGroup(firestore, 'orders') : null, [firestore]);
   const { data: allOrders, isLoading: isLoadingOrders } = useCollection<Order>(ordersCollectionGroup);
+  
+  const usersCollection = useMemoFirebase(() => firestore ? collection(firestore, 'users') : null, [firestore]);
+  const { data: allUsers, isLoading: isLoadingUsers } = useCollection(usersCollection);
+
+  const totalUsers = useMemo(() => {
+    if (!allUsers) return 0;
+    return allUsers.length;
+  }, [allUsers]);
 
   const totalStock = useMemo(() => {
     if (!allProducts) return 0;
@@ -212,12 +220,21 @@ export default function AdminPage() {
                         </Card>
                          <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">New Customers</CardTitle>
+                                <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
                                 <Users className="h-4 w-4 text-muted-foreground" />
                             </CardHeader>
                             <CardContent>
-                                <div className="text-2xl font-bold">+320</div>
-                                 <p className="text-xs text-muted-foreground">+25% from last month</p>
+                                {isLoadingUsers ? (
+                                    <div className="space-y-1">
+                                        <Skeleton className="h-8 w-20" />
+                                        <Skeleton className="h-4 w-24" />
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="text-2xl font-bold">{totalUsers}</div>
+                                        <p className="text-xs text-muted-foreground">Total registered users</p>
+                                    </>
+                                )}
                             </CardContent>
                         </Card>
                          <Card>
