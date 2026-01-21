@@ -1,6 +1,6 @@
 
 import Link from "next/link";
-import { Instagram, Facebook, MapPin, Phone } from "lucide-react";
+import { Instagram, Facebook, MapPin, Phone, Mail } from "lucide-react";
 import Image from "next/image";
 
 const navLinks = [
@@ -73,6 +73,10 @@ export function AppFooter() {
                   <li className="flex items-center space-x-2">
                       <Phone className="h-4 w-4"/>
                       <span>+91 123456789</span>
+                  </li>
+                  <li className="flex items-center space-x-2">
+                      <Mail className="h-4 w-4"/>
+                      <a href="mailto:contact@luvo3.com" className="transition-colors">contact@luvo3.com</a>
                   </li>
               </ul>
             </div>
