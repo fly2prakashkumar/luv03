@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { DollarSign, ShoppingCart, Users, Package, ArrowUp, Star, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { DollarSign, ShoppingCart, Package, ArrowUp, Star, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import {
@@ -92,14 +92,6 @@ export default function AdminPage() {
 
   const ordersCollectionGroup = useMemoFirebase(() => (firestore && !isUserLoading) ? collectionGroup(firestore, 'orders') : null, [firestore, isUserLoading]);
   const { data: allOrders, isLoading: isLoadingOrders } = useCollection<Order>(ordersCollectionGroup);
-  
-  const usersCollection = useMemoFirebase(() => (firestore && !isUserLoading) ? collection(firestore, 'users') : null, [firestore, isUserLoading]);
-  const { data: allUsers, isLoading: isLoadingUsers } = useCollection(usersCollection);
-
-  const totalUsers = useMemo(() => {
-    if (!allUsers) return 0;
-    return allUsers.length;
-  }, [allUsers]);
 
   const totalStock = useMemo(() => {
     if (!allProducts) return 0;
@@ -114,6 +106,18 @@ export default function AdminPage() {
   const totalRevenue = useMemo(() => {
     if (!allOrders) return 0;
     return allOrders.reduce((sum, order) => sum + order.totalAmount, 0);
+  }, [allOrders]);
+
+  const todaysOrdersCount = useMemo(() => {
+    if (!allOrders) return 0;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return allOrders.filter(order => {
+      if (!order.orderDate?.seconds) return false;
+      const orderDate = new Date(order.orderDate.seconds * 1000);
+      return orderDate >= today;
+    }).length;
   }, [allOrders]);
 
   const [filteredProducts, setFilteredProducts] = useState<(Product & { id: string })[] | null>(null);
@@ -219,21 +223,21 @@ export default function AdminPage() {
                                 )}
                             </CardContent>
                         </Card>
-                         <Card>
+                        <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
-                                <Users className="h-4 w-4 text-muted-foreground" />
+                                <CardTitle className="text-sm font-medium">Today's Orders</CardTitle>
+                                <ShoppingCart className="h-4 w-4 text-muted-foreground" />
                             </CardHeader>
                             <CardContent>
-                                {isLoadingUsers ? (
+                                {isLoadingOrders ? (
                                     <div className="space-y-1">
                                         <Skeleton className="h-8 w-20" />
                                         <Skeleton className="h-4 w-24" />
                                     </div>
                                 ) : (
                                     <>
-                                        <div className="text-2xl font-bold">{totalUsers}</div>
-                                        <p className="text-xs text-muted-foreground">Total registered users</p>
+                                        <div className="text-2xl font-bold">+{todaysOrdersCount}</div>
+                                        <p className="text-xs text-muted-foreground">Orders placed today</p>
                                     </>
                                 )}
                             </CardContent>
