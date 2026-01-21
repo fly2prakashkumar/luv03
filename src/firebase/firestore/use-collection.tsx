@@ -64,12 +64,13 @@ export function useCollection<T = any>(
   useEffect(() => {
     if (!memoizedTargetRefOrQuery) {
       setData(null);
-      setIsLoading(false);
+      setIsLoading(true);
       setError(null);
       return;
     }
 
     setError(null);
+    setIsLoading(true);
 
     // Directly use memoizedTargetRefOrQuery as it's assumed to be the final query
     const unsubscribe = onSnapshot(
@@ -85,10 +86,21 @@ export function useCollection<T = any>(
       },
       (error: FirestoreError) => {
         // This logic extracts the path from either a ref or a query
-        const path: string =
-          memoizedTargetRefOrQuery.type === 'collection'
-            ? (memoizedTargetRefOrQuery as CollectionReference).path
-            : (memoizedTargetRefOrQuery as unknown as InternalQuery)._query.path.canonicalString()
+        let path: string;
+        if(memoizedTargetRefOrQuery.type === 'collection') {
+            path = (memoizedTargetRefOrQuery as CollectionReference).path
+        } else {
+            // This is a query, which might be a collection group.
+            // The InternalQuery interface helps, but collection group queries
+            // don't have a simple .path.
+            const internalQuery = (memoizedTargetRefOrQuery as unknown as InternalQuery);
+            if (internalQuery._query?.path) {
+                path = internalQuery._query.path.canonicalString()
+            } else {
+                // Fallback for collection group queries. The error will show the path.
+                path = `collection group '${(memoizedTargetRefOrQuery as any)._query.collectionGroup}'`
+            }
+        }
 
         const contextualError = new FirestorePermissionError({
           operation: 'list',

@@ -50,12 +50,13 @@ export function useDoc<T = any>(
   useEffect(() => {
     if (!memoizedDocRef) {
       setData(null);
-      setIsLoading(false);
+      setIsLoading(true);
       setError(null);
       return;
     }
 
     setError(null);
+    setIsLoading(true);
 
     const unsubscribe = onSnapshot(
       memoizedDocRef,

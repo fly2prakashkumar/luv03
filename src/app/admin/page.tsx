@@ -41,7 +41,7 @@ import {
 import type { Product, Order } from "@/lib/types";
 import { AddProductDialog } from "@/components/admin/add-product-dialog";
 import { EditProductDialog } from "@/components/admin/edit-product-dialog";
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { useCollection, useFirestore, useMemoFirebase, useUser } from "@/firebase";
 import { collection, collectionGroup } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DeleteProductDialog } from "@/components/admin/delete-product-dialog";
@@ -86,13 +86,14 @@ const reviews = [
 
 export default function AdminPage() {
   const firestore = useFirestore();
+  const { isUserLoading } = useUser();
   const productsCollection = useMemoFirebase(() => firestore ? collection(firestore, 'products') : null, [firestore]);
   const { data: allProducts, isLoading: isLoadingProducts } = useCollection<Product>(productsCollection);
 
-  const ordersCollectionGroup = useMemoFirebase(() => firestore ? collectionGroup(firestore, 'orders') : null, [firestore]);
+  const ordersCollectionGroup = useMemoFirebase(() => (firestore && !isUserLoading) ? collectionGroup(firestore, 'orders') : null, [firestore, isUserLoading]);
   const { data: allOrders, isLoading: isLoadingOrders } = useCollection<Order>(ordersCollectionGroup);
   
-  const usersCollection = useMemoFirebase(() => firestore ? collection(firestore, 'users') : null, [firestore]);
+  const usersCollection = useMemoFirebase(() => (firestore && !isUserLoading) ? collection(firestore, 'users') : null, [firestore, isUserLoading]);
   const { data: allUsers, isLoading: isLoadingUsers } = useCollection(usersCollection);
 
   const totalUsers = useMemo(() => {
