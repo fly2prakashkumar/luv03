@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DollarSign, ShoppingCart, Package, Star, MoreHorizontal } from 'lucide-react';
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   ResponsiveContainer,
   LineChart,
@@ -47,6 +48,8 @@ import { collection, collectionGroup } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DeleteProductDialog } from "@/components/admin/delete-product-dialog";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { format } from "date-fns";
+import { Badge } from "@/components/ui/badge";
 
 const salesData = [
   { name: 'Jan', revenue: 4000, orders: 2400 },
@@ -480,7 +483,54 @@ export default function AdminPage() {
                         <CardDescription>View and process customer orders.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-muted-foreground">Order management interface coming soon.</p>
+                        {isLoadingOrders ? (
+                            <div className="space-y-4">
+                                <Skeleton className="h-10 w-full" />
+                                <Skeleton className="h-12 w-full" />
+                                <Skeleton className="h-12 w-full" />
+                                <Skeleton className="h-12 w-full" />
+                                <Skeleton className="h-12 w-full" />
+                            </div>
+                        ) : allOrders && allOrders.length > 0 ? (
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="w-[100px] sm:w-[150px]">Order ID</TableHead>
+                                        <TableHead>Customer</TableHead>
+                                        <TableHead className="hidden md:table-cell">Date</TableHead>
+                                        <TableHead className="hidden md:table-cell">Status</TableHead>
+                                        <TableHead className="text-right">Amount</TableHead>
+                                        <TableHead className="w-[80px] text-right">Actions</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {allOrders.sort((a, b) => b.orderDate.seconds - a.orderDate.seconds).map(order => (
+                                        <TableRow key={order.id}>
+                                            <TableCell className="font-mono text-xs sm:text-sm truncate">{order.id}</TableCell>
+                                            <TableCell>{order.shippingAddress.firstName} {order.shippingAddress.lastName}</TableCell>
+                                            <TableCell className="hidden md:table-cell">{format(new Date(order.orderDate.seconds * 1000), 'PP')}</TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                                <Badge variant={
+                                                    order.status === 'placed' ? 'default' : 
+                                                    order.status === 'shipped' ? 'secondary' :
+                                                    'outline'
+                                                } className="capitalize">{order.status}</Badge>
+                                            </TableCell>
+                                            <TableCell className="text-right">₹{order.totalAmount.toFixed(2)}</TableCell>
+                                            <TableCell className="text-right">
+                                                <Button asChild variant="outline" size="sm">
+                                                    <Link href={`/orders/${order.id}`}>View</Link>
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        ) : (
+                            <div className="text-center py-10">
+                                <p className="text-muted-foreground">No orders have been placed yet.</p>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
             </TabsContent>
@@ -488,4 +538,6 @@ export default function AdminPage() {
     </div>
   );
 }
+    
+
     
