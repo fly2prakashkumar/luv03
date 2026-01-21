@@ -22,7 +22,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useEffect } from "react";
 import { useUser, useFirestore, useCollection, useMemoFirebase } from "@/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, serverTimestamp, runTransaction, doc, increment } from "firebase/firestore";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
@@ -138,24 +138,53 @@ export default function CheckoutPage() {
     };
 
     try {
-      const ordersCollection = collection(firestore, 'users', user.uid, 'orders');
-      const docRef = await addDoc(ordersCollection, orderPayload);
-      
+      const newOrderRef = doc(collection(firestore, 'users', user.uid, 'orders'));
+
+      await runTransaction(firestore, async (transaction) => {
+        // Read all product documents first
+        const productRefs = state.cartItems.map(item => doc(firestore, 'products', item.product.id));
+        const productDocs = await Promise.all(productRefs.map(ref => transaction.get(ref)));
+
+        // Validate stock
+        for (let i = 0; i < state.cartItems.length; i++) {
+          const item = state.cartItems[i];
+          const productDoc = productDocs[i];
+
+          if (!productDoc.exists()) {
+            throw new Error(`Product "${item.product.name}" is no longer available.`);
+          }
+          const currentStock = productDoc.data().stock;
+          if (currentStock < item.quantity) {
+            throw new Error(`Not enough stock for ${item.product.name}. Only ${currentStock} left, but you have ${item.quantity} in your cart.`);
+          }
+        }
+        
+        // If all validations pass, perform the writes
+        // 1. Create the order
+        transaction.set(newOrderRef, orderPayload);
+
+        // 2. Decrement stock for each product
+        for (const item of state.cartItems) {
+          const productRef = doc(firestore, 'products', item.product.id);
+          transaction.update(productRef, { stock: increment(-item.quantity) });
+        }
+      });
+
+      // If transaction is successful
       toast({
         title: 'Order Placed!',
         description: 'Thank you for your purchase. We are preparing your order.',
       });
       dispatch({ type: 'CLEAR_CART' });
-      router.push(`/orders/${docRef.id}`);
+      router.push(`/orders/${newOrderRef.id}`);
 
-    } catch (serverError) {
-        const ordersCollection = collection(firestore, 'users', user.uid, 'orders');
-        const permissionError = new FirestorePermissionError({
-            path: ordersCollection.path,
-            operation: 'create',
-            requestResourceData: orderPayload,
-        });
-        errorEmitter.emit('permission-error', permissionError);
+    } catch (error: any) {
+      console.error("Order transaction failed: ", error);
+      toast({
+        variant: 'destructive',
+        title: 'Order Failed',
+        description: error.message || 'There was a problem placing your order. Please try again.',
+      });
     }
   }
 
