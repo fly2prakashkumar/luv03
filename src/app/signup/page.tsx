@@ -17,19 +17,10 @@ import { useToast } from '@/hooks/use-toast';
 import { useUser, useAuth, useFirestore } from '@/firebase';
 import {
   createUserWithEmailAndPassword,
-  signInWithRedirect,
-  GoogleAuthProvider,
   updateProfile,
-  getRedirectResult,
   User,
 } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-
-const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512" {...props} fill="currentColor">
-      <path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 126 23.4 172.9 61.9l-76.2 74.2C313.6 113.4 283.3 97.4 248 97.4c-85.3 0-153.9 68.6-153.9 158.6s68.6 158.6 153.9 158.6c99.9 0 137.3-82.9 140.8-120.9H248v-94.2h236.3c4.7 25.4 7.7 54.2 7.7 84.1z"/>
-    </svg>
-  );
 
 export default function SignupPage() {
   const [firstName, setFirstName] = useState('');
@@ -43,7 +34,7 @@ export default function SignupPage() {
   const auth = useAuth();
   const firestore = useFirestore();
   const { user, isUserLoading } = useUser();
-  const [isSigningIn, setIsSigningIn] = useState(true);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const ensureUserDocument = async (user: User, fName?: string, lName?: string) => {
     if (!firestore) return;
@@ -65,38 +56,10 @@ export default function SignupPage() {
   };
 
   useEffect(() => {
-    if (auth && firestore) {
-      getRedirectResult(auth)
-        .then(async (result) => {
-          if (result) {
-            await ensureUserDocument(result.user);
-            toast({
-              title: "Sign-in Successful",
-              description: "Welcome!",
-            });
-          }
-          setIsSigningIn(false);
-        })
-        .catch((error) => {
-          if (error.code !== 'auth/no-redirect-operation') {
-            toast({
-              variant: "destructive",
-              title: "Google Sign-In Failed",
-              description: error.message || "Could not sign in with Google.",
-            });
-          }
-          setIsSigningIn(false);
-        });
-    } else {
-      setIsSigningIn(false);
-    }
-  }, [auth, firestore, toast]);
-
-  useEffect(() => {
-    if (!isUserLoading && !isSigningIn && user) {
+    if (!isUserLoading && user) {
         router.push('/account');
     }
-  }, [user, isUserLoading, isSigningIn, router]);
+  }, [user, isUserLoading, router]);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -109,6 +72,7 @@ export default function SignupPage() {
       });
       return;
     }
+    setIsProcessing(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       if (userCredential.user) {
@@ -127,16 +91,12 @@ export default function SignupPage() {
         title: "Signup Failed",
         description: error.message || "Could not create your account.",
       });
+    } finally {
+        setIsProcessing(false);
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    if (!auth) return;
-    const provider = new GoogleAuthProvider();
-    await signInWithRedirect(auth, provider);
-  };
-
-  if (isUserLoading || isSigningIn || user) {
+  if (isUserLoading || user) {
     return <div className="flex justify-center items-center min-h-[calc(100vh-8rem)]">Loading...</div>;
   }
 
@@ -154,11 +114,11 @@ export default function SignupPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="first-name">First name</Label>
-                <Input id="first-name" placeholder="Max" required value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                <Input id="first-name" placeholder="Max" required value={firstName} onChange={(e) => setFirstName(e.target.value)} disabled={isProcessing} />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="last-name">Last name</Label>
-                <Input id="last-name" placeholder="Robinson" required value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                <Input id="last-name" placeholder="Robinson" required value={lastName} onChange={(e) => setLastName(e.target.value)} disabled={isProcessing} />
               </div>
             </div>
             <div className="grid gap-2">
@@ -170,34 +130,21 @@ export default function SignupPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={isProcessing}
               />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+              <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} disabled={isProcessing} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="confirm-password">Confirm Password</Label>
-              <Input id="confirm-password" type="password" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}/>
+              <Input id="confirm-password" type="password" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} disabled={isProcessing}/>
             </div>
-            <Button type="submit" className="w-full">
-              Create an account
+            <Button type="submit" className="w-full" disabled={isProcessing}>
+              {isProcessing ? 'Creating Account...' : 'Create an account'}
             </Button>
           </form>
-           <div className="relative my-4">
-                <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">
-                    Or continue with
-                    </span>
-                </div>
-            </div>
-             <Button variant="outline" className="w-full" onClick={handleGoogleSignIn}>
-               <GoogleIcon className="mr-2 h-4 w-4" />
-               Sign in with Google
-            </Button>
           <div className="mt-4 text-center text-sm">
             Already have an account?{" "}
             <Link href="/login" className="underline">

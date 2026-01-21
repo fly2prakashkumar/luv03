@@ -10,18 +10,9 @@ import { useToast } from "@/hooks/use-toast";
 import { useUser, useAuth, useFirestore } from "@/firebase";
 import {
   signInWithEmailAndPassword,
-  signInWithRedirect,
-  GoogleAuthProvider,
-  getRedirectResult,
   User,
 } from 'firebase/auth';
 import { doc, getDoc, setDoc } from "firebase/firestore";
-
-const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512" {...props} fill="currentColor">
-      <path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 126 23.4 172.9 61.9l-76.2 74.2C313.6 113.4 283.3 97.4 248 97.4c-85.3 0-153.9 68.6-153.9 158.6s68.6 158.6 153.9 158.6c99.9 0 137.3-82.9 140.8-120.9H248v-94.2h236.3c4.7 25.4 7.7 54.2 7.7 84.1z"/>
-    </svg>
-  );
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -31,7 +22,7 @@ export default function LoginPage() {
   const auth = useAuth();
   const firestore = useFirestore();
   const { user, isUserLoading } = useUser();
-  const [isSigningIn, setIsSigningIn] = useState(true);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const ensureUserDocument = async (user: User) => {
     if (!firestore) return;
@@ -53,46 +44,19 @@ export default function LoginPage() {
   };
 
   useEffect(() => {
-    if (auth && firestore) {
-      getRedirectResult(auth)
-        .then(async (result) => {
-          if (result) {
-            await ensureUserDocument(result.user);
-            toast({
-              title: "Login Successful",
-              description: "Welcome!",
-            });
-          }
-          setIsSigningIn(false);
-        })
-        .catch((error) => {
-          if (error.code !== 'auth/no-redirect-operation') {
-            toast({
-              variant: "destructive",
-              title: "Google Sign-In Failed",
-              description: error.message || "Could not sign in with Google.",
-            });
-          }
-          setIsSigningIn(false);
-        });
-    } else {
-      setIsSigningIn(false);
-    }
-  }, [auth, firestore, toast]);
-
-  useEffect(() => {
-    if (!isUserLoading && !isSigningIn && user) {
+    if (!isUserLoading && user) {
         if (user.email === 'admin@gmail.com') {
             router.push('/admin');
         } else {
             router.push('/account');
         }
     }
-  }, [user, isUserLoading, isSigningIn, router]);
+  }, [user, isUserLoading, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!auth) return;
+    setIsProcessing(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       await ensureUserDocument(userCredential.user);
@@ -106,16 +70,11 @@ export default function LoginPage() {
         title: "Login Failed",
         description: error.message || "Invalid email or password.",
       });
+      setIsProcessing(false);
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    if (!auth) return;
-    const provider = new GoogleAuthProvider();
-    await signInWithRedirect(auth, provider);
-  };
-
-  if (isUserLoading || isSigningIn || user) {
+  if (isUserLoading || user) {
     return <div className="flex justify-center items-center min-h-[calc(100vh-8rem)]">Loading...</div>;
   }
 
@@ -138,6 +97,7 @@ export default function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={isProcessing}
               />
             </div>
             <div className="grid gap-2">
@@ -150,26 +110,13 @@ export default function LoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={isProcessing}
               />
             </div>
-            <Button type="submit" className="w-full">
-              Login
+            <Button type="submit" className="w-full" disabled={isProcessing}>
+              {isProcessing ? 'Logging In...' : 'Login'}
             </Button>
           </form>
-           <div className="relative my-2">
-                <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">
-                    Or continue with
-                    </span>
-                </div>
-            </div>
-            <Button variant="outline" className="w-full" onClick={handleGoogleSignIn}>
-               <GoogleIcon className="mr-2 h-4 w-4" />
-               Sign in with Google
-            </Button>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
             <Link href="/signup" className="underline">
