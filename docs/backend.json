@@ -99,6 +99,10 @@
         "category": {
           "type": "string",
           "description": "Category of the product."
+        },
+        "stock": {
+          "type": "number",
+          "description": "Number of units in stock."
         }
       },
       "required": [
@@ -106,7 +110,8 @@
         "description",
         "imageUrls",
         "price",
-        "category"
+        "category",
+        "stock"
       ]
     },
     "ShoppingCart": {
@@ -339,3 +344,4 @@
     "reasoning": "The Firestore structure is designed to align with the application's core features and prioritize security, scalability, and debuggability, following the principles of Authorization Independence, Clarity of Intent, DBAC, and QAPs. It leverages Structural Segregation to maintain a homogeneous security posture within collections and employs Access Modeling for standardized authorization patterns.\n\n*   **User Accounts:** User data is stored under `/users/{userId}`, providing path-based ownership and simplifying security rules.\n*   **Products:** Product information is stored in the `/products` collection. List operations are secured using rules.\n*   **Shopping Carts:** Shopping carts are stored as a subcollection of users, `/users/{userId}/shoppingCarts/{shoppingCartId}`. This reflects the `User 1:1 ShoppingCart` relationship and clear ownership.\n*   **Orders:** Orders are stored as a subcollection of users, `/users/{userId}/orders/{orderId}`, reflecting the `User 1:N Order` relationship and clear ownership.\n*   **AI Recommendations:** Recommendations are stored as a subcollection of users, `/users/{userId}/aiRecommendations/{recommendationId}`, reflecting the `User 1:N AiRecommendation` relationship and clear ownership."
   }
 }
+    

@@ -46,6 +46,7 @@ const productFormSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   description: z.string().min(1, 'Description is required'),
   price: z.coerce.number().positive('Price must be a positive number'),
+  stock: z.coerce.number().int().min(0, 'Stock cannot be negative'),
   category: z.string().min(1, 'Category is required'),
   imageUrl1: z.string().url('Please enter a valid image URL.').min(1, 'At least one image is required.'),
   imageUrl2: z.string().url('Please enter a valid image URL.').optional().or(z.literal('')),
@@ -75,6 +76,7 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
       name: product.name || '',
       description: product.description || '',
       price: product.price || 0,
+      stock: product.stock || 0,
       category: product.category || '',
       imageUrl1: product.imageUrls?.[0] || '',
       imageUrl2: product.imageUrls?.[1] || '',
@@ -90,6 +92,7 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
         name: product.name || '',
         description: product.description || '',
         price: product.price || 0,
+        stock: product.stock || 0,
         category: product.category || '',
         imageUrl1: product.imageUrls?.[0] || '',
         imageUrl2: product.imageUrls?.[1] || '',
@@ -184,6 +187,19 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
                     <FormLabel>Price</FormLabel>
                     <FormControl>
                       <Input type="number" placeholder="e.g., 1250.00" step="0.01" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="stock"
+                render={({ field }) => (
+                  <FormItem className="space-y-1">
+                    <FormLabel>Stock Quantity</FormLabel>
+                    <FormControl>
+                      <Input type="number" placeholder="e.g., 100" step="1" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -289,3 +305,5 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
     </Dialog>
   );
 }
+
+    

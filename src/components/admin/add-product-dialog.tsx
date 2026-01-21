@@ -39,6 +39,7 @@ const productFormSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   description: z.string().min(1, 'Description is required'),
   price: z.coerce.number().positive('Price must be a positive number'),
+  stock: z.coerce.number().int().min(0, 'Stock cannot be negative'),
   category: z.string().min(1, 'Category is required'),
   imageUrl1: z.string().url('Please enter a valid image URL.').min(1, 'At least one image is required.'),
   imageUrl2: z.string().url('Please enter a valid image URL.').optional().or(z.literal('')),
@@ -64,6 +65,7 @@ export function AddProductDialog() {
       name: '',
       description: '',
       price: 0,
+      stock: 0,
       category: '',
       imageUrl1: '',
       imageUrl2: '',
@@ -158,6 +160,19 @@ export function AddProductDialog() {
                     <FormLabel>Price</FormLabel>
                     <FormControl>
                       <Input type="number" placeholder="e.g., 1250.00" step="0.01" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="stock"
+                render={({ field }) => (
+                  <FormItem className="space-y-1">
+                    <FormLabel>Stock Quantity</FormLabel>
+                    <FormControl>
+                      <Input type="number" placeholder="e.g., 100" step="1" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -263,3 +278,5 @@ export function AddProductDialog() {
     </Dialog>
   );
 }
+
+    

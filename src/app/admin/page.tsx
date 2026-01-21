@@ -10,7 +10,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DollarSign, ShoppingCart, Users, Package, ArrowUp, Star, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import {
   ResponsiveContainer,
@@ -88,6 +88,11 @@ export default function AdminPage() {
   const firestore = useFirestore();
   const productsCollection = useMemoFirebase(() => firestore ? collection(firestore, 'products') : null, [firestore]);
   const { data: allProducts, isLoading: isLoadingProducts } = useCollection<Product>(productsCollection);
+
+  const totalStock = useMemo(() => {
+    if (!allProducts) return 0;
+    return allProducts.reduce((sum, product) => sum + (Number(product.stock) || 0), 0);
+  }, [allProducts]);
 
   const [filteredProducts, setFilteredProducts] = useState<(Product & { id: string })[] | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
@@ -191,8 +196,17 @@ export default function AdminPage() {
                                 <Package className="h-4 w-4 text-muted-foreground" />
                             </CardHeader>
                             <CardContent>
-                                <div className="text-2xl font-bold">8,450</div>
-                                 <p className="text-xs text-muted-foreground">Units available</p>
+                                {isLoadingProducts ? (
+                                   <div className="space-y-1">
+                                       <Skeleton className="h-8 w-20" />
+                                       <Skeleton className="h-4 w-24" />
+                                   </div>
+                               ) : (
+                                   <>
+                                       <div className="text-2xl font-bold">{totalStock}</div>
+                                       <p className="text-xs text-muted-foreground">Units available</p>
+                                   </>
+                               )}
                             </CardContent>
                         </Card>
                     </div>
@@ -307,6 +321,7 @@ export default function AdminPage() {
                                     <TableHead>Name</TableHead>
                                     <TableHead className="hidden md:table-cell">Category</TableHead>
                                     <TableHead>Price</TableHead>
+                                    <TableHead>Stock</TableHead>
                                     <TableHead>Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -318,6 +333,7 @@ export default function AdminPage() {
                                             <TableCell><Skeleton className="h-4 w-[150px] md:w-[250px]" /></TableCell>
                                             <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-[100px]" /></TableCell>
                                             <TableCell><Skeleton className="h-4 w-[80px]" /></TableCell>
+                                            <TableCell><Skeleton className="h-4 w-[50px]" /></TableCell>
                                             <TableCell><div className="flex gap-2"><Skeleton className="h-10 w-10" /><Skeleton className="h-10 w-10" /></div></TableCell>
                                         </TableRow>
                                     ))
@@ -340,6 +356,7 @@ export default function AdminPage() {
                                                 <TableCell className="font-medium">{product.name}</TableCell>
                                                 <TableCell className="hidden md:table-cell">{product.category}</TableCell>
                                                 <TableCell>₹{product.price.toFixed(2)}</TableCell>
+                                                <TableCell>{product.stock}</TableCell>
                                                 <TableCell>
                                                     <div className="flex gap-2">
                                                         <EditProductDialog product={product} />
@@ -370,3 +387,5 @@ export default function AdminPage() {
     </div>
   );
 }
+
+    
