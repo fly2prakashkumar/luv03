@@ -117,7 +117,7 @@ service cloud.firestore {
       allow get: if true;
       allow list: if true;
       allow create: if isAdmin();
-      allow update: if isAdmin();
+      allow update: if isSignedIn();
       allow delete: if isAdmin();
     }
   }
