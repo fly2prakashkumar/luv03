@@ -519,7 +519,7 @@ export default function AdminPage() {
                                             <TableCell className="text-right">₹{(order.totalAmount || 0).toFixed(2)}</TableCell>
                                             <TableCell className="text-right">
                                                 <Button asChild variant="outline" size="sm">
-                                                    <Link href={`/orders/${order.id}`}>View</Link>
+                                                    <Link href={`/orders/${order.id}?userId=${order.userAccountId}`}>View</Link>
                                                 </Button>
                                             </TableCell>
                                         </TableRow>
