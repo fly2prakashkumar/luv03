@@ -26,6 +26,7 @@ import { collection } from 'firebase/firestore';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { signOut } from 'firebase/auth';
+import Logo from '../../../public/assets/Logo1.jpg';
 
 export function AppHeader() {
     const router = useRouter();
@@ -102,10 +103,9 @@ export function AppHeader() {
     <header className="fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="bg-primary text-primary-foreground">
         <div className="container flex h-16 items-center">
-          <div className="mr-4 hidden md:flex">
+          <div className="mr-[200px] relative top-[7px] hidden md:flex">
             <Link href="/" className="mr-6 flex items-center space-x-2">
-              <Image src="https://picsum.photos/seed/logo/32/32" alt="Luv O3 Logo" width={28} height={28} className="rounded-full" data-ai-hint="company logo"/>
-              <span className="font-bold text-xl font-headline">Luv O3</span>
+              <Image src={Logo} alt="" width={170} height={100} className="" />
             </Link>
           </div>
 
@@ -122,8 +122,7 @@ export function AppHeader() {
                   <SheetHeader className="mb-6">
                       <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                       <Link href="/" className="mr-6 flex items-center space-x-2">
-                      <Image src="https://picsum.photos/seed/logo/32/32" alt="Luv O3 Logo" width={28} height={28} className="rounded-full" data-ai-hint="company logo"/>
-                      <span className="font-bold text-xl font-headline">Luv O3</span>
+                      <Image src={Logo} alt="" width={170} height={100} className=""/>
                       </Link>
                   </SheetHeader>
                   <MainNav isMobile={true}/>

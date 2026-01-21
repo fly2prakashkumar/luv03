@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { Instagram, Facebook, MapPin, Phone, Mail } from "lucide-react";
 import Image from "next/image";
+import Logo from '../../../public/assets/Logo.jpg';
 
 const navLinks = [
     { href: '/', label: 'Home' },
@@ -36,8 +37,7 @@ export function AppFooter() {
           {/* Column 1: Brand */}
           <div className="space-y-4">
               <Link href="/" className="flex items-center space-x-2">
-                <Image src="https://picsum.photos/seed/logo/32/32" alt="Luv O3 Logo" width={32} height={32} className="rounded-full" data-ai-hint="company logo" />
-                <span className="font-bold text-2xl font-headline text-foreground">Luv O3</span>
+                <Image src={Logo} alt="" width={158} height={68} className="" />
               </Link>
             <p className="text-sm max-w-sm">
               Pioneers in ozone-infused skincare, inspired by the motto "Luv skin, Breathe skin". We leverage innovative ozone technology to develop high-quality, natural, and skin-friendly products.
