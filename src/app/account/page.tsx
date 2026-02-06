@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { useCollection, useFirestore, useUser, useMemoFirebase } from "@/firebase";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { collection, doc, deleteDoc } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -32,6 +32,17 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { AddAddressDialog } from "@/components/account/add-address-dialog";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
+import type { Order } from "@/lib/types";
+import { format } from "date-fns";
+import Image from "next/image";
+import Link from "next/link";
 
 
 interface Address {
@@ -56,6 +67,12 @@ export default function AccountPage() {
     [firestore, user]
   );
   const { data: addresses, isLoading: isLoadingAddresses } = useCollection<Address>(addressesCollection);
+  
+  const ordersCollection = useMemoFirebase(
+    () => (firestore && user ? collection(firestore, 'users', user.uid, 'orders') : null),
+    [firestore, user]
+  );
+  const { data: orders, isLoading: isLoadingOrders } = useCollection<Order>(ordersCollection);
 
   useEffect(() => {
     if (!isUserLoading && !user) {
@@ -191,7 +208,70 @@ export default function AccountPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-                 <p className="text-sm text-muted-foreground">You haven't placed any orders yet.</p>
+              {isLoadingOrders ? (
+                <div className="space-y-4">
+                  <Skeleton className="h-16 w-full" />
+                  <Skeleton className="h-16 w-full" />
+                </div>
+              ) : orders && orders.length > 0 ? (
+                <Accordion type="single" collapsible className="w-full">
+                  {orders.sort((a, b) => (b.orderDate?.seconds || 0) - (a.orderDate?.seconds || 0)).map((order) => (
+                    <AccordionItem value={order.id} key={order.id}>
+                      <AccordionTrigger>
+                        <div className="flex justify-between w-full pr-4">
+                          <div className="text-left">
+                            <p className="font-semibold">Order ID: <span className="font-mono text-sm">{order.id}</span></p>
+                            <p className="text-sm text-muted-foreground">
+                              {order.orderDate?.seconds ? format(new Date(order.orderDate.seconds * 1000), 'PPP') : 'N/A'}
+                            </p>
+                          </div>
+                          <div className="flex flex-col items-end">
+                            <p className="font-semibold">₹{order.totalAmount.toFixed(2)}</p>
+                            <Badge variant={
+                                order.status === 'placed' ? 'default' : 
+                                order.status === 'shipped' ? 'secondary' :
+                                'outline'
+                            } className="capitalize mt-1">{order.status}</Badge>
+                          </div>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-4 pt-2">
+                           {order.items.map(item => (
+                             <div key={item.productId} className="flex items-start gap-4">
+                                <div className="relative h-16 w-16 rounded-md overflow-hidden flex-shrink-0 bg-muted">
+                                    {item.imageUrls && item.imageUrls[0] ? (
+                                        <Image src={item.imageUrls[0]} alt={item.name || 'Product Image'} fill className="object-cover" />
+                                    ) : (
+                                        <div className="h-full w-full flex items-center justify-center">
+                                            <span className="text-xs text-muted-foreground">No Image</span>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="flex-grow">
+                                    <Link href={`/products/${item.productId}`} className="font-semibold hover:underline">{item.name || 'Unnamed Product'}</Link>
+                                    <p className="text-sm text-muted-foreground">Qty: {item.quantity || 0}</p>
+                                    <p className="text-sm text-muted-foreground">₹{(item.price || 0).toFixed(2)} each</p>
+                                </div>
+                                <div className="text-right font-semibold">
+                                    <p>₹{((item.price || 0) * (item.quantity || 0)).toFixed(2)}</p>
+                                </div>
+                            </div>
+                           ))}
+                           <Separator />
+                           <div className="flex justify-end">
+                                <Button asChild variant="outline" size="sm">
+                                    <Link href={`/orders/${order.id}`}>View Full Order Details</Link>
+                                </Button>
+                           </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              ) : (
+                <p className="text-sm text-muted-foreground">You haven't placed any orders yet.</p>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

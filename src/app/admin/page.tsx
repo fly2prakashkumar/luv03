@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { DollarSign, ShoppingCart, Package, Star, MoreHorizontal } from 'lucide-react';
+import { DollarSign, ShoppingCart, Package, Star, MoreHorizontal, Truck, CheckCircle } from 'lucide-react';
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -89,11 +89,11 @@ export default function AdminPage() {
     const msUntilMidnight = tomorrow.getTime() - now.getTime();
 
     const timerId = setTimeout(() => {
-      setToday(new Date()); // This will trigger a re-render at midnight
+      setToday(new Date()); 
     }, msUntilMidnight);
 
     return () => clearTimeout(timerId);
-  }, [today]); // Re-calculate timer when `today` changes (i.e., at every midnight)
+  }, [today]);
 
   const totalStock = useMemo(() => {
     if (!allProducts) return 0;
@@ -218,14 +218,51 @@ export default function AdminPage() {
     }
   };
 
+  const renderOrderTable = (orders: Order[]) => (
+    <Table>
+        <TableHeader>
+            <TableRow>
+                <TableHead className="w-[100px] sm:w-[150px]">Order ID</TableHead>
+                <TableHead>Customer</TableHead>
+                <TableHead className="hidden md:table-cell">Date</TableHead>
+                <TableHead className="hidden md:table-cell">Status</TableHead>
+                <TableHead className="text-right">Amount</TableHead>
+                <TableHead className="w-[80px] text-right">Actions</TableHead>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            {orders.sort((a, b) => (b.orderDate?.seconds || 0) - (a.orderDate?.seconds || 0)).map(order => (
+                <TableRow key={order.id}>
+                    <TableCell className="font-mono text-xs sm:text-sm truncate">{order.id}</TableCell>
+                    <TableCell>{order.shippingAddress?.firstName} {order.shippingAddress?.lastName}</TableCell>
+                    <TableCell className="hidden md:table-cell">{order.orderDate?.seconds ? format(new Date(order.orderDate.seconds * 1000), 'PP') : 'N/A'}</TableCell>
+                    <TableCell className="hidden md:table-cell">
+                        <Badge variant={
+                            order.status === 'placed' ? 'default' : 
+                            order.status === 'shipped' ? 'secondary' :
+                            order.status === 'out_for_delivery' ? 'secondary' :
+                            order.status === 'delivered' ? 'outline' :
+                            'outline'
+                        } className="capitalize">{order.status?.replace(/_/g, ' ') || 'unknown'}</Badge>
+                    </TableCell>
+                    <TableCell className="text-right">₹{(order.totalAmount || 0).toFixed(2)}</TableCell>
+                    <TableCell className="text-right">
+                        <Button asChild variant="outline" size="sm">
+                            <Link href={`/orders/${order.id}?userId=${order.userAccountId}`}>View</Link>
+                        </Button>
+                    </TableCell>
+                </TableRow>
+            ))}
+        </TableBody>
+    </Table>
+  );
+
   return (
     <div className="flex-1 space-y-4 p-4 sm:p-6 md:p-8 pt-6 bg-muted/20">
         <div className="flex items-center justify-between space-y-2">
             <div>
                 <h2 className="text-3xl font-bold tracking-tight">Luv O3 Dashboard</h2>
                 <p className="text-muted-foreground">Welcome back! Here's a look at your store's performance.</p>
-            </div>
-            <div className="flex items-center space-x-2">
             </div>
         </div>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -239,14 +276,20 @@ export default function AdminPage() {
                             <SelectItem value="overview">Overview</SelectItem>
                             <SelectItem value="products">Products</SelectItem>
                             <SelectItem value="orders">Orders</SelectItem>
+                            <SelectItem value="shipping">Shipping</SelectItem>
+                            <SelectItem value="out-for-delivery">Out for Delivery</SelectItem>
+                            <SelectItem value="delivered">Delivered</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
             ) : (
-                <TabsList className="grid w-full grid-cols-3 bg-muted/80 mb-4">
+                <TabsList className="grid w-full grid-cols-6 bg-muted/80 mb-4 h-auto p-1">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
                     <TabsTrigger value="products">Products</TabsTrigger>
                     <TabsTrigger value="orders">Orders</TabsTrigger>
+                    <TabsTrigger value="shipping">Shipping</TabsTrigger>
+                    <TabsTrigger value="out-for-delivery">Out for Delivery</TabsTrigger>
+                    <TabsTrigger value="delivered">Delivered</TabsTrigger>
                 </TabsList>
             )}
             <TabsContent value="overview">
@@ -521,48 +564,82 @@ export default function AdminPage() {
                             <div className="space-y-4">
                                 <Skeleton className="h-10 w-full" />
                                 <Skeleton className="h-12 w-full" />
-                                <Skeleton className="h-12 w-full" />
-                                <Skeleton className="h-12 w-full" />
-                                <Skeleton className="h-12 w-full" />
                             </div>
-                        ) : allOrders && allOrders.length > 0 ? (
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="w-[100px] sm:w-[150px]">Order ID</TableHead>
-                                        <TableHead>Customer</TableHead>
-                                        <TableHead className="hidden md:table-cell">Date</TableHead>
-                                        <TableHead className="hidden md:table-cell">Status</TableHead>
-                                        <TableHead className="text-right">Amount</TableHead>
-                                        <TableHead className="w-[80px] text-right">Actions</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {allOrders.sort((a, b) => (b.orderDate?.seconds || 0) - (a.orderDate?.seconds || 0)).map(order => (
-                                        <TableRow key={order.id}>
-                                            <TableCell className="font-mono text-xs sm:text-sm truncate">{order.id}</TableCell>
-                                            <TableCell>{order.shippingAddress?.firstName} {order.shippingAddress?.lastName}</TableCell>
-                                            <TableCell className="hidden md:table-cell">{order.orderDate?.seconds ? format(new Date(order.orderDate.seconds * 1000), 'PP') : 'N/A'}</TableCell>
-                                            <TableCell className="hidden md:table-cell">
-                                                <Badge variant={
-                                                    order.status === 'placed' ? 'default' : 
-                                                    order.status === 'shipped' ? 'secondary' :
-                                                    'outline'
-                                                } className="capitalize">{order.status || 'unknown'}</Badge>
-                                            </TableCell>
-                                            <TableCell className="text-right">₹{(order.totalAmount || 0).toFixed(2)}</TableCell>
-                                            <TableCell className="text-right">
-                                                <Button asChild variant="outline" size="sm">
-                                                    <Link href={`/orders/${order.id}?userId=${order.userAccountId}`}>View</Link>
-                                                </Button>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        ) : (
+                        ) : allOrders && allOrders.length > 0 ? renderOrderTable(allOrders) : (
                             <div className="text-center py-10">
                                 <p className="text-muted-foreground">No orders have been placed yet.</p>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+            </TabsContent>
+            <TabsContent value="shipping">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Truck className="h-5 w-5" /> Shipped Orders
+                        </CardTitle>
+                        <CardDescription>Orders that have been shipped and are in transit.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        {isLoadingOrders ? (
+                            <div className="space-y-4">
+                                <Skeleton className="h-10 w-full" />
+                                <Skeleton className="h-12 w-full" />
+                            </div>
+                        ) : allOrders && allOrders.filter(o => o.status === 'shipped').length > 0 ? (
+                            renderOrderTable(allOrders.filter(o => o.status === 'shipped'))
+                        ) : (
+                            <div className="text-center py-10">
+                                <p className="text-muted-foreground">No orders are currently in shipping.</p>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+            </TabsContent>
+            <TabsContent value="out-for-delivery">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Truck className="h-5 w-5" /> Out for Delivery
+                        </CardTitle>
+                        <CardDescription>Orders that are currently being delivered.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        {isLoadingOrders ? (
+                            <div className="space-y-4">
+                                <Skeleton className="h-10 w-full" />
+                                <Skeleton className="h-12 w-full" />
+                            </div>
+                        ) : allOrders && allOrders.filter(o => o.status === 'out_for_delivery').length > 0 ? (
+                            renderOrderTable(allOrders.filter(o => o.status === 'out_for_delivery'))
+                        ) : (
+                            <div className="text-center py-10">
+                                <p className="text-muted-foreground">No orders are currently out for delivery.</p>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+            </TabsContent>
+            <TabsContent value="delivered">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <CheckCircle className="h-5 w-5" /> Delivered Orders
+                        </CardTitle>
+                        <CardDescription>Successfully completed deliveries.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        {isLoadingOrders ? (
+                            <div className="space-y-4">
+                                <Skeleton className="h-10 w-full" />
+                                <Skeleton className="h-12 w-full" />
+                            </div>
+                        ) : allOrders && allOrders.filter(o => o.status === 'delivered').length > 0 ? (
+                            renderOrderTable(allOrders.filter(o => o.status === 'delivered'))
+                        ) : (
+                            <div className="text-center py-10">
+                                <p className="text-muted-foreground">No delivered orders yet.</p>
                             </div>
                         )}
                     </CardContent>
@@ -572,6 +649,3 @@ export default function AdminPage() {
     </div>
   );
 }
-    
-
-    

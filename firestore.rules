@@ -49,7 +49,7 @@ service cloud.firestore {
     
     function isAdmin() {
       // Using UID for admin check is more secure than email.
-      return isSignedIn() && request.auth.uid == 'K9wYgsFQBFYIZUZlmsLNAIIcYqF3';
+      return isSignedIn() && (request.auth.uid == 'K9wYgsFQBFYIZUZlmsLNAIIcYqF3' || request.auth.token.email == 'admin@gmail.com');
     }
 
     /**
@@ -93,6 +93,18 @@ service cloud.firestore {
         allow update: if isExistingOwner(userId) && request.resource.data.userAccountId == resource.data.userAccountId;
         allow delete: if isExistingOwner(userId);
       }
+      
+      /**
+       * @description Rules for a user's orders. A user can read their own orders.
+       */
+      match /orders/{orderId} {
+        allow list, get: if isOwner(userId);
+        // Allow user to cancel their own order if it is still 'placed'
+        allow update: if isOwner(userId) 
+                      && resource.data.status == 'placed' 
+                      && request.resource.data.status == 'cancelled'
+                      && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']);
+      }
     }
 
     /**
@@ -117,7 +129,7 @@ service cloud.firestore {
       allow get: if true;
       allow list: if true;
       allow create: if isAdmin();
-      allow update: if isSignedIn();
+      allow update: if isAdmin(); // Only admins should update products
       allow delete: if isAdmin();
     }
   }

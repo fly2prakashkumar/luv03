@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -20,7 +20,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -36,7 +35,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Pencil } from 'lucide-react';
+import { Pencil, Image as ImageIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { errorEmitter } from '@/firebase/error-emitter';
@@ -48,11 +47,11 @@ const productFormSchema = z.object({
   price: z.coerce.number().positive('Price must be a positive number'),
   stock: z.coerce.number().int().min(0, 'Stock cannot be negative'),
   category: z.string().min(1, 'Category is required'),
-  imageUrl1: z.string().url('Please enter a valid image URL.').min(1, 'At least one image is required.'),
-  imageUrl2: z.string().url('Please enter a valid image URL.').optional().or(z.literal('')),
-  imageUrl3: z.string().url('Please enter a valid image URL.').optional().or(z.literal('')),
-  imageUrl4: z.string().url('Please enter a valid image URL.').optional().or(z.literal('')),
-  imageUrl5: z.string().url('Please enter a valid image URL.').optional().or(z.literal('')),
+  imageUrl1: z.string().min(1, 'At least one image is required.'),
+  imageUrl2: z.string().optional().or(z.literal('')),
+  imageUrl3: z.string().optional().or(z.literal('')),
+  imageUrl4: z.string().optional().or(z.literal('')),
+  imageUrl5: z.string().optional().or(z.literal('')),
 });
 
 type ProductFormValues = z.infer<typeof productFormSchema>;
@@ -69,6 +68,10 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
   const { toast } = useToast();
   const { user } = useUser();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Gallery upload state
+  const [activeImageField, setActiveImageField] = useState<keyof ProductFormValues | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productFormSchema),
@@ -102,6 +105,31 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
       });
     }
   }, [product, form, open]);
+
+  const triggerFileSelect = (field: keyof ProductFormValues) => {
+    setActiveImageField(field);
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && activeImageField) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const dataUri = reader.result as string;
+        form.setValue(activeImageField, dataUri);
+        toast({
+          title: "Image Uploaded",
+          description: "File has been selected and updated.",
+        });
+        setActiveImageField(null);
+      };
+      reader.readAsDataURL(file);
+    }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   const onSubmit = (values: ProductFormValues) => {
     if (!firestore || !user) {
@@ -143,21 +171,30 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
           <Pencil className="h-4 w-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Edit Product</DialogTitle>
           <DialogDescription>
-            Update the product details below.
+            Update the product details below. Use URLs or upload from your gallery.
           </DialogDescription>
         </DialogHeader>
+
+        <input 
+          type="file" 
+          ref={fileInputRef} 
+          className="hidden" 
+          accept="image/*"
+          onChange={handleFileChange}
+        />
+
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-1">
-            <div className="max-h-[60vh] overflow-y-auto space-y-1 p-1">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+            <div className="max-h-[60vh] overflow-y-auto space-y-3 p-1">
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
-                  <FormItem className="space-y-1">
+                  <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
                       <Input placeholder="e.g., Radiant Glow Serum" {...field} />
@@ -170,7 +207,7 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
                 control={form.control}
                 name="description"
                 render={({ field }) => (
-                  <FormItem className="space-y-1">
+                  <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
                       <Textarea placeholder="e.g., A potent Vitamin C serum..." {...field} />
@@ -179,37 +216,39 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem className="space-y-1">
-                    <FormLabel>Price</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="e.g., 1250.00" step="0.01" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-               <FormField
-                control={form.control}
-                name="stock"
-                render={({ field }) => (
-                  <FormItem className="space-y-1">
-                    <FormLabel>Stock Quantity</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="e.g., 100" step="1" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Price (₹)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="stock"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Stock</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="1" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={form.control}
                 name="category"
                 render={({ field }) => (
-                  <FormItem className="space-y-1">
+                  <FormItem>
                     <FormLabel>Category</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
@@ -227,73 +266,39 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
                   </FormItem>
                 )}
               />
-               <FormField
-                control={form.control}
-                name="imageUrl1"
-                render={({ field }) => (
-                  <FormItem className="space-y-1">
-                    <FormLabel>Image URL 1</FormLabel>
-                    <FormControl>
-                      <Input placeholder="https://example.com/image.png" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-               <FormField
-                control={form.control}
-                name="imageUrl2"
-                render={({ field }) => (
-                  <FormItem className="space-y-1">
-                    <FormLabel>Image URL 2</FormLabel>
-                    <FormControl>
-                      <Input placeholder="https://example.com/image.png" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-               <FormField
-                control={form.control}
-                name="imageUrl3"
-                render={({ field }) => (
-                  <FormItem className="space-y-1">
-                    <FormLabel>Image URL 3</FormLabel>
-                    <FormControl>
-                      <Input placeholder="https://example.com/image.png" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-               <FormField
-                control={form.control}
-                name="imageUrl4"
-                render={({ field }) => (
-                  <FormItem className="space-y-1">
-                    <FormLabel>Image URL 4</FormLabel>
-                    <FormControl>
-                      <Input placeholder="https://example.com/image.png" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-               <FormField
-                control={form.control}
-                name="imageUrl5"
-                render={({ field }) => (
-                  <FormItem className="space-y-1">
-                    <FormLabel>Image URL 5</FormLabel>
-                    <FormControl>
-                      <Input placeholder="https://example.com/image.png" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              
+              <div className="space-y-3 border-t pt-4">
+                <p className="text-sm font-medium">Product Images</p>
+                {[1, 2, 3, 4, 5].map((num) => (
+                  <FormField
+                    key={num}
+                    control={form.control}
+                    name={`imageUrl${num}` as keyof ProductFormValues}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="sr-only">Image {num}</FormLabel>
+                        <div className="flex gap-2">
+                          <FormControl>
+                            <Input placeholder={`Image URL ${num}...`} {...field} />
+                          </FormControl>
+                          <Button 
+                            type="button" 
+                            size="icon" 
+                            variant="outline" 
+                            onClick={() => triggerFileSelect(`imageUrl${num}` as keyof ProductFormValues)}
+                            title="Upload from gallery"
+                          >
+                            <ImageIcon className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ))}
+              </div>
             </div>
-            <DialogFooter className="pt-2">
+            <DialogFooter className="pt-4">
               <DialogClose asChild><Button variant="outline">Cancel</Button></DialogClose>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? 'Saving...' : 'Save Changes'}
@@ -305,5 +310,3 @@ export function EditProductDialog({ product }: EditProductDialogProps) {
     </Dialog>
   );
 }
-
-    

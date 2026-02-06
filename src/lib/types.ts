@@ -41,5 +41,5 @@ export type Order = {
     seconds: number;
     nanoseconds: number;
   }; // Firestore Timestamp
-  status: 'placed' | 'shipped' | 'delivered' | 'cancelled';
+  status: 'placed' | 'shipped' | 'out_for_delivery' | 'delivered' | 'cancelled';
 };

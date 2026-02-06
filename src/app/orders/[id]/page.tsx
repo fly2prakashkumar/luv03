@@ -5,7 +5,7 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useDoc, useFirestore, useUser, useMemoFirebase } from '@/firebase';
-import { doc } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
 import type { Order } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -13,13 +13,17 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft } from 'lucide-react';
-import { Suspense } from 'react';
+import { ArrowLeft, CheckCircle2, XCircle, Truck } from 'lucide-react';
+import { Suspense, useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 function OrderDetails() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
+  const { toast } = useToast();
 
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const userIdFromQuery = searchParams.get('userId');
@@ -27,19 +31,46 @@ function OrderDetails() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
 
+  const isAdmin = user?.email === 'admin@gmail.com';
+
   const orderRef = useMemoFirebase(() => {
     if (isUserLoading || !id || !firestore) return null;
     
     // Admins can view any order if userId is in query.
     // Regular users can only view their own orders.
-    const effectiveUserId = user?.email === 'admin@gmail.com' && userIdFromQuery ? userIdFromQuery : user?.uid;
+    const effectiveUserId = isAdmin && userIdFromQuery ? userIdFromQuery : user?.uid;
 
     if (!effectiveUserId) return null;
     
     return doc(firestore, 'users', effectiveUserId, 'orders', id);
-  }, [firestore, id, user, isUserLoading, userIdFromQuery]);
+  }, [firestore, id, user, isUserLoading, userIdFromQuery, isAdmin]);
 
   const { data: order, isLoading } = useDoc<Order>(orderRef);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const handleUpdateStatus = (newStatus: Order['status']) => {
+    if (!orderRef) return;
+    setIsUpdating(true);
+    
+    updateDoc(orderRef, { status: newStatus })
+      .then(() => {
+        toast({
+          title: `Order ${newStatus.replace(/_/g, ' ').charAt(0).toUpperCase() + newStatus.replace(/_/g, ' ').slice(1)}`,
+          description: `The order status has been updated to ${newStatus.replace(/_/g, ' ')}.`,
+        });
+      })
+      .catch(async (serverError) => {
+        const permissionError = new FirestorePermissionError({
+          path: orderRef.path,
+          operation: 'update',
+          requestResourceData: { status: newStatus },
+        });
+        errorEmitter.emit('permission-error', permissionError);
+      })
+      .finally(() => {
+        setIsUpdating(false);
+      });
+  };
   
   if (isLoading || isUserLoading) {
     return (
@@ -70,10 +101,52 @@ function OrderDetails() {
   
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 md:py-16">
-        <div className="mb-6">
+        <div className="mb-6 flex justify-between items-center">
             <Button variant="ghost" onClick={() => router.back()}>
                 <ArrowLeft className="mr-2 h-4 w-4" /> Back
             </Button>
+            <div className="flex gap-2">
+                {isAdmin && order.status === 'placed' && (
+                    <Button 
+                        variant="default" 
+                        size="sm" 
+                        onClick={() => handleUpdateStatus('shipped')}
+                        disabled={isUpdating}
+                    >
+                        <CheckCircle2 className="mr-2 h-4 w-4" /> Confirm & Ship
+                    </Button>
+                )}
+                {isAdmin && order.status === 'shipped' && (
+                    <Button 
+                        variant="default" 
+                        size="sm" 
+                        onClick={() => handleUpdateStatus('out_for_delivery')}
+                        disabled={isUpdating}
+                    >
+                        <Truck className="mr-2 h-4 w-4" /> Set Out for Delivery
+                    </Button>
+                )}
+                {isAdmin && order.status === 'out_for_delivery' && (
+                    <Button 
+                        variant="default" 
+                        size="sm" 
+                        onClick={() => handleUpdateStatus('delivered')}
+                        disabled={isUpdating}
+                    >
+                        <CheckCircle2 className="mr-2 h-4 w-4" /> Mark as Delivered
+                    </Button>
+                )}
+                {(order.status === 'placed' || (isAdmin && (order.status === 'shipped' || order.status === 'out_for_delivery'))) && (
+                    <Button 
+                        variant="destructive" 
+                        size="sm" 
+                        onClick={() => handleUpdateStatus('cancelled')}
+                        disabled={isUpdating}
+                    >
+                        <XCircle className="mr-2 h-4 w-4" /> Cancel Order
+                    </Button>
+                )}
+            </div>
         </div>
       <div className="space-y-6">
         <Card>
@@ -85,11 +158,18 @@ function OrderDetails() {
                     </div>
                     <div className="text-sm text-muted-foreground">
                         <p>Placed on: {order.orderDate?.seconds ? format(new Date(order.orderDate.seconds * 1000), 'PPP') : 'N/A'}</p>
-                        <div>Status: <Badge variant={
-                            order.status === 'placed' ? 'default' : 
-                            order.status === 'shipped' ? 'secondary' :
-                            'outline'
-                        } className="capitalize ml-1">{order.status || 'unknown'}</Badge></div>
+                        <div className="flex items-center gap-1">Status: 
+                            <Badge variant={
+                                order.status === 'placed' ? 'default' : 
+                                order.status === 'shipped' ? 'secondary' :
+                                order.status === 'out_for_delivery' ? 'secondary' :
+                                order.status === 'delivered' ? 'outline' :
+                                order.status === 'cancelled' ? 'destructive' :
+                                'outline'
+                            } className="capitalize ml-1">
+                                {order.status?.replace(/_/g, ' ') || 'unknown'}
+                            </Badge>
+                        </div>
                     </div>
                 </div>
             </CardHeader>
@@ -134,13 +214,13 @@ function OrderDetails() {
                     </CardHeader>
                     <CardContent className="text-sm">
                         {order.shippingAddress ? (
-                            <>
+                            <div className="space-y-1">
                                 <p className="font-semibold">{order.shippingAddress.firstName} {order.shippingAddress.lastName}</p>
                                 <p className="text-muted-foreground">{order.shippingAddress.phone}</p>
                                 <p className="text-muted-foreground">{order.shippingAddress.address}</p>
                                 <p className="text-muted-foreground">{order.shippingAddress.city}, {order.shippingAddress.postalCode}</p>
                                 <p className="text-muted-foreground">{order.shippingAddress.country}</p>
-                            </>
+                            </div>
                         ) : (
                             <p className="text-muted-foreground">No shipping address provided.</p>
                         )}

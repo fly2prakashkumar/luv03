@@ -91,6 +91,36 @@ export default function ProductDetailPage() {
 
   const [mainImage, setMainImage] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState(sizes[1].id);
+  const [timeLeft, setTimeLeft] = useState('');
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const endOfDay = new Date(now);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      const difference = endOfDay.getTime() - now.getTime();
+
+      if (difference > 0) {
+        const hours = Math.floor(difference / (1000 * 60 * 60));
+        const minutes = Math.floor((difference / 1000 / 60) % 60);
+        const seconds = Math.floor((difference / 1000) % 60);
+        return `${hours.toString().padStart(2, '0')}:${minutes
+          .toString()
+          .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }
+      return '00:00:00';
+    };
+
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    // Initial calculation
+    setTimeLeft(calculateTimeLeft());
+
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     if (product?.imageUrls && product.imageUrls.length > 0) {
@@ -233,7 +263,7 @@ export default function ProductDetailPage() {
                   />
                   {size.bestValue && (
                     <div className="absolute -top-2 right-2 text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
-                      11h:19m:8s
+                      {timeLeft}
                     </div>
                   )}
                   <p className="font-semibold">{size.name}</p>
