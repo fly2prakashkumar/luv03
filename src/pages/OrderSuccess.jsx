@@ -3,102 +3,83 @@ import {
   Check,
   ArrowRight,
   ShoppingBag,
-  Package,
+  MapPin,
+  Mail,
+  Phone,
 } from "lucide-react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-import { useOrders } from "../context/OrderContext";
 
 function OrderSuccess() {
-  const [searchParams] = useSearchParams();
 
-  const orderId = searchParams.get("orderId");
-
-  const {
-    getOrderById,
-  } = useOrders();
+  const savedOrder =
+    localStorage.getItem("luv03-last-order");
 
 
-  // Find the real order
-  const order = orderId
-    ? getOrderById(orderId)
-    : null;
+  let order = null;
+
+  try {
+    order = savedOrder
+      ? JSON.parse(savedOrder)
+      : null;
+  } catch (error) {
+    console.error(
+      "Could not load order:",
+      error
+    );
+  }
 
 
-  // =========================
-  // ORDER NOT FOUND
-  // =========================
+  // =================================================
+  // NO ORDER FOUND
+  // =================================================
 
   if (!order) {
     return (
       <main className="min-h-screen bg-[#f8f6f1]">
 
-        <section className="mx-auto flex min-h-[75vh] max-w-[1440px] items-center justify-center px-6 py-20 lg:px-10">
+        <section className="flex min-h-[70vh] items-center justify-center px-6">
 
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 25,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            className="max-w-md text-center"
-          >
+          <div className="text-center">
 
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#eee9df] text-[#584539]">
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[#eee9df] text-[#584539]">
 
-              <Package
-                size={25}
+              <ShoppingBag
+                size={30}
                 strokeWidth={1.3}
               />
 
             </div>
 
 
-            <p className="mt-7 text-[9px] font-medium uppercase tracking-[0.2em] text-[#8a796c]">
-              Order unavailable
+            <p className="mt-8 text-[9px] uppercase tracking-[0.2em] text-[#8a796c]">
+              Order
             </p>
 
 
-            <h1 className="mt-3 font-serif text-3xl text-[#3d3028]">
-              We couldn't find that order
+            <h1 className="mt-3 font-serif text-4xl text-[#3d3028]">
+              No recent order found
             </h1>
 
 
-            <p className="mx-auto mt-4 max-w-sm text-xs leading-6 text-[#8a796c]">
-              This order may have expired or the order link may
-              be incorrect.
+            <p className="mx-auto mt-4 max-w-sm text-sm leading-6 text-[#756960]">
+              Start shopping and place an order
+              to see your confirmation here.
             </p>
 
 
-            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Link
+              to="/shop"
+              className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#584539] px-7 py-3 text-[9px] uppercase tracking-[0.14em] text-[#f8f6f1]"
+            >
+              Start shopping
 
-              <Link
-                to="/shop"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#584539] px-7 py-3 text-[9px] font-medium uppercase tracking-[0.15em] text-[#f8f6f1] transition hover:bg-[#3d3028]"
-              >
-                Continue shopping
+              <ArrowRight
+                size={13}
+              />
+            </Link>
 
-                <ArrowRight
-                  size={12}
-                  strokeWidth={1.5}
-                />
-
-              </Link>
-
-
-              <Link
-                to="/"
-                className="inline-flex items-center justify-center rounded-full border border-[#584539] px-7 py-3 text-[9px] font-medium uppercase tracking-[0.15em] text-[#584539] transition hover:bg-[#584539] hover:text-[#f8f6f1]"
-              >
-                Back home
-              </Link>
-
-            </div>
-
-          </motion.div>
+          </div>
 
         </section>
 
@@ -107,464 +88,354 @@ function OrderSuccess() {
   }
 
 
-  // =========================
-  // FORMAT DATE
-  // =========================
+  const customer =
+    order.customer || {};
 
-  const formattedDate = new Date(
-    order.createdAt
-  ).toLocaleDateString("en-IN", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const shipping =
+    order.shipping || {};
+
+  const items =
+    Array.isArray(order.items)
+      ? order.items
+      : [];
+
+  const total =
+    Number(order.total) || 0;
 
 
   return (
     <main className="min-h-screen bg-[#f8f6f1]">
 
-
-      {/* =========================
-          SUCCESS HERO
-      ========================= */}
-
-      <section className="border-b border-[#ddd7ce]">
-
-        <div className="mx-auto max-w-[1440px] px-6 py-20 text-center lg:px-10">
-
-          <motion.div
-            initial={{
-              scale: 0.7,
-              opacity: 0,
-            }}
-            animate={{
-              scale: 1,
-              opacity: 1,
-            }}
-            transition={{
-              duration: 0.6,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#584539] text-[#f8f6f1]"
-          >
-
-            <Check
-              size={27}
-              strokeWidth={1.5}
-            />
-
-          </motion.div>
-
-
-          <motion.p
-            initial={{
-              opacity: 0,
-              y: 15,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              delay: 0.15,
-            }}
-            className="mt-8 text-[9px] font-medium uppercase tracking-[0.2em] text-[#8a796c]"
-          >
-            Order confirmed
-          </motion.p>
-
-
-          <motion.h1
-            initial={{
-              opacity: 0,
-              y: 20,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              delay: 0.25,
-            }}
-            className="mt-3 font-serif text-4xl tracking-tight text-[#3d3028] md:text-5xl"
-          >
-            Thank you for your order.
-          </motion.h1>
-
-
-          <motion.p
-            initial={{
-              opacity: 0,
-              y: 15,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              delay: 0.35,
-            }}
-            className="mx-auto mt-4 max-w-md text-xs leading-6 text-[#8a796c]"
-          >
-            Your order has been received. We'll take good care
-            of it and prepare it for delivery.
-          </motion.p>
-
-
-          {/* ORDER ID */}
-
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 15,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              delay: 0.45,
-            }}
-            className="mx-auto mt-7 inline-flex items-center gap-3 rounded-full bg-[#eee9df] px-5 py-3"
-          >
-
-            <span className="text-[8px] uppercase tracking-[0.15em] text-[#8a796c]">
-              Order
-            </span>
-
-            <span className="font-medium text-[10px] tracking-[0.08em] text-[#3d3028]">
-              #{order.id}
-            </span>
-
-          </motion.div>
-
-        </div>
-
-      </section>
-
-
-      {/* =========================
-          ORDER DETAILS
-      ========================= */}
-
-      <section className="mx-auto max-w-[1000px] px-6 py-16 lg:px-10">
-
-        <div className="grid gap-8 md:grid-cols-2">
-
-
-          {/* =========================
-              CUSTOMER DETAILS
-          ========================= */}
-
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 20,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              delay: 0.5,
-            }}
-            className="rounded-[24px] bg-[#eee9df] p-7"
-          >
-
-            <p className="text-[9px] font-medium uppercase tracking-[0.18em] text-[#8a796c]">
-              Delivery
-            </p>
-
-
-            <h2 className="mt-3 font-serif text-2xl text-[#3d3028]">
-              Shipping details
-            </h2>
-
-
-            <div className="mt-7 space-y-5">
-
-
-              <div>
-
-                <p className="text-[8px] uppercase tracking-[0.12em] text-[#9a897c]">
-                  Customer
-                </p>
-
-                <p className="mt-1 text-xs text-[#3d3028]">
-                  {order.customer.firstName}{" "}
-                  {order.customer.lastName}
-                </p>
-
-              </div>
-
-
-              <div>
-
-                <p className="text-[8px] uppercase tracking-[0.12em] text-[#9a897c]">
-                  Email
-                </p>
-
-                <p className="mt-1 text-xs text-[#3d3028]">
-                  {order.customer.email}
-                </p>
-
-              </div>
-
-
-              <div>
-
-                <p className="text-[8px] uppercase tracking-[0.12em] text-[#9a897c]">
-                  Phone
-                </p>
-
-                <p className="mt-1 text-xs text-[#3d3028]">
-                  {order.customer.phone}
-                </p>
-
-              </div>
-
-
-              <div>
-
-                <p className="text-[8px] uppercase tracking-[0.12em] text-[#9a897c]">
-                  Address
-                </p>
-
-                <p className="mt-1 text-xs leading-6 text-[#3d3028]">
-
-                  {order.shippingAddress.address}
-
-                  {order.shippingAddress.apartment && (
-                    <>
-                      <br />
-                      {order.shippingAddress.apartment}
-                    </>
-                  )}
-
-                  <br />
-
-                  {order.shippingAddress.city},{" "}
-                  {order.shippingAddress.state}
-
-                  <br />
-
-                  {order.shippingAddress.pincode}
-
-                </p>
-
-              </div>
-
-            </div>
-
-          </motion.div>
-
-
-          {/* =========================
-              ORDER SUMMARY
-          ========================= */}
-
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 20,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              delay: 0.6,
-            }}
-            className="rounded-[24px] border border-[#ddd7ce] bg-[#f8f6f1] p-7"
-          >
-
-            <p className="text-[9px] font-medium uppercase tracking-[0.18em] text-[#8a796c]">
-              Summary
-            </p>
-
-
-            <h2 className="mt-3 font-serif text-2xl text-[#3d3028]">
-              Your order
-            </h2>
-
-
-            {/* ITEMS */}
-
-            <div className="mt-7 space-y-5">
-
-              {order.items.map((item) => (
-
-                <div
-                  key={item.id}
-                  className="flex gap-4"
-                >
-
-                  <div className="relative h-16 w-13 shrink-0 overflow-hidden rounded-xl bg-[#eee9df]">
-
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="h-full w-full object-cover"
-                    />
-
-                    <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#584539] px-1 text-[7px] text-white">
-                      {item.quantity}
-                    </span>
-
-                  </div>
-
-
-                  <div className="min-w-0 flex-1">
-
-                    <p className="text-[8px] uppercase tracking-[0.12em] text-[#9a897c]">
-                      {item.category}
-                    </p>
-
-                    <p className="mt-1 font-serif text-sm leading-5 text-[#3d3028]">
-                      {item.name}
-                    </p>
-
-                    <p className="mt-1 text-[9px] text-[#8a796c]">
-                      ₹{item.price.toLocaleString("en-IN")}
-                    </p>
-
-                  </div>
-
-
-                  <p className="text-[10px] font-medium text-[#3d3028]">
-                    ₹
-                    {(
-                      item.price * item.quantity
-                    ).toLocaleString("en-IN")}
-                  </p>
-
-                </div>
-
-              ))}
-
-            </div>
-
-
-            {/* TOTAL */}
-
-            <div className="mt-7 border-t border-[#ddd7ce] pt-5">
-
-              <div className="flex justify-between text-xs text-[#756960]">
-
-                <span>
-                  Subtotal
-                </span>
-
-                <span>
-                  ₹{order.subtotal.toLocaleString("en-IN")}
-                </span>
-
-              </div>
-
-
-              <div className="mt-3 flex justify-between text-xs text-[#756960]">
-
-                <span>
-                  Shipping
-                </span>
-
-                <span>
-                  Free
-                </span>
-
-              </div>
-
-
-              <div className="mt-5 flex items-center justify-between border-t border-[#ddd7ce] pt-5">
-
-                <span className="text-[9px] font-medium uppercase tracking-[0.14em] text-[#51463f]">
-                  Total
-                </span>
-
-                <span className="font-serif text-2xl text-[#3d3028]">
-                  ₹{order.total.toLocaleString("en-IN")}
-                </span>
-
-              </div>
-
-            </div>
-
-          </motion.div>
-
-        </div>
-
-
-        {/* =========================
-            ORDER DATE
-        ========================= */}
+      <section className="px-6 py-16 lg:px-10 lg:py-24">
 
         <motion.div
           initial={{
             opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-          }}
-          transition={{
-            delay: 0.7,
-          }}
-          className="mt-8 text-center"
-        >
-
-          <p className="text-[9px] text-[#9a897c]">
-            Order placed on {formattedDate}
-          </p>
-
-        </motion.div>
-
-
-        {/* =========================
-            ACTIONS
-        ========================= */}
-
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 15,
+            y: 30,
           }}
           animate={{
             opacity: 1,
             y: 0,
           }}
           transition={{
-            delay: 0.8,
+            duration: 0.7,
           }}
-          className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row"
+          className="mx-auto max-w-[850px]"
         >
 
-          <Link
-            to="/shop"
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[#584539] px-7 text-[9px] font-medium uppercase tracking-[0.15em] text-[#f8f6f1] transition hover:bg-[#3d3028]"
-          >
+          {/* =================================================
+              SUCCESS
+          ================================================= */}
 
-            <ShoppingBag
-              size={13}
-              strokeWidth={1.5}
-            />
+          <div className="text-center">
 
-            Continue shopping
+            <motion.div
+              initial={{
+                scale: 0.7,
+                opacity: 0,
+              }}
+              animate={{
+                scale: 1,
+                opacity: 1,
+              }}
+              transition={{
+                delay: 0.2,
+                duration: 0.5,
+              }}
+              className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[#584539] text-[#f8f6f1]"
+            >
 
-          </Link>
+              <Check
+                size={35}
+                strokeWidth={1.5}
+              />
+
+            </motion.div>
 
 
-          <Link
-            to="/"
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-[#584539] px-7 text-[9px] font-medium uppercase tracking-[0.15em] text-[#584539] transition hover:bg-[#584539] hover:text-[#f8f6f1]"
-          >
+            <p className="mt-9 text-[9px] font-medium uppercase tracking-[0.22em] text-[#8a796c]">
+              Order confirmed
+            </p>
 
-            Back home
 
-            <ArrowRight
-              size={13}
-              strokeWidth={1.5}
-            />
+            <h1 className="mt-3 font-serif text-4xl tracking-tight text-[#3d3028] md:text-5xl">
+              Thank you for your order.
+            </h1>
 
-          </Link>
+
+            <p className="mx-auto mt-5 max-w-lg text-sm leading-7 text-[#756960]">
+              Your order has been successfully
+              placed. We have received your order
+              details and will prepare your products
+              with care.
+            </p>
+
+          </div>
+
+
+          {/* =================================================
+              ORDER ID
+          ================================================= */}
+
+          <div className="mt-12 rounded-[24px] bg-[#eee9df] p-7">
+
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+
+              <div>
+
+                <p className="text-[8px] font-medium uppercase tracking-[0.16em] text-[#9a897c]">
+                  Order number
+                </p>
+
+                <p className="mt-2 font-serif text-xl text-[#3d3028]">
+                  {order.id}
+                </p>
+
+              </div>
+
+
+              <div className="rounded-full bg-[#f8f6f1] px-4 py-2 text-[8px] font-medium uppercase tracking-[0.14em] text-[#584539]">
+                {order.status || "Order confirmed"}
+              </div>
+
+            </div>
+
+          </div>
+
+
+          {/* =================================================
+              CUSTOMER DETAILS
+          ================================================= */}
+
+          <div className="mt-5 grid gap-5 md:grid-cols-2">
+
+            {/* CUSTOMER */}
+
+            <div className="rounded-[24px] border border-[#ddd7ce] p-7">
+
+              <p className="text-[8px] font-medium uppercase tracking-[0.16em] text-[#9a897c]">
+                Customer
+              </p>
+
+
+              <p className="mt-3 font-serif text-lg text-[#3d3028]">
+                {customer.firstName}{" "}
+                {customer.lastName}
+              </p>
+
+
+              <div className="mt-4 space-y-2">
+
+                <p className="flex items-center gap-2 text-[9px] text-[#756960]">
+
+                  <Mail size={12} />
+
+                  {customer.email}
+
+                </p>
+
+
+                <p className="flex items-center gap-2 text-[9px] text-[#756960]">
+
+                  <Phone size={12} />
+
+                  {customer.phone}
+
+                </p>
+
+              </div>
+
+            </div>
+
+
+            {/* DELIVERY */}
+
+            <div className="rounded-[24px] border border-[#ddd7ce] p-7">
+
+              <p className="text-[8px] font-medium uppercase tracking-[0.16em] text-[#9a897c]">
+                Delivery address
+              </p>
+
+
+              <div className="mt-4 flex gap-3">
+
+                <MapPin
+                  size={15}
+                  className="mt-1 shrink-0 text-[#584539]"
+                />
+
+
+                <p className="text-[10px] leading-6 text-[#756960]">
+
+                  {shipping.address}
+
+                  {shipping.apartment && (
+                    <>
+                      <br />
+                      {shipping.apartment}
+                    </>
+                  )}
+
+                  <br />
+
+                  {shipping.city},{" "}
+                  {shipping.state}
+
+                  <br />
+
+                  {shipping.pincode}
+
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          {/* =================================================
+              ORDER ITEMS
+          ================================================= */}
+
+          <div className="mt-5 rounded-[24px] bg-[#eee9df] p-7">
+
+            <div className="flex items-center justify-between">
+
+              <h2 className="font-serif text-2xl text-[#3d3028]">
+                Your order
+              </h2>
+
+
+              <span className="text-[9px] uppercase tracking-[0.14em] text-[#8a796c]">
+                {items.length}{" "}
+                {items.length === 1
+                  ? "item"
+                  : "items"}
+              </span>
+
+            </div>
+
+
+            <div className="mt-7 space-y-5">
+
+              {items.map((item) => {
+
+                const price =
+                  Number(item.price) || 0;
+
+                const quantity =
+                  Number(item.quantity) || 0;
+
+                return (
+                  <div
+                    key={item.id}
+                    className="flex gap-4 border-b border-[#d5ccc2] pb-5 last:border-0 last:pb-0"
+                  >
+
+                    <div className="h-20 w-16 shrink-0 overflow-hidden rounded-xl bg-[#f8f6f1]">
+
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="h-full w-full object-cover"
+                      />
+
+                    </div>
+
+
+                    <div className="flex-1">
+
+                      <p className="text-[8px] uppercase tracking-[0.12em] text-[#9a897c]">
+                        {item.category}
+                      </p>
+
+
+                      <p className="mt-1 font-serif text-base text-[#3d3028]">
+                        {item.name}
+                      </p>
+
+
+                      <p className="mt-2 text-[9px] text-[#756960]">
+                        Qty: {quantity}
+                      </p>
+
+                    </div>
+
+
+                    <p className="text-[10px] font-medium text-[#3d3028]">
+
+                      ₹
+                      {(
+                        price * quantity
+                      ).toLocaleString(
+                        "en-IN"
+                      )}
+
+                    </p>
+
+                  </div>
+                );
+              })}
+
+            </div>
+
+
+            {/* TOTAL */}
+
+            <div className="mt-7 flex items-center justify-between border-t border-[#d5ccc2] pt-6">
+
+              <span className="text-[9px] font-medium uppercase tracking-[0.15em] text-[#51463f]">
+                Total
+              </span>
+
+
+              <span className="font-serif text-2xl text-[#3d3028]">
+                ₹
+                {total.toLocaleString(
+                  "en-IN"
+                )}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          {/* =================================================
+              ACTIONS
+          ================================================= */}
+
+          <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
+
+            <Link
+              to="/shop"
+              className="flex h-12 items-center justify-center gap-2 rounded-full bg-[#584539] px-8 text-[9px] font-medium uppercase tracking-[0.14em] text-[#f8f6f1] transition hover:bg-[#3d3028]"
+            >
+
+              Continue shopping
+
+              <ArrowRight
+                size={13}
+                strokeWidth={1.4}
+              />
+
+            </Link>
+
+
+            <Link
+              to="/"
+              className="flex h-12 items-center justify-center rounded-full border border-[#584539] px-8 text-[9px] font-medium uppercase tracking-[0.14em] text-[#584539] transition hover:bg-[#584539] hover:text-[#f8f6f1]"
+            >
+              Back to home
+            </Link>
+
+          </div>
+
+
+          <p className="mt-10 text-center text-[8px] uppercase tracking-[0.16em] text-[#aaa098]">
+            Thank you for choosing Luv03
+          </p>
 
         </motion.div>
 
@@ -573,5 +444,6 @@ function OrderSuccess() {
     </main>
   );
 }
+
 
 export default OrderSuccess;

@@ -32,7 +32,7 @@ function Hero() {
             <br />
             Your Glow.
             <br />
-            Your Luv<span className="text-[#b56d43]">03.</span>
+            Your Luv<span className="text-[#b56d43]">o3.</span>
           </motion.h1>
 
           <motion.p

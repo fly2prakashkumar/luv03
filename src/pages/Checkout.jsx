@@ -1,122 +1,400 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Lock, ShoppingBag } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+
+import {
+  ArrowLeft,
+  Lock,
+  ShoppingBag,
+} from "lucide-react";
+
+import {
+  Link,
+  useNavigate,
+} from "react-router-dom";
+
 import { useState } from "react";
 
 import { useCart } from "../context/CartContext";
-import { useOrders } from "../context/OrderContext";
+
+import {
+  getCurrentUser,
+  requireLogin,
+  saveOrder,
+} from "../utils/auth";
+
 
 function Checkout() {
-  const navigate = useNavigate();
+
+  const navigate =
+    useNavigate();
+
+
+  // ==========================================================
+  // CART
+  // ==========================================================
 
   const {
-    cartItems,
-    cartTotal,
+    cartItems = [],
+    cartTotal = 0,
     clearCart,
   } = useCart();
 
-  const {
-    createOrder,
-  } = useOrders();
 
+  // ==========================================================
+  // FORM
+  // ==========================================================
 
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    address: "",
-    apartment: "",
-    city: "",
-    state: "",
-    pincode: "",
-  });
+  const [formData, setFormData] =
+    useState({
 
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      address: "",
+      apartment: "",
+      city: "",
+      state: "",
+      pincode: "",
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData((current) => ({
-      ...current,
-      [name]: value,
-    }));
-  };
-
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (cartItems.length === 0) {
-      navigate("/shop");
-      return;
-    }
-
-    setIsSubmitting(true);
-
-
-    // Create and save the order
-    const order = createOrder({
-      customer: {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        phone: formData.phone,
-      },
-
-      shippingAddress: {
-        address: formData.address,
-        apartment: formData.apartment,
-        city: formData.city,
-        state: formData.state,
-        pincode: formData.pincode,
-      },
-
-      items: cartItems,
-
-      subtotal: cartTotal,
-
-      shipping: 0,
-
-      total: cartTotal,
-
-      paymentMethod: "online",
-
-      paymentStatus: "pending",
     });
 
 
-    // Small delay for the processing animation
-    setTimeout(() => {
-      clearCart();
+  const [isSubmitting, setIsSubmitting] =
+    useState(false);
 
-      navigate(
-        `/order-success?orderId=${encodeURIComponent(order.id)}`
-      );
-    }, 800);
+
+  // ==========================================================
+  // CHECK LOGIN
+  // ==========================================================
+
+  const user =
+    getCurrentUser();
+
+
+  // ==========================================================
+  // HANDLE INPUT
+  // ==========================================================
+
+  const handleChange = (
+    event
+  ) => {
+
+    const {
+      name,
+      value,
+    } = event.target;
+
+
+    setFormData(
+      (current) => ({
+
+        ...current,
+
+        [name]:
+          value,
+
+      })
+    );
+
   };
 
 
-  // If cart is empty
-  if (cartItems.length === 0) {
+  // ==========================================================
+  // PLACE ORDER
+  // ==========================================================
+
+  const handleSubmit = (
+    event
+  ) => {
+
+    event.preventDefault();
+
+
+    // --------------------------------------------------------
+    // REQUIRE LOGIN
+    // --------------------------------------------------------
+
+    if (
+      !requireLogin(
+        navigate
+      )
+    ) {
+
+      return;
+
+    }
+
+
+    // --------------------------------------------------------
+    // EMPTY CART
+    // --------------------------------------------------------
+
+    if (
+      cartItems.length === 0
+    ) {
+
+      navigate("/shop");
+
+      return;
+
+    }
+
+
+    // --------------------------------------------------------
+    // USER CHECK
+    // --------------------------------------------------------
+
+    const currentUser =
+      getCurrentUser();
+
+
+    if (
+      !currentUser
+    ) {
+
+      navigate("/login");
+
+      return;
+
+    }
+
+
+    setIsSubmitting(
+      true
+    );
+
+
+    // --------------------------------------------------------
+    // ORDER ID
+    // --------------------------------------------------------
+
+    const orderId =
+      `LUV03-${Math.floor(
+        100000 +
+        Math.random() *
+        900000
+      )}`;
+
+
+    // --------------------------------------------------------
+    // DATE
+    // --------------------------------------------------------
+
+    const orderDate =
+      new Date().toISOString();
+
+
+    // --------------------------------------------------------
+    // ORDER
+    // --------------------------------------------------------
+
+    const order = {
+
+      id:
+        orderId,
+
+
+      // ------------------------------------------------------
+      // CUSTOMER EMAIL
+      // Used by getUserOrders()
+      // ------------------------------------------------------
+
+      customerEmail:
+        currentUser.email,
+
+
+      // ------------------------------------------------------
+      // CUSTOMER
+      // ------------------------------------------------------
+
+      customer: {
+
+        firstName:
+          formData.firstName,
+
+        lastName:
+          formData.lastName,
+
+        email:
+          formData.email ||
+          currentUser.email,
+
+        phone:
+          formData.phone,
+
+      },
+
+
+      // ------------------------------------------------------
+      // SHIPPING
+      // ------------------------------------------------------
+
+      shipping: {
+
+        address:
+          formData.address,
+
+        apartment:
+          formData.apartment,
+
+        city:
+          formData.city,
+
+        state:
+          formData.state,
+
+        pincode:
+          formData.pincode,
+
+      },
+
+
+      // ------------------------------------------------------
+      // PRODUCTS
+      // ------------------------------------------------------
+
+      items:
+        cartItems.map(
+          (item) => ({
+
+            ...item,
+
+            quantity:
+              Number(
+                item.quantity
+              ) || 1,
+
+          })
+        ),
+
+
+      // ------------------------------------------------------
+      // TOTAL
+      // ------------------------------------------------------
+
+      total:
+        Number(
+          cartTotal
+        ) || 0,
+
+
+      // ------------------------------------------------------
+      // STATUS
+      // ------------------------------------------------------
+
+      status:
+        "Order confirmed",
+
+
+      // ------------------------------------------------------
+      // DATE
+      // ------------------------------------------------------
+
+      date:
+        orderDate,
+
+
+      // Keep createdAt as well
+      // for compatibility
+
+      createdAt:
+        orderDate,
+
+    };
+
+
+    // ========================================================
+    // SAVE ORDER TO ALL ORDERS
+    // ========================================================
+
+    const saved =
+      saveOrder(
+        order
+      );
+
+
+    // --------------------------------------------------------
+    // IF SAVE FAILED
+    // --------------------------------------------------------
+
+    if (!saved) {
+
+      setIsSubmitting(
+        false
+      );
+
+      alert(
+        "Something went wrong while placing your order. Please try again."
+      );
+
+      return;
+
+    }
+
+
+    // ========================================================
+    // SAVE LAST ORDER
+    // Used by OrderSuccess page
+    // ========================================================
+
+    localStorage.setItem(
+      "luv03-last-order",
+      JSON.stringify(
+        order
+      )
+    );
+
+
+    // ========================================================
+    // PAYMENT
+    // ========================================================
+    //
+    // Payment integration can be connected later.
+    //
+    // For now this completes the test order flow.
+    //
+    // ========================================================
+
+    setTimeout(
+      () => {
+
+        // ----------------------------------------------------
+        // CLEAR CART
+        // ----------------------------------------------------
+
+        clearCart();
+
+
+        // ----------------------------------------------------
+        // GO TO SUCCESS PAGE
+        // ----------------------------------------------------
+
+        navigate(
+          "/order-success"
+        );
+
+      },
+      800
+    );
+
+  };
+
+
+  // ==========================================================
+  // EMPTY CART
+  // ==========================================================
+
+  if (
+    cartItems.length === 0
+  ) {
+
     return (
+
       <main className="min-h-screen bg-[#f8f6f1]">
 
-        <section className="mx-auto flex min-h-[70vh] max-w-[1440px] items-center justify-center px-6 py-20 lg:px-10">
+        <section className="flex min-h-[70vh] items-center justify-center px-6">
 
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 25,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            className="text-center"
-          >
+          <div className="text-center">
 
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#eee9df] text-[#584539]">
 
@@ -128,37 +406,62 @@ function Checkout() {
             </div>
 
 
-            <h1 className="mt-6 font-serif text-3xl text-[#3d3028]">
+            <p className="mt-7 text-[9px] font-medium uppercase tracking-[0.2em] text-[#8a796c]">
+              Checkout
+            </p>
+
+
+            <h1 className="mt-3 font-serif text-3xl text-[#3d3028]">
               Your bag is empty
             </h1>
 
 
             <p className="mx-auto mt-3 max-w-sm text-xs leading-6 text-[#8a796c]">
-              Add something beautiful to your bag before continuing
-              to checkout.
+              Add something beautiful to your bag
+              before continuing to checkout.
             </p>
 
 
             <Link
               to="/shop"
-              className="mt-7 inline-flex items-center rounded-full bg-[#584539] px-7 py-3 text-[9px] font-medium uppercase tracking-[0.15em] text-[#f8f6f1] transition hover:bg-[#3d3028]"
+              className="mt-7 inline-flex rounded-full bg-[#584539] px-7 py-3 text-[9px] font-medium uppercase tracking-[0.15em] text-[#f8f6f1] transition hover:bg-[#3d3028]"
             >
               Continue shopping
             </Link>
 
-          </motion.div>
+          </div>
 
         </section>
 
       </main>
+
     );
+
   }
 
 
+  // ==========================================================
+  // SAFE TOTAL
+  // ==========================================================
+
+  const safeCartTotal =
+    Number(
+      cartTotal
+    ) || 0;
+
+
+  // ==========================================================
+  // PAGE
+  // ==========================================================
+
   return (
+
     <main className="min-h-screen bg-[#f8f6f1]">
 
-      {/* ================= HEADER ================= */}
+
+      {/* ====================================================
+          HEADER
+      ==================================================== */}
 
       <section className="border-b border-[#ddd7ce]">
 
@@ -179,78 +482,64 @@ function Checkout() {
           </Link>
 
 
-          <motion.p
-            initial={{
-              opacity: 0,
-              y: 15,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            className="mt-8 text-[9px] font-medium uppercase tracking-[0.2em] text-[#8a796c]"
-          >
+          <p className="mt-8 text-[9px] font-medium uppercase tracking-[0.2em] text-[#8a796c]">
             Almost there
-          </motion.p>
+          </p>
 
 
-          <motion.h1
-            initial={{
-              opacity: 0,
-              y: 20,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              delay: 0.1,
-            }}
-            className="mt-3 font-serif text-4xl tracking-tight text-[#3d3028] md:text-5xl"
-          >
+          <h1 className="mt-3 font-serif text-4xl tracking-tight text-[#3d3028] md:text-5xl">
             Checkout
-          </motion.h1>
+          </h1>
 
         </div>
 
       </section>
 
 
-      {/* ================= CHECKOUT ================= */}
+      {/* ====================================================
+          CHECKOUT
+      ==================================================== */}
 
       <section className="mx-auto max-w-[1440px] px-6 py-16 lg:px-10">
 
-        <form onSubmit={handleSubmit}>
+        <form
+          onSubmit={
+            handleSubmit
+          }
+        >
 
           <div className="grid gap-12 lg:grid-cols-[1fr_380px]">
 
 
-            {/* ================= CUSTOMER DETAILS ================= */}
+            {/* ==================================================
+                CUSTOMER INFORMATION
+            ================================================== */}
 
             <div>
 
 
-              {/* CONTACT */}
+              {/* ==================================================
+                  CONTACT
+              ================================================== */}
 
               <div>
 
-                <div className="mb-6">
-
-                  <p className="text-[9px] font-medium uppercase tracking-[0.18em] text-[#8a796c]">
-                    01
-                  </p>
-
-                  <h2 className="mt-2 font-serif text-2xl text-[#3d3028]">
-                    Contact information
-                  </h2>
-
-                </div>
+                <p className="text-[9px] font-medium uppercase tracking-[0.18em] text-[#8a796c]">
+                  01
+                </p>
 
 
-                <div className="grid gap-5 sm:grid-cols-2">
+                <h2 className="mt-2 font-serif text-2xl text-[#3d3028]">
+                  Contact information
+                </h2>
 
 
-                  <div className="sm:col-span-2">
+                <div className="mt-6 grid gap-5">
+
+
+                  {/* EMAIL */}
+
+                  <div>
 
                     <label
                       htmlFor="email"
@@ -259,21 +548,28 @@ function Checkout() {
                       Email address
                     </label>
 
+
                     <input
                       id="email"
                       name="email"
                       type="email"
                       required
-                      value={formData.email}
-                      onChange={handleChange}
+                      value={
+                        formData.email
+                      }
+                      onChange={
+                        handleChange
+                      }
                       placeholder="you@example.com"
-                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs text-[#3d3028] outline-none transition focus:border-[#584539]"
+                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs text-[#3d3028] outline-none focus:border-[#584539]"
                     />
 
                   </div>
 
 
-                  <div className="sm:col-span-2">
+                  {/* PHONE */}
+
+                  <div>
 
                     <label
                       htmlFor="phone"
@@ -282,15 +578,20 @@ function Checkout() {
                       Phone number
                     </label>
 
+
                     <input
                       id="phone"
                       name="phone"
                       type="tel"
                       required
-                      value={formData.phone}
-                      onChange={handleChange}
+                      value={
+                        formData.phone
+                      }
+                      onChange={
+                        handleChange
+                      }
                       placeholder="+91 98765 43210"
-                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs text-[#3d3028] outline-none transition focus:border-[#584539]"
+                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs text-[#3d3028] outline-none focus:border-[#584539]"
                     />
 
                   </div>
@@ -300,45 +601,45 @@ function Checkout() {
               </div>
 
 
-              {/* SHIPPING */}
+              {/* ==================================================
+                  SHIPPING
+              ================================================== */}
 
               <div className="mt-14 border-t border-[#ddd7ce] pt-10">
 
-                <div className="mb-6">
-
-                  <p className="text-[9px] font-medium uppercase tracking-[0.18em] text-[#8a796c]">
-                    02
-                  </p>
-
-                  <h2 className="mt-2 font-serif text-2xl text-[#3d3028]">
-                    Delivery address
-                  </h2>
-
-                </div>
+                <p className="text-[9px] font-medium uppercase tracking-[0.18em] text-[#8a796c]">
+                  02
+                </p>
 
 
-                <div className="grid gap-5 sm:grid-cols-2">
+                <h2 className="mt-2 font-serif text-2xl text-[#3d3028]">
+                  Delivery address
+                </h2>
+
+
+                <div className="mt-6 grid gap-5 sm:grid-cols-2">
 
 
                   {/* FIRST NAME */}
 
                   <div>
 
-                    <label
-                      htmlFor="firstName"
-                      className="mb-2 block text-[9px] font-medium uppercase tracking-[0.12em] text-[#756960]"
-                    >
+                    <label className="mb-2 block text-[9px] uppercase tracking-[0.12em] text-[#756960]">
                       First name
                     </label>
 
+
                     <input
-                      id="firstName"
                       name="firstName"
                       type="text"
                       required
-                      value={formData.firstName}
-                      onChange={handleChange}
-                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs text-[#3d3028] outline-none transition focus:border-[#584539]"
+                      value={
+                        formData.firstName
+                      }
+                      onChange={
+                        handleChange
+                      }
+                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs outline-none focus:border-[#584539]"
                     />
 
                   </div>
@@ -348,21 +649,22 @@ function Checkout() {
 
                   <div>
 
-                    <label
-                      htmlFor="lastName"
-                      className="mb-2 block text-[9px] font-medium uppercase tracking-[0.12em] text-[#756960]"
-                    >
+                    <label className="mb-2 block text-[9px] uppercase tracking-[0.12em] text-[#756960]">
                       Last name
                     </label>
 
+
                     <input
-                      id="lastName"
                       name="lastName"
                       type="text"
                       required
-                      value={formData.lastName}
-                      onChange={handleChange}
-                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs text-[#3d3028] outline-none transition focus:border-[#584539]"
+                      value={
+                        formData.lastName
+                      }
+                      onChange={
+                        handleChange
+                      }
+                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs outline-none focus:border-[#584539]"
                     />
 
                   </div>
@@ -372,22 +674,23 @@ function Checkout() {
 
                   <div className="sm:col-span-2">
 
-                    <label
-                      htmlFor="address"
-                      className="mb-2 block text-[9px] font-medium uppercase tracking-[0.12em] text-[#756960]"
-                    >
+                    <label className="mb-2 block text-[9px] uppercase tracking-[0.12em] text-[#756960]">
                       Address
                     </label>
 
+
                     <input
-                      id="address"
                       name="address"
                       type="text"
                       required
-                      value={formData.address}
-                      onChange={handleChange}
+                      value={
+                        formData.address
+                      }
+                      onChange={
+                        handleChange
+                      }
                       placeholder="House no., street, area"
-                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs text-[#3d3028] outline-none transition focus:border-[#584539]"
+                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs outline-none focus:border-[#584539]"
                     />
 
                   </div>
@@ -397,25 +700,21 @@ function Checkout() {
 
                   <div className="sm:col-span-2">
 
-                    <label
-                      htmlFor="apartment"
-                      className="mb-2 block text-[9px] font-medium uppercase tracking-[0.12em] text-[#756960]"
-                    >
+                    <label className="mb-2 block text-[9px] uppercase tracking-[0.12em] text-[#756960]">
                       Apartment / Landmark
-
-                      <span className="ml-1 normal-case tracking-normal text-[#aaa098]">
-                        (optional)
-                      </span>
-
                     </label>
 
+
                     <input
-                      id="apartment"
                       name="apartment"
                       type="text"
-                      value={formData.apartment}
-                      onChange={handleChange}
-                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs text-[#3d3028] outline-none transition focus:border-[#584539]"
+                      value={
+                        formData.apartment
+                      }
+                      onChange={
+                        handleChange
+                      }
+                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs outline-none focus:border-[#584539]"
                     />
 
                   </div>
@@ -425,21 +724,22 @@ function Checkout() {
 
                   <div>
 
-                    <label
-                      htmlFor="city"
-                      className="mb-2 block text-[9px] font-medium uppercase tracking-[0.12em] text-[#756960]"
-                    >
+                    <label className="mb-2 block text-[9px] uppercase tracking-[0.12em] text-[#756960]">
                       City
                     </label>
 
+
                     <input
-                      id="city"
                       name="city"
                       type="text"
                       required
-                      value={formData.city}
-                      onChange={handleChange}
-                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs text-[#3d3028] outline-none transition focus:border-[#584539]"
+                      value={
+                        formData.city
+                      }
+                      onChange={
+                        handleChange
+                      }
+                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs outline-none focus:border-[#584539]"
                     />
 
                   </div>
@@ -449,21 +749,22 @@ function Checkout() {
 
                   <div>
 
-                    <label
-                      htmlFor="state"
-                      className="mb-2 block text-[9px] font-medium uppercase tracking-[0.12em] text-[#756960]"
-                    >
+                    <label className="mb-2 block text-[9px] uppercase tracking-[0.12em] text-[#756960]">
                       State
                     </label>
 
+
                     <input
-                      id="state"
                       name="state"
                       type="text"
                       required
-                      value={formData.state}
-                      onChange={handleChange}
-                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs text-[#3d3028] outline-none transition focus:border-[#584539]"
+                      value={
+                        formData.state
+                      }
+                      onChange={
+                        handleChange
+                      }
+                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs outline-none focus:border-[#584539]"
                     />
 
                   </div>
@@ -473,24 +774,25 @@ function Checkout() {
 
                   <div>
 
-                    <label
-                      htmlFor="pincode"
-                      className="mb-2 block text-[9px] font-medium uppercase tracking-[0.12em] text-[#756960]"
-                    >
+                    <label className="mb-2 block text-[9px] uppercase tracking-[0.12em] text-[#756960]">
                       Pincode
                     </label>
 
+
                     <input
-                      id="pincode"
                       name="pincode"
                       type="text"
                       inputMode="numeric"
-                      required
                       maxLength={6}
-                      value={formData.pincode}
-                      onChange={handleChange}
-                      placeholder="600001"
-                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs text-[#3d3028] outline-none transition focus:border-[#584539]"
+                      pattern="[0-9]{6}"
+                      required
+                      value={
+                        formData.pincode
+                      }
+                      onChange={
+                        handleChange
+                      }
+                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs outline-none focus:border-[#584539]"
                     />
 
                   </div>
@@ -500,30 +802,29 @@ function Checkout() {
               </div>
 
 
-              {/* PAYMENT */}
+              {/* ==================================================
+                  PAYMENT
+              ================================================== */}
 
               <div className="mt-14 border-t border-[#ddd7ce] pt-10">
 
-                <div className="mb-6">
-
-                  <p className="text-[9px] font-medium uppercase tracking-[0.18em] text-[#8a796c]">
-                    03
-                  </p>
-
-                  <h2 className="mt-2 font-serif text-2xl text-[#3d3028]">
-                    Payment
-                  </h2>
-
-                </div>
+                <p className="text-[9px] font-medium uppercase tracking-[0.18em] text-[#8a796c]">
+                  03
+                </p>
 
 
-                <div className="rounded-2xl border border-[#d7cec5] bg-[#eee9df]/50 p-5">
+                <h2 className="mt-2 font-serif text-2xl text-[#3d3028]">
+                  Payment
+                </h2>
 
-                  <div className="flex items-start gap-3">
 
-                    <div className="mt-0.5 flex h-5 w-5 items-center justify-center rounded-full border border-[#584539]">
+                <div className="mt-6 rounded-2xl border border-[#d7cec5] bg-[#eee9df]/50 p-5">
 
-                      <div className="h-2.5 w-2.5 rounded-full bg-[#584539]" />
+                  <div className="flex gap-3">
+
+                    <div className="mt-1 h-4 w-4 shrink-0 rounded-full border border-[#584539] p-[3px]">
+
+                      <div className="h-full w-full rounded-full bg-[#584539]" />
 
                     </div>
 
@@ -531,12 +832,14 @@ function Checkout() {
                     <div>
 
                       <p className="text-[10px] font-medium text-[#3d3028]">
-                        Online payment
+                        Payment integration coming soon
                       </p>
 
+
                       <p className="mt-1 text-[9px] leading-5 text-[#8a796c]">
-                        Secure payment options will be available at
-                        the next step.
+                        Online payment will be connected
+                        later. For now, you can test the
+                        complete order experience.
                       </p>
 
                     </div>
@@ -550,12 +853,14 @@ function Checkout() {
             </div>
 
 
-            {/* ================= ORDER SUMMARY ================= */}
+            {/* ==================================================
+                ORDER SUMMARY
+            ================================================== */}
 
             <motion.aside
               initial={{
                 opacity: 0,
-                x: 25,
+                x: 20,
               }}
               animate={{
                 opacity: 1,
@@ -564,7 +869,7 @@ function Checkout() {
               className="h-fit rounded-[24px] bg-[#eee9df] p-7 lg:sticky lg:top-28"
             >
 
-              <p className="text-[9px] font-medium uppercase tracking-[0.18em] text-[#8a796c]">
+              <p className="text-[9px] uppercase tracking-[0.18em] text-[#8a796c]">
                 Your order
               </p>
 
@@ -574,94 +879,121 @@ function Checkout() {
               </h2>
 
 
-              {/* ITEMS */}
+              <div className="mt-7 space-y-5 border-b border-[#d5ccc2] pb-6">
 
-              <div className="mt-7 max-h-[360px] space-y-5 overflow-y-auto border-b border-[#d5ccc2] pb-6">
+                {cartItems.map(
+                  (
+                    item
+                  ) => {
 
-                {cartItems.map((item) => (
-
-                  <div
-                    key={item.id}
-                    className="flex gap-4"
-                  >
-
-                    <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-xl bg-[#f8f6f1]">
-
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="h-full w-full object-cover"
-                      />
-
-                      <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#584539] px-1 text-[7px] text-white">
-                        {item.quantity}
-                      </span>
-
-                    </div>
+                    const price =
+                      Number(
+                        item.price
+                      ) || 0;
 
 
-                    <div className="min-w-0 flex-1">
-
-                      <p className="text-[8px] uppercase tracking-[0.12em] text-[#9a897c]">
-                        {item.category}
-                      </p>
-
-                      <p className="mt-1 font-serif text-sm leading-5 text-[#3d3028]">
-                        {item.name}
-                      </p>
-
-                      <p className="mt-1 text-[10px] text-[#756960]">
-                        ₹{item.price.toLocaleString("en-IN")}
-                      </p>
-
-                    </div>
+                    const quantity =
+                      Number(
+                        item.quantity
+                      ) || 0;
 
 
-                    <p className="text-[10px] font-medium text-[#3d3028]">
-                      ₹
-                      {(
-                        item.price * item.quantity
-                      ).toLocaleString("en-IN")}
-                    </p>
+                    return (
 
-                  </div>
+                      <div
+                        key={
+                          item.id
+                        }
+                        className="flex gap-4"
+                      >
 
-                ))}
+                        <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-xl bg-[#f8f6f1]">
+
+                          <img
+                            src={
+                              item.image
+                            }
+                            alt={
+                              item.name
+                            }
+                            className="h-full w-full object-cover"
+                          />
+
+
+                          <span className="absolute right-1 top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#584539] px-1 text-[7px] text-white">
+                            {quantity}
+                          </span>
+
+                        </div>
+
+
+                        <div className="min-w-0 flex-1">
+
+                          <p className="text-[8px] uppercase tracking-[0.12em] text-[#9a897c]">
+                            {item.category}
+                          </p>
+
+
+                          <p className="mt-1 font-serif text-sm text-[#3d3028]">
+                            {item.name}
+                          </p>
+
+
+                          <p className="mt-1 text-[10px] text-[#756960]">
+                            ₹
+                            {price.toLocaleString(
+                              "en-IN"
+                            )}
+                          </p>
+
+                        </div>
+
+                      </div>
+
+                    );
+
+                  }
+                )}
+
+              </div>
+
+
+              {/* SUBTOTAL */}
+
+              <div className="mt-5 flex justify-between text-xs text-[#756960]">
+
+                <span>
+                  Subtotal
+                </span>
+
+
+                <span>
+                  ₹
+                  {safeCartTotal.toLocaleString(
+                    "en-IN"
+                  )}
+                </span>
+
+              </div>
+
+
+              {/* SHIPPING */}
+
+              <div className="mt-4 flex justify-between text-xs text-[#756960]">
+
+                <span>
+                  Shipping
+                </span>
+
+
+                <span>
+                  Free
+                </span>
 
               </div>
 
 
               {/* TOTAL */}
-
-              <div className="mt-5 space-y-4">
-
-                <div className="flex justify-between text-xs text-[#756960]">
-
-                  <span>
-                    Subtotal
-                  </span>
-
-                  <span>
-                    ₹{cartTotal.toLocaleString("en-IN")}
-                  </span>
-
-                </div>
-
-
-                <div className="flex justify-between text-xs text-[#756960]">
-
-                  <span>
-                    Shipping
-                  </span>
-
-                  <span>
-                    Free
-                  </span>
-
-                </div>
-
-              </div>
-
 
               <div className="mt-5 flex items-center justify-between border-t border-[#d5ccc2] pt-5">
 
@@ -669,8 +1001,12 @@ function Checkout() {
                   Total
                 </span>
 
+
                 <span className="font-serif text-2xl text-[#3d3028]">
-                  ₹{cartTotal.toLocaleString("en-IN")}
+                  ₹
+                  {safeCartTotal.toLocaleString(
+                    "en-IN"
+                  )}
                 </span>
 
               </div>
@@ -680,14 +1016,13 @@ function Checkout() {
 
               <motion.button
                 type="submit"
-                disabled={isSubmitting}
-                whileHover={{
-                  y: -2,
-                }}
+                disabled={
+                  isSubmitting
+                }
                 whileTap={{
                   scale: 0.98,
                 }}
-                className="mt-7 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#584539] text-[9px] font-medium uppercase tracking-[0.15em] text-[#f8f6f1] transition hover:bg-[#3d3028] disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-7 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#584539] text-[9px] font-medium uppercase tracking-[0.15em] text-[#f8f6f1] transition hover:bg-[#3d3028] disabled:opacity-60"
               >
 
                 <Lock
@@ -695,16 +1030,12 @@ function Checkout() {
                   strokeWidth={1.5}
                 />
 
+
                 {isSubmitting
                   ? "Processing..."
                   : "Place order"}
 
               </motion.button>
-
-
-              <p className="mt-4 text-center text-[8px] leading-5 text-[#8a796c]">
-                Secure checkout · Easy returns · Made with care
-              </p>
 
             </motion.aside>
 
@@ -715,7 +1046,10 @@ function Checkout() {
       </section>
 
     </main>
+
   );
+
 }
+
 
 export default Checkout;

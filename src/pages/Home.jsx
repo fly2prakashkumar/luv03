@@ -1,4 +1,3 @@
-import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import FeatureBar from "../components/FeatureBar";
 import FeaturedProducts from "../components/FeaturedProducts";
@@ -10,10 +9,12 @@ import Testimonials from "../components/Testimonials";
 import Newsletter from "../components/Newsletter";
 import Footer from "../components/Footer";
 
+
 function Home() {
+
   return (
+
     <div className="min-h-screen bg-[#f8f6f1]">
-      <Navbar />
 
       <Hero />
 
@@ -34,8 +35,12 @@ function Home() {
       <Newsletter />
 
       <Footer />
+
     </div>
+
   );
+
 }
+
 
 export default Home;

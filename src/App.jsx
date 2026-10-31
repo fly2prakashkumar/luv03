@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 
@@ -8,69 +8,207 @@ import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
+import Wishlist from "./pages/Wishlist";
+import Login from "./pages/Login";
+import Profile from "./pages/Profile";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import Orders from "./pages/Orders";
+import Admin from "./pages/Admin";
+
 
 function App() {
+
+  const location = useLocation();
+
+  // ==========================================================
+  // HIDE CUSTOMER NAVBAR ON ADMIN PAGE
+  // ==========================================================
+
+  const isAdminPage =
+    location.pathname.startsWith("/admin");
+
+
   return (
+
     <div className="min-h-screen bg-[#f8f6f1]">
 
-      <Navbar />
+      {/* ======================================================
+          CUSTOMER NAVBAR
+          
+          Navbar will appear on all customer pages.
+          Navbar will NOT appear on /admin.
+      ====================================================== */}
+
+      {!isAdminPage && (
+        <Navbar />
+      )}
+
 
       <Routes>
 
-        {/* HOME */}
+        {/* ==================================================
+            HOME
+        ================================================== */}
+
         <Route
           path="/"
-          element={<Home />}
+          element={
+            <Home />
+          }
         />
 
-        {/* SHOP */}
+
+        {/* ==================================================
+            SHOP
+        ================================================== */}
+
         <Route
           path="/shop"
-          element={<Shop />}
+          element={
+            <Shop />
+          }
         />
 
-        {/* PRODUCT DETAILS */}
+
+        {/* ==================================================
+            PRODUCT DETAILS
+        ================================================== */}
+
         <Route
           path="/product/:slug"
-          element={<ProductDetails />}
+          element={
+            <ProductDetails />
+          }
         />
 
-        {/* CART */}
+
+        {/* ==================================================
+            CART
+        ================================================== */}
+
         <Route
           path="/cart"
-          element={<Cart />}
+          element={
+            <Cart />
+          }
         />
 
-        {/* CHECKOUT */}
+
+        {/* ==================================================
+            CHECKOUT
+        ================================================== */}
+
         <Route
           path="/checkout"
-          element={<Checkout />}
+          element={
+            <Checkout />
+          }
         />
 
-        {/* ORDER SUCCESS */}
+
+        {/* ==================================================
+            ORDER SUCCESS
+        ================================================== */}
+
         <Route
           path="/order-success"
-          element={<OrderSuccess />}
+          element={
+            <OrderSuccess />
+          }
         />
 
-        {/* ABOUT */}
+
+        {/* ==================================================
+            WISHLIST
+        ================================================== */}
+
+        <Route
+          path="/wishlist"
+          element={
+            <Wishlist />
+          }
+        />
+
+
+        {/* ==================================================
+            LOGIN
+        ================================================== */}
+
+        <Route
+          path="/login"
+          element={
+            <Login />
+          }
+        />
+
+
+        {/* ==================================================
+            PROFILE
+        ================================================== */}
+
+        <Route
+          path="/profile"
+          element={
+            <Profile />
+          }
+        />
+
+
+        {/* ==================================================
+            ORDERS
+        ================================================== */}
+
+        <Route
+          path="/orders"
+          element={
+            <Orders />
+          }
+        />
+
+
+        {/* ==================================================
+            ADMIN
+        ================================================== */}
+
+        <Route
+          path="/admin"
+          element={
+            <Admin />
+          }
+        />
+
+
+        {/* ==================================================
+            ABOUT
+        ================================================== */}
+
         <Route
           path="/about"
-          element={<About />}
+          element={
+            <About />
+          }
         />
 
-        {/* CONTACT */}
+
+        {/* ==================================================
+            CONTACT
+        ================================================== */}
+
         <Route
           path="/contact"
-          element={<Contact />}
+          element={
+            <Contact />
+          }
         />
 
       </Routes>
 
     </div>
+
   );
+
 }
+
 
 export default App;
