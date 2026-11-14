@@ -2,6 +2,11 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Activity,
+  Crown,
+  Shield,
+  ShieldCheck,
+  ShieldAlert,
+  UserPlus,
   AlertCircle,
   AlertTriangle,
   ArrowDownRight,
@@ -54,6 +59,12 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { getStoredProducts, saveStoredProducts } from "../data/products";
 import {
+  ADMIN_EMAIL,
+  ADMIN_EMAIL_ALT,
+  getAdminEmails,
+  isEmailAdmin,
+  grantAdminAccess,
+  revokeAdminAccess,
   getCurrentUser,
   logoutUser,
   requireAdmin,
@@ -61,6 +72,7 @@ import {
   saveAllOrders,
   updateOrder,
   getAllCustomers,
+  getAllUsers,
 } from "../utils/auth";
 import {
   COURIER_PARTNERS,
@@ -325,6 +337,13 @@ const INITIAL_SEED_ORDERS = [
 
 const INITIAL_SEED_CUSTOMERS = [
   {
+    name: "Jeyakumar (Super Admin)",
+    email: "jeyakumarluvo3@gmail.com",
+    phone: "+91 99999 00000",
+    role: "admin",
+    createdAt: new Date(Date.now() - 3600000 * 24 * 180).toISOString(),
+  },
+  {
     name: "Ananya Sharma",
     email: "ananya.sharma@example.com",
     phone: "+91 98201 54321",
@@ -449,7 +468,7 @@ export default function Admin() {
           }
         });
         localStorage.setItem("luv03-users", JSON.stringify(merged));
-        currentUsers = merged.filter((u) => u.role !== "admin");
+        currentUsers = merged;
       } catch (e) {
         currentUsers = INITIAL_SEED_CUSTOMERS;
       }
@@ -589,11 +608,13 @@ export default function Admin() {
     customers.forEach((u) => {
       const email = u.email?.toLowerCase().trim();
       if (!email) return;
+      const isAdminUser = u.role === "admin" || isEmailAdmin(email);
       customerMap.set(email, {
         id: email,
-        name: u.name || "Valued Customer",
+        name: u.name || (isAdminUser ? "Admin User" : "Valued Customer"),
         email: u.email,
         phone: u.phone || "-",
+        role: isAdminUser ? "admin" : "customer",
         isRegistered: true,
         createdAt: u.createdAt || new Date().toISOString(),
         ordersCount: 0,
@@ -609,11 +630,13 @@ export default function Admin() {
 
       let c = customerMap.get(email);
       if (!c) {
+        const isAdminUser = isEmailAdmin(email);
         c = {
           id: email,
           name: o.customer?.name || `${o.customer?.firstName || ""} ${o.customer?.lastName || ""}`.trim() || "Customer",
           email: o.customerEmail || o.customer?.email,
           phone: o.customer?.phone || "-",
+          role: isAdminUser ? "admin" : "customer",
           isRegistered: false,
           createdAt: o.date || o.createdAt || new Date().toISOString(),
           ordersCount: 0,
@@ -642,13 +665,42 @@ export default function Admin() {
       let tier = "Regular";
       if (c.totalSpend >= 10000) tier = "VIP Elite";
       else if (c.totalSpend >= 5000) tier = "Gold Member";
-      return { ...c, tier };
+      return {
+        ...c,
+        tier,
+        role: c.role || (isEmailAdmin(c.email) ? "admin" : "customer"),
+      };
     });
   }, [customers, orders]);
 
   // ==========================================================
   // ACTIONS: ORDERS & COURIER PARTNER MANAGEMENT
   // ==========================================================
+
+  // ==========================================================
+  // ACTIONS: ADMIN PRIVILEGE MANAGEMENT
+  // ==========================================================
+  const handleGrantAdmin = (email, name = "") => {
+    const res = grantAdminAccess(email, name);
+    if (res.success) {
+      showToast(res.message, "success");
+      setCustomers(getAllCustomers());
+    } else {
+      showToast(res.message, "warning");
+    }
+    return res;
+  };
+
+  const handleRevokeAdmin = (email) => {
+    const res = revokeAdminAccess(email);
+    if (res.success) {
+      showToast(res.message, "success");
+      setCustomers(getAllCustomers());
+    } else {
+      showToast(res.message, "warning");
+    }
+    return res;
+  };
 
   // Change delivery status
   const handleUpdateOrderStatus = (orderId, newStatus) => {
@@ -898,10 +950,10 @@ export default function Admin() {
     },
     {
       id: "customers",
-      label: "Customers",
+      label: "Users & Access",
       icon: Users,
       badge: aggregatedCustomers.length,
-      description: "VIP tiers & customer profiles",
+      description: "User accounts, administrator access & VIP tiers",
     },
     {
       id: "inventory",
@@ -1232,6 +1284,8 @@ export default function Admin() {
                 onViewCustomer={setSelectedCustomer}
                 formatPrice={formatPrice}
                 formatDate={formatDate}
+                onGrantAdmin={handleGrantAdmin}
+                onRevokeAdmin={handleRevokeAdmin}
               />
             )}
 
@@ -2213,7 +2267,7 @@ function OrdersTab({
 }
 
 // ============================================================
-// PILLAR 4: CUSTOMERS TAB (VIP TIERS & DETAIL VIEW)
+// PILLAR 4: USERS & ACCESS TAB (ADMIN ROLES, GRANT ACCESS & VIP TIERS)
 // ============================================================
 
 function CustomersTab({
@@ -2223,112 +2277,359 @@ function CustomersTab({
   onViewCustomer,
   formatPrice,
   formatDate,
+  onGrantAdmin,
+  onRevokeAdmin,
 }) {
+  const [roleFilter, setRoleFilter] = useState("all"); // 'all' | 'admin' | 'customer'
+  const [newAdminEmail, setNewAdminEmail] = useState("");
+  const [newAdminName, setNewAdminName] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Statistics
+  const stats = useMemo(() => {
+    const adminCount = customers.filter(
+      (c) => c.role === "admin" || isEmailAdmin(c.email)
+    ).length;
+    const customerCount = customers.length - adminCount;
+    return {
+      total: customers.length,
+      admins: adminCount,
+      customers: customerCount,
+    };
+  }, [customers]);
+
+  // Real-time filtering by search query & role
   const filteredCustomers = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    if (!q) return customers;
-    return customers.filter(
-      (c) =>
-        c.name.toLowerCase().includes(q) ||
-        c.email.toLowerCase().includes(q) ||
-        (c.phone && c.phone.toLowerCase().includes(q))
-    );
-  }, [customers, searchQuery]);
+    return customers.filter((c) => {
+      const isAdminUser = c.role === "admin" || isEmailAdmin(c.email);
+
+      // Role filter
+      if (roleFilter === "admin" && !isAdminUser) return false;
+      if (roleFilter === "customer" && isAdminUser) return false;
+
+      // Text search
+      if (!q) return true;
+      const nameMatch = (c.name || "").toLowerCase().includes(q);
+      const emailMatch = (c.email || "").toLowerCase().includes(q);
+      const phoneMatch = (c.phone || "").toLowerCase().includes(q);
+      const roleMatch = (isAdminUser ? "admin administrator" : "customer client").includes(q);
+      const tierMatch = (c.tier || "").toLowerCase().includes(q);
+
+      return nameMatch || emailMatch || phoneMatch || roleMatch || tierMatch;
+    });
+  }, [customers, searchQuery, roleFilter]);
+
+  const handleGrantSubmit = (e) => {
+    e.preventDefault();
+    if (!newAdminEmail.trim() || !newAdminEmail.includes("@")) {
+      return;
+    }
+    setIsSubmitting(true);
+    if (onGrantAdmin) {
+      onGrantAdmin(newAdminEmail.trim(), newAdminName.trim());
+    }
+    setNewAdminEmail("");
+    setNewAdminName("");
+    setIsSubmitting(false);
+  };
 
   return (
     <div className="space-y-6">
+      {/* =======================================================
+          CARD: GRANT ADMIN PRIVILEGES
+      ======================================================= */}
+      <div className="relative overflow-hidden rounded-3xl border border-[#C5A880]/30 bg-[#161311] p-6 text-[#FAF7F2] shadow-xl sm:p-7">
+        <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-[#C5A880]/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-10 -left-10 h-36 w-36 rounded-full bg-[#FAF7F2]/5 blur-2xl" />
+
+        <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="max-w-xl space-y-2">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#C5A880]/40 bg-[#C5A880]/15 px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#C5A880]">
+              <Crown size={12} className="text-[#C5A880]" /> Administrator Access Control
+            </div>
+            <h2 className="font-serif text-2xl text-[#FAF7F2] sm:text-3xl">
+              Authorize New Admin User
+            </h2>
+            <p className="text-xs leading-relaxed text-[#D2C8BF]">
+              Grant administrative privileges to any team member or email address. Authorized admins gain full access to catalog management, courier logistics, orders, and system privileges.
+            </p>
+          </div>
+
+          <form
+            onSubmit={handleGrantSubmit}
+            className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-2 w-full lg:max-w-md"
+          >
+            <div className="flex-1 space-y-1.5">
+              <input
+                type="email"
+                required
+                value={newAdminEmail}
+                onChange={(e) => setNewAdminEmail(e.target.value)}
+                placeholder="colleague@domain.com"
+                className="h-11 w-full rounded-2xl border border-white/20 bg-white/10 px-4 text-xs text-[#FAF7F2] placeholder-white/40 outline-none backdrop-blur-md transition focus:border-[#C5A880] focus:bg-white/15"
+              />
+            </div>
+            <div className="sm:w-36 space-y-1.5">
+              <input
+                type="text"
+                value={newAdminName}
+                onChange={(e) => setNewAdminName(e.target.value)}
+                placeholder="Name (opt)"
+                className="h-11 w-full rounded-2xl border border-white/20 bg-white/10 px-3.5 text-xs text-[#FAF7F2] placeholder-white/40 outline-none backdrop-blur-md transition focus:border-[#C5A880] focus:bg-white/15"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={isSubmitting || !newAdminEmail.trim()}
+              className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#C5A880] px-5 text-xs font-semibold uppercase tracking-[0.14em] text-[#161311] shadow-lg shadow-[#C5A880]/20 transition hover:bg-[#d8bd97] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <UserPlus size={15} /> Grant Admin
+            </button>
+          </form>
+        </div>
+      </div>
+
+      {/* =======================================================
+          TOOLBAR: SEARCH BAR & ROLE FILTERS
+      ======================================================= */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative flex-1 max-w-md">
+        {/* Search Input */}
+        <div className="relative flex-1 max-w-lg">
           <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8C7E72]" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search customers by name, email, or phone..."
-            className="h-11 w-full rounded-2xl border border-[#E5DED3] bg-white pl-11 pr-4 text-xs text-[#161311] outline-none focus:border-[#161311]"
+            placeholder="Search users by name, email, phone, role, or tier..."
+            className="h-11 w-full rounded-2xl border border-[#E5DED3] bg-white pl-11 pr-10 text-xs text-[#161311] outline-none transition focus:border-[#161311] focus:ring-1 focus:ring-[#161311]/20"
           />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-[#8C7E72] hover:bg-[#FAF7F2] hover:text-[#161311]"
+            >
+              <X size={14} />
+            </button>
+          )}
         </div>
-        <p className="text-xs text-[#8C7E72]">
-          Total Registered & Guest Clients: <span className="font-semibold text-[#161311]">{customers.length}</span>
-        </p>
+
+        {/* Role Filter Pills */}
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setRoleFilter("all")}
+            className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition ${
+              roleFilter === "all"
+                ? "bg-[#161311] text-[#FAF7F2] shadow-sm"
+                : "border border-[#E5DED3] bg-white text-[#524942] hover:bg-[#FAF7F2]"
+            }`}
+          >
+            All Users <span className="ml-1 opacity-75">({stats.total})</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setRoleFilter("admin")}
+            className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition ${
+              roleFilter === "admin"
+                ? "bg-[#161311] text-[#C5A880] shadow-sm border border-[#C5A880]/50"
+                : "border border-[#E5DED3] bg-white text-[#524942] hover:bg-[#FAF7F2]"
+            }`}
+          >
+            <Shield size={12} className={roleFilter === "admin" ? "text-[#C5A880]" : "text-[#8C7E72]"} />
+            Admins <span className="ml-1 opacity-75">({stats.admins})</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setRoleFilter("customer")}
+            className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition ${
+              roleFilter === "customer"
+                ? "bg-[#161311] text-[#FAF7F2] shadow-sm"
+                : "border border-[#E5DED3] bg-white text-[#524942] hover:bg-[#FAF7F2]"
+            }`}
+          >
+            Customers <span className="ml-1 opacity-75">({stats.customers})</span>
+          </button>
+        </div>
       </div>
 
+      {/* =======================================================
+          USERS TABLE
+      ======================================================= */}
       <div className="overflow-hidden rounded-3xl border border-white/80 bg-white/90 shadow-sm backdrop-blur-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-[#E5DED3] bg-[#FAF7F2]/60 text-[9px] font-semibold uppercase tracking-[0.16em] text-[#8C7E72]">
-                <th className="py-4 px-6">Customer</th>
+                <th className="py-4 px-6">User / Client</th>
                 <th className="py-4 px-4">Contact</th>
-                <th className="py-4 px-4">Total Orders</th>
+                <th className="py-4 px-4">Role & Access</th>
+                <th className="py-4 px-4">Orders</th>
                 <th className="py-4 px-4">Lifetime Spend</th>
                 <th className="py-4 px-4">Tier Badge</th>
-                <th className="py-4 px-6 text-right">Actions</th>
+                <th className="py-4 px-6 text-right">Access & Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E5DED3] text-xs">
-              {filteredCustomers.map((cust) => {
-                const initials = cust.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")
-                  .slice(0, 2)
-                  .toUpperCase();
+              {filteredCustomers.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-12 text-center text-[#8C7E72]">
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#FAF7F2] text-[#8C7E72] mb-3">
+                      <Search size={20} />
+                    </div>
+                    <p className="font-medium text-[#161311]">No matching users found</p>
+                    <p className="text-[11px] text-[#8C7E72] mt-1">Try adjusting your search query or role filter.</p>
+                  </td>
+                </tr>
+              ) : (
+                filteredCustomers.map((cust) => {
+                  const emailLower = (cust.email || "").toLowerCase().trim();
+                  const isPrimaryAdmin =
+                    emailLower === ADMIN_EMAIL.toLowerCase() ||
+                    emailLower === ADMIN_EMAIL_ALT.toLowerCase();
+                  const isAdminUser = cust.role === "admin" || isEmailAdmin(cust.email);
 
-                return (
-                  <tr key={cust.id} className="transition hover:bg-[#FAF7F2]/40">
-                    <td className="py-4 px-6">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#161311] font-medium text-xs text-[#FAF7F2]">
-                          {initials}
+                  const initials = (cust.name || "User")
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .slice(0, 2)
+                    .toUpperCase();
+
+                  return (
+                    <tr key={cust.id || cust.email} className="transition hover:bg-[#FAF7F2]/40">
+                      {/* User Column */}
+                      <td className="py-4 px-6">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={`relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-medium text-xs shadow-sm ${
+                              isAdminUser
+                                ? "bg-[#161311] text-[#FAF7F2] ring-2 ring-[#C5A880]/60"
+                                : "bg-[#FAF7F2] text-[#161311] border border-[#E5DED3]"
+                            }`}
+                          >
+                            {initials}
+                            {isAdminUser && (
+                              <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#C5A880] text-[#161311] shadow">
+                                <Crown size={9} />
+                              </span>
+                            )}
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-1.5">
+                              <p className="font-semibold text-[#161311]">{cust.name}</p>
+                              {isPrimaryAdmin && (
+                                <span className="rounded-full bg-[#161311] px-2 py-0.5 text-[8px] font-semibold uppercase tracking-wider text-[#C5A880] border border-[#C5A880]/40">
+                                  Primary
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-[10px] text-[#8C7E72]">
+                              Member since {formatDate(cust.createdAt)}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-semibold text-[#161311]">{cust.name}</p>
-                          <p className="text-[10px] text-[#8C7E72]">
-                            Member since {formatDate(cust.createdAt)}
-                          </p>
+                      </td>
+
+                      {/* Contact Column */}
+                      <td className="py-4 px-4">
+                        <p className="font-medium text-[#161311] select-all">{cust.email}</p>
+                        <p className="text-[10px] text-[#8C7E72]">{cust.phone || "—"}</p>
+                      </td>
+
+                      {/* Role & Access Column */}
+                      <td className="py-4 px-4">
+                        {isPrimaryAdmin ? (
+                          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#C5A880]/50 bg-[#161311] px-2.5 py-1 text-[9px] font-semibold uppercase tracking-wider text-[#C5A880] shadow-sm">
+                            <Crown size={11} className="text-[#C5A880]" /> Super Admin
+                          </span>
+                        ) : isAdminUser ? (
+                          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#C5A880]/40 bg-[#C5A880]/15 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-wider text-[#73582A]">
+                            <ShieldCheck size={11} className="text-[#C5A880]" /> Admin
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 rounded-full border border-[#E5DED3] bg-[#FAF7F2] px-2.5 py-1 text-[9px] font-medium uppercase tracking-wider text-[#524942]">
+                            <User size={10} className="text-[#8C7E72]" /> Customer
+                          </span>
+                        )}
+                      </td>
+
+                      {/* Orders Count */}
+                      <td className="py-4 px-4 font-medium text-[#161311]">
+                        {cust.ordersCount} {cust.ordersCount === 1 ? "order" : "orders"}
+                      </td>
+
+                      {/* Lifetime Spend */}
+                      <td className="py-4 px-4 font-serif font-medium text-[#161311]">
+                        {formatPrice(cust.totalSpend)}
+                      </td>
+
+                      {/* Tier Badge */}
+                      <td className="py-4 px-4">
+                        <span
+                          className={`rounded-full px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider ${
+                            cust.tier === "VIP Elite"
+                              ? "bg-[#C5A880]/20 text-[#73582A] border border-[#C5A880]/40"
+                              : cust.tier === "Gold Member"
+                              ? "bg-amber-100 text-amber-900 border border-amber-300"
+                              : "bg-[#FAF7F2] text-[#524942]"
+                          }`}
+                        >
+                          {cust.tier}
+                        </span>
+                      </td>
+
+                      {/* Actions */}
+                      <td className="py-4 px-6 text-right">
+                        <div className="inline-flex items-center justify-end gap-2">
+                          <button
+                            type="button"
+                            onClick={() => onViewCustomer(cust)}
+                            className="rounded-xl border border-[#E5DED3] bg-white px-3 py-1.5 text-xs font-medium text-[#161311] transition hover:bg-[#FAF7F2]"
+                            title="View order history & profile"
+                          >
+                            Profile
+                          </button>
+
+                          {/* Admin Grant / Revoke Controls */}
+                          {isAdminUser ? (
+                            isPrimaryAdmin ? (
+                              <span className="rounded-xl bg-[#FAF7F2] px-2.5 py-1.5 text-[10px] font-medium text-[#8C7E72] border border-[#E5DED3]/60 cursor-default">
+                                Permanent
+                              </span>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (confirm(`Revoke admin access for ${cust.email}?`)) {
+                                    if (onRevokeAdmin) onRevokeAdmin(cust.email);
+                                  }
+                                }}
+                                className="inline-flex items-center gap-1 rounded-xl border border-rose-200 bg-rose-50 px-2.5 py-1.5 text-xs font-medium text-rose-700 transition hover:bg-rose-100"
+                                title="Demote to standard customer"
+                              >
+                                <ShieldAlert size={12} /> Revoke
+                              </button>
+                            )
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (onGrantAdmin) onGrantAdmin(cust.email, cust.name);
+                              }}
+                              className="inline-flex items-center gap-1 rounded-xl border border-[#C5A880]/40 bg-[#FAF7F2] px-2.5 py-1.5 text-xs font-medium text-[#73582A] transition hover:bg-[#C5A880]/20 hover:border-[#C5A880]"
+                              title="Grant admin privileges"
+                            >
+                              <ShieldCheck size={12} className="text-[#C5A880]" /> Grant Admin
+                            </button>
+                          )}
                         </div>
-                      </div>
-                    </td>
-
-                    <td className="py-4 px-4">
-                      <p className="text-[#161311]">{cust.email}</p>
-                      <p className="text-[10px] text-[#8C7E72]">{cust.phone}</p>
-                    </td>
-
-                    <td className="py-4 px-4 font-medium text-[#161311]">
-                      {cust.ordersCount} {cust.ordersCount === 1 ? "order" : "orders"}
-                    </td>
-
-                    <td className="py-4 px-4 font-serif font-medium text-[#161311]">
-                      {formatPrice(cust.totalSpend)}
-                    </td>
-
-                    <td className="py-4 px-4">
-                      <span
-                        className={`rounded-full px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider ${
-                          cust.tier === "VIP Elite"
-                            ? "bg-[#C5A880]/20 text-[#73582A] border border-[#C5A880]/40"
-                            : cust.tier === "Gold Member"
-                            ? "bg-amber-100 text-amber-900 border border-amber-300"
-                            : "bg-[#FAF7F2] text-[#524942]"
-                        }`}
-                      >
-                        {cust.tier}
-                      </span>
-                    </td>
-
-                    <td className="py-4 px-6 text-right">
-                      <button
-                        onClick={() => onViewCustomer(cust)}
-                        className="rounded-xl border border-[#E5DED3] px-3.5 py-1.5 text-xs font-medium text-[#161311] transition hover:bg-[#FAF7F2]"
-                      >
-                        View Profile
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>

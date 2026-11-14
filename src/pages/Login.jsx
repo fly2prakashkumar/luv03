@@ -6,6 +6,7 @@ import {
   LockKeyhole,
   Mail,
   UserRound,
+  Shield,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -162,9 +163,11 @@ function Login() {
 
 
       setTimeout(() => {
-
-        navigate("/");
-
+        if (result.user?.role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
       }, 700);
 
 
@@ -676,9 +679,23 @@ function Login() {
         </motion.div>
 
 
-        <p className="mt-6 text-center text-[8px] leading-5 text-[#B3A69A]">
-          Administrator access is restricted to authorized credentials.
-        </p>
+        <div className="mt-6 text-center space-y-2">
+          <p className="text-[10px] text-[#8C7E72]">
+            Administrator Access: <span className="font-semibold text-[#161311]">jeyakumarluvo3@gmail.com</span>
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              setIsCreateAccount(false);
+              setEmail("jeyakumarluvo3@gmail.com");
+              setPassword("Welcome@123");
+              setError("");
+            }}
+            className="inline-flex items-center gap-1.5 rounded-full border border-[#C5A880]/40 bg-white/80 px-3.5 py-1 text-[9px] font-medium tracking-wider text-[#73582A] shadow-sm transition hover:bg-[#C5A880]/15 hover:border-[#C5A880]"
+          >
+            <Shield size={12} className="text-[#C5A880]" /> Quick Fill Admin (Demo)
+          </button>
+        </div>
 
       </div>
 
