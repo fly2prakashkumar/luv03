@@ -64,7 +64,7 @@ function Profile() {
 
   return (
 
-    <main className="min-h-screen bg-[#f8f6f1] px-5 py-10 sm:px-8 lg:px-10 lg:py-16">
+    <main className="min-h-screen bg-transparent px-5 py-10 sm:px-8 lg:px-10 lg:py-16">
 
       <div className="mx-auto max-w-5xl">
 
@@ -73,14 +73,14 @@ function Profile() {
             HEADER
         ================================================== */}
 
-        <section className="rounded-[28px] bg-[#eee9df] p-7 sm:p-10">
+        <section className="rounded-[28px] border border-white/80 bg-white/70 p-7 shadow-[0_16px_40px_rgba(109,0,25,0.06)] backdrop-blur-xl sm:p-10">
 
           <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
 
 
             {/* PROFILE ICON */}
 
-            <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-[#584539] text-[#f8f6f1]">
+            <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-[#161311] text-[#FAF7F2]">
 
               <User
                 size={30}
@@ -94,24 +94,24 @@ function Profile() {
 
             <div className="min-w-0">
 
-              <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-[#9a897c]">
+              <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-[#9E9084]">
                 My account
               </p>
 
 
-              <h1 className="mt-2 truncate font-serif text-3xl text-[#3d3028] sm:text-4xl">
+              <h1 className="mt-2 truncate font-serif text-3xl text-[#161311] sm:text-4xl">
                 {user.name}
               </h1>
 
 
-              <p className="mt-2 break-all text-xs text-[#756960]">
+              <p className="mt-2 break-all text-xs text-[#524942]">
                 {user.email}
               </p>
 
 
               {user.role === "admin" && (
 
-                <span className="mt-3 inline-flex rounded-full bg-[#584539] px-3 py-1 text-[8px] font-medium uppercase tracking-[0.12em] text-[#f8f6f1]">
+                <span className="mt-3 inline-flex rounded-full bg-[#161311] px-3 py-1 text-[8px] font-medium uppercase tracking-[0.12em] text-[#FAF7F2]">
                   Administrator
                 </span>
 
@@ -137,12 +137,12 @@ function Profile() {
 
           <Link
             to="/orders"
-            className="group flex items-center justify-between border-b border-[#ddd7ce] py-6"
+            className="group flex items-center justify-between border-b border-[#E5DED3] py-6"
           >
 
             <div className="flex items-center gap-4">
 
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#eee9df] text-[#584539]">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#F2ECE1] text-[#161311]">
 
                 <ShoppingBag
                   size={18}
@@ -154,12 +154,12 @@ function Profile() {
 
               <div>
 
-                <h2 className="font-serif text-lg text-[#3d3028]">
+                <h2 className="font-serif text-lg text-[#161311]">
                   My Orders
                 </h2>
 
 
-                <p className="mt-1 text-[9px] text-[#8a796c]">
+                <p className="mt-1 text-[9px] text-[#8C7E72]">
                   View your order history
                 </p>
 
@@ -171,7 +171,7 @@ function Profile() {
             <ChevronRight
               size={17}
               strokeWidth={1.2}
-              className="text-[#9a897c] transition group-hover:translate-x-1 group-hover:text-[#584539]"
+              className="text-[#9E9084] transition group-hover:translate-x-1 group-hover:text-[#161311]"
             />
 
           </Link>
@@ -183,12 +183,12 @@ function Profile() {
 
           <Link
             to="/wishlist"
-            className="group flex items-center justify-between border-b border-[#ddd7ce] py-6"
+            className="group flex items-center justify-between border-b border-[#E5DED3] py-6"
           >
 
             <div className="flex items-center gap-4">
 
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#eee9df] text-[#584539]">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#F2ECE1] text-[#161311]">
 
                 <Heart
                   size={18}
@@ -202,14 +202,14 @@ function Profile() {
 
                 <div className="flex items-center gap-2">
 
-                  <h2 className="font-serif text-lg text-[#3d3028]">
+                  <h2 className="font-serif text-lg text-[#161311]">
                     Wishlist
                   </h2>
 
 
                   {wishlist?.length > 0 && (
 
-                    <span className="rounded-full bg-[#584539] px-2 py-0.5 text-[7px] text-white">
+                    <span className="rounded-full bg-[#161311] px-2 py-0.5 text-[7px] text-white">
                       {wishlist.length}
                     </span>
 
@@ -218,7 +218,7 @@ function Profile() {
                 </div>
 
 
-                <p className="mt-1 text-[9px] text-[#8a796c]">
+                <p className="mt-1 text-[9px] text-[#8C7E72]">
                   Products you've saved
                 </p>
 
@@ -230,7 +230,7 @@ function Profile() {
             <ChevronRight
               size={17}
               strokeWidth={1.2}
-              className="text-[#9a897c] transition group-hover:translate-x-1 group-hover:text-[#584539]"
+              className="text-[#9E9084] transition group-hover:translate-x-1 group-hover:text-[#161311]"
             />
 
           </Link>
@@ -242,12 +242,12 @@ function Profile() {
 
           <Link
             to="/cart"
-            className="group flex items-center justify-between border-b border-[#ddd7ce] py-6"
+            className="group flex items-center justify-between border-b border-[#E5DED3] py-6"
           >
 
             <div className="flex items-center gap-4">
 
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#eee9df] text-[#584539]">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#F2ECE1] text-[#161311]">
 
                 <ShoppingBag
                   size={18}
@@ -261,14 +261,14 @@ function Profile() {
 
                 <div className="flex items-center gap-2">
 
-                  <h2 className="font-serif text-lg text-[#3d3028]">
+                  <h2 className="font-serif text-lg text-[#161311]">
                     Shopping Bag
                   </h2>
 
 
                   {cartItems?.length > 0 && (
 
-                    <span className="rounded-full bg-[#584539] px-2 py-0.5 text-[7px] text-white">
+                    <span className="rounded-full bg-[#161311] px-2 py-0.5 text-[7px] text-white">
                       {cartItems.length}
                     </span>
 
@@ -277,7 +277,7 @@ function Profile() {
                 </div>
 
 
-                <p className="mt-1 text-[9px] text-[#8a796c]">
+                <p className="mt-1 text-[9px] text-[#8C7E72]">
                   View products in your bag
                 </p>
 
@@ -289,7 +289,7 @@ function Profile() {
             <ChevronRight
               size={17}
               strokeWidth={1.2}
-              className="text-[#9a897c] transition group-hover:translate-x-1 group-hover:text-[#584539]"
+              className="text-[#9E9084] transition group-hover:translate-x-1 group-hover:text-[#161311]"
             />
 
           </Link>
@@ -303,12 +303,12 @@ function Profile() {
 
             <Link
               to="/admin"
-              className="group flex items-center justify-between border-b border-[#ddd7ce] py-6"
+              className="group flex items-center justify-between border-b border-[#E5DED3] py-6"
             >
 
               <div className="flex items-center gap-4">
 
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#584539] text-[#f8f6f1]">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#161311] text-[#FAF7F2]">
 
                   <User
                     size={18}
@@ -320,12 +320,12 @@ function Profile() {
 
                 <div>
 
-                  <h2 className="font-serif text-lg text-[#3d3028]">
+                  <h2 className="font-serif text-lg text-[#161311]">
                     Admin Dashboard
                   </h2>
 
 
-                  <p className="mt-1 text-[9px] text-[#8a796c]">
+                  <p className="mt-1 text-[9px] text-[#8C7E72]">
                     Manage your Luv03 store
                   </p>
 
@@ -337,7 +337,7 @@ function Profile() {
               <ChevronRight
                 size={17}
                 strokeWidth={1.2}
-                className="text-[#9a897c] transition group-hover:translate-x-1 group-hover:text-[#584539]"
+                className="text-[#9E9084] transition group-hover:translate-x-1 group-hover:text-[#161311]"
               />
 
             </Link>
@@ -354,7 +354,7 @@ function Profile() {
         <button
           type="button"
           onClick={handleLogout}
-          className="mt-10 flex h-12 w-full items-center justify-center gap-2 rounded-full border border-[#b9aaa0] text-[9px] font-medium uppercase tracking-[0.16em] text-[#584539] transition hover:bg-[#584539] hover:text-[#f8f6f1]"
+          className="mt-10 flex h-12 w-full items-center justify-center gap-2 rounded-full border border-[#9E9084] text-[9px] font-medium uppercase tracking-[0.16em] text-[#161311] transition hover:bg-[#161311] hover:text-[#FAF7F2]"
         >
 
           <LogOut

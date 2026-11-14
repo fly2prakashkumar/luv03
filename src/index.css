@@ -1,12 +1,107 @@
 @import "tailwindcss";
 
+@theme {
+  --color-caviar: #161311;
+  --color-caviar-dark: #231F1C;
+  --color-caviar-deep: #0F0D0C;
+  --color-pearl: #FAF7F2;
+  --color-pearl-surface: #F2ECE1;
+  --color-pearl-card: #EFE8DD;
+  --color-gold: #C5A880;
+  --color-gold-deep: #A68A5B;
+  --color-gold-light: #E8D7BE;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
-@import "tailwindcss";
-
 body {
   margin: 0;
-  background: #f8f6f1;
+  background-color: #FAF7F2;
+  background-image: url('/site-bg.png');
+  background-size: 114%;
+  background-position: center center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  color: #161311;
+}
+
+::selection {
+  background-color: #C5A880;
+  color: #161311;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FAF7F2;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C5A880;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #161311;
+}
+
+/* =========================================================
+   ULTRA-LUXURY GLOSSY GLASS & GOLD SHEEN UTILITIES
+========================================================= */
+
+.glossy-glass {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(245, 239, 230, 0.6) 100%);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 
+    0 12px 35px -5px rgba(22, 19, 17, 0.04),
+    0 20px 45px -15px rgba(197, 168, 128, 0.08),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 2px 0 rgba(197, 168, 128, 0.2);
+}
+
+.glossy-panel {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.8) 0%, rgba(242, 236, 225, 0.55) 100%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 
+    0 8px 25px rgba(22, 19, 17, 0.03),
+    inset 0 1px 2px rgba(255, 255, 255, 0.95);
+}
+
+.glossy-pill {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(242, 236, 225, 0.7) 100%);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 
+    0 4px 15px rgba(22, 19, 17, 0.03),
+    inset 0 1px 1px rgba(255, 255, 255, 0.95);
+}
+
+.glossy-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.glossy-sheen::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 70%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transform: skewX(-22deg);
+  transition: left 0.75s ease;
+  pointer-events: none;
+}
+
+.glossy-sheen:hover::after {
+  left: 140%;
 }

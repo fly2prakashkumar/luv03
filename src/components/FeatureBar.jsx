@@ -26,7 +26,7 @@ const features = [
 
 function FeatureBar() {
   return (
-    <section className="border-y border-[#ddd7ce] bg-[#f8f6f1]">
+    <section className="border-y border-white/80 bg-white/70 backdrop-blur-xl shadow-[0_4px_24px_rgba(22,19,17,0.04)]">
       <div className="mx-auto max-w-[1440px]">
 
         <div className="grid grid-cols-2 md:grid-cols-4">
@@ -65,13 +65,13 @@ function FeatureBar() {
 
                   ${
                     index !== 3
-                      ? "md:border-r md:border-[#ddd7ce]"
+                      ? "md:border-r md:border-white/60"
                       : ""
                   }
 
                   ${
                     index < 2
-                      ? "border-b border-[#ddd7ce] md:border-b-0"
+                      ? "border-b border-white/60 md:border-b-0"
                       : ""
                   }
                 `}
@@ -81,7 +81,7 @@ function FeatureBar() {
                   whileHover={{
                     scale: 1.08,
                   }}
-                  className="mb-5 text-[#a96f4b]"
+                  className="mb-5 text-[#C5A880]"
                 >
                   <Icon
                     size={27}
@@ -90,12 +90,12 @@ function FeatureBar() {
                 </motion.div>
 
                 {/* TITLE */}
-                <h3 className="font-serif text-[17px] leading-none text-[#3d3028]">
+                <h3 className="font-serif text-[17px] leading-none text-[#161311]">
                   {feature.title}
                 </h3>
 
                 {/* DESCRIPTION */}
-                <p className="mt-3 text-[9px] leading-4 tracking-[0.04em] text-[#85776e]">
+                <p className="mt-3 text-[9px] font-medium leading-4 tracking-[0.04em] text-[#2E2620]">
                   {feature.description}
                 </p>
               </motion.div>

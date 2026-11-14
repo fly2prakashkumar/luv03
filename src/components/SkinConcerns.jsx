@@ -13,7 +13,7 @@ const concerns = [
 
 function SkinConcerns() {
   return (
-    <section className="border-b border-[#ddd7ce] bg-[#f5f2eb]">
+    <section className="border-b border-white/60 bg-gradient-to-b from-white/30 via-[#EFE8DD]/40 to-transparent backdrop-blur-sm">
       <div className="mx-auto max-w-[1440px] px-6 py-20 lg:px-10 lg:py-24">
 
         {/* HEADER */}
@@ -35,15 +35,15 @@ function SkinConcerns() {
             ease: [0.22, 1, 0.36, 1],
           }}
         >
-          <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-[#8a796c]">
+          <p className="inline-block rounded-full border border-white/80 bg-white/85 px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#161311] shadow-sm backdrop-blur-md">
             Find your focus
           </p>
 
-          <h2 className="mt-3 font-serif text-3xl tracking-tight text-[#3d3028] md:text-4xl">
+          <h2 className="mt-3 font-serif text-3xl tracking-tight text-[#161311] md:text-4xl">
             Shop by skin concern
           </h2>
 
-          <p className="mt-3 max-w-lg text-[10px] leading-5 text-[#756960]">
+          <p className="mt-3 max-w-lg text-[11px] font-normal leading-5 text-[#2E2620]">
             Start where your skin is today. Each concern maps to formulas
             designed for daily, gentle use.
           </p>
@@ -79,19 +79,19 @@ function SkinConcerns() {
               whileTap={{
                 scale: 0.98,
               }}
-              className="group rounded-[14px] border border-[#ddd7ce] bg-[#f8f6f1] px-5 py-5 text-left transition-colors duration-300 hover:border-[#b99a83] hover:bg-[#eee9df]"
+              className="group rounded-[14px] border border-white/80 bg-white/70 px-5 py-5 text-left shadow-[0_4px_20px_rgba(109,0,25,0.03)] backdrop-blur-md transition-all duration-300 hover:border-[#C5A880] hover:bg-white/95 hover:shadow-[0_8px_25px_rgba(93,63,211,0.12)]"
             >
-              <p className="text-[7px] font-medium uppercase tracking-[0.18em] text-[#9a897c]">
+              <p className="text-[7px] font-semibold uppercase tracking-[0.18em] text-[#C5A880]">
                 Concern
               </p>
 
               <div className="mt-3 flex items-center justify-between gap-3">
 
-                <span className="font-serif text-[13px] text-[#3d3028]">
+                <span className="font-serif text-[13px] text-[#161311]">
                   {concern}
                 </span>
 
-                <span className="text-sm text-[#a96f4b] opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100">
+                <span className="text-sm text-[#C5A880] opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100">
                   →
                 </span>
 

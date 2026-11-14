@@ -460,17 +460,41 @@ export const saveOrder = (
       );
 
 
-    existingOrders.push(
-      order
-    );
+    existingOrders.unshift(order);
 
 
-    localStorage.setItem(
-      "luv03-orders",
-      JSON.stringify(
-        existingOrders
-      )
-    );
+    localStorage.setItem("luv03-orders", JSON.stringify(existingOrders));
+
+    // Auto-sync customer to users directory
+    if (order.customerEmail) {
+      try {
+        const users = JSON.parse(
+          localStorage.getItem("luv03-users") || "[]"
+        );
+        const exists = users.some(
+          (u) => u.email && u.email.toLowerCase() === order.customerEmail.toLowerCase()
+        );
+        if (!exists) {
+          users.push({
+            name:
+              order.customer?.name ||
+              `${order.customer?.firstName || ""} ${order.customer?.lastName || ""}`.trim() ||
+              "Customer",
+            email: order.customerEmail,
+            phone: order.customer?.phone || "",
+            role: "customer",
+            createdAt: order.date || new Date().toISOString(),
+          });
+          localStorage.setItem("luv03-users", JSON.stringify(users));
+        }
+      } catch (e) {
+        console.error("Customer sync error:", e);
+      }
+    }
+
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("luv03-orders-change"));
+    }
 
 
     return true;
@@ -574,4 +598,99 @@ export const getOrderById = (
       order.id === orderId
   ) || null;
 
+};
+
+// ============================================================
+// UPDATE ORDER
+// ============================================================
+
+export const updateOrder = (updatedOrder) => {
+  try {
+    const existingOrders = getAllOrders();
+    const index = existingOrders.findIndex(
+      (order) => order.id === updatedOrder.id
+    );
+
+    if (index !== -1) {
+      existingOrders[index] = {
+        ...existingOrders[index],
+        ...updatedOrder,
+      };
+    } else {
+      existingOrders.push(updatedOrder);
+    }
+
+    localStorage.setItem("luv03-orders", JSON.stringify(existingOrders));
+
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("luv03-orders-change"));
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Could not update order:", error);
+    return false;
+  }
+};
+
+
+// ============================================================
+// DELETE ORDER
+// ============================================================
+
+export const deleteOrder = (orderId) => {
+  try {
+    const existingOrders = getAllOrders();
+    const filtered = existingOrders.filter((order) => order.id !== orderId);
+    localStorage.setItem("luv03-orders", JSON.stringify(filtered));
+
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("luv03-orders-change"));
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Could not delete order:", error);
+    return false;
+  }
+};
+
+
+// ============================================================
+// SAVE ALL ORDERS
+// ============================================================
+
+export const saveAllOrders = (orders) => {
+  try {
+    localStorage.setItem("luv03-orders", JSON.stringify(orders));
+
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("luv03-orders-change"));
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Could not save orders:", error);
+    return false;
+  }
+};
+
+
+// ============================================================
+// GET ALL REGISTERED CUSTOMERS
+// ============================================================
+
+export const getAllCustomers = () => {
+  try {
+    const savedUsers = JSON.parse(
+      localStorage.getItem("luv03-users") || "[]"
+    );
+
+    return savedUsers.filter(
+      (user) => user.role !== "admin" && user.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()
+    );
+  } catch (error) {
+    console.error("Could not get customers:", error);
+    return [];
+  }
 };

@@ -15,7 +15,8 @@ function Newsletter() {
   };
 
   return (
-    <section className="overflow-hidden bg-[#584539]">
+    <section className="relative overflow-hidden bg-gradient-to-br from-[#161311] via-[#231F1C] to-[#0F0D0B] shadow-[0_25px_70px_rgba(22,19,17,0.35)]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(197,168,128,0.18),transparent)]" />
       <div className="mx-auto max-w-[1440px] px-6 py-20 lg:px-10 lg:py-24">
 
         <div className="grid items-center gap-12 lg:grid-cols-[1fr_1fr]">
@@ -55,7 +56,7 @@ function Newsletter() {
                 delay: 0.15,
                 duration: 0.5,
               }}
-              className="text-[9px] font-medium uppercase tracking-[0.22em] text-[#d8c5b8]"
+              className="text-[9px] font-medium uppercase tracking-[0.22em] text-[#C5A880]"
             >
               Stay in the loop
             </motion.p>
@@ -76,7 +77,7 @@ function Newsletter() {
                 delay: 0.25,
                 duration: 0.7,
               }}
-              className="mt-4 max-w-xl font-serif text-4xl leading-[1.05] tracking-tight text-[#f8f6f1] md:text-5xl"
+              className="mt-4 max-w-xl font-serif text-4xl leading-[1.05] tracking-tight text-[#FAF7F2] md:text-5xl"
             >
               A little more Luv
               <br />
@@ -99,7 +100,7 @@ function Newsletter() {
                 delay: 0.4,
                 duration: 0.6,
               }}
-              className="mt-5 max-w-md text-xs leading-6 text-[#d8c9bf]"
+              className="mt-5 max-w-md text-xs leading-6 text-[#E8D7BE]"
             >
               Get skincare tips, new product launches, exclusive offers,
               and little reminders to take care of your skin.
@@ -132,7 +133,7 @@ function Newsletter() {
 
                 <label
                   htmlFor="newsletter-email"
-                  className="mb-3 block text-[9px] font-medium uppercase tracking-[0.15em] text-[#d8c5b8]"
+                  className="mb-3 block text-[9px] font-medium uppercase tracking-[0.15em] text-[#C5A880]"
                 >
                   Your email
                 </label>
@@ -150,7 +151,7 @@ function Newsletter() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email address"
                     required
-                    className="h-12 flex-1 rounded-full border border-white/20 bg-white/10 px-5 text-xs text-white outline-none placeholder:text-[#c7b6aa] transition-all duration-300 focus:border-white/50 focus:bg-white/15"
+                    className="h-12 flex-1 rounded-full border border-white/20 bg-white/10 px-5 text-xs text-white outline-none placeholder:text-[#C5A880] transition-all duration-300 focus:border-white/50 focus:bg-white/15"
                   />
 
                   {/* BUTTON */}
@@ -162,7 +163,7 @@ function Newsletter() {
                       scale: 0.97,
                     }}
                     type="submit"
-                    className="group flex h-12 items-center justify-center gap-2 rounded-full bg-[#f8f6f1] px-7 text-[9px] font-semibold uppercase tracking-[0.15em] text-[#584539] transition-all duration-300 hover:bg-white hover:shadow-lg"
+                    className="group flex h-12 items-center justify-center gap-2 rounded-full bg-[#C5A880] px-7 text-[9px] font-semibold uppercase tracking-[0.15em] text-[#161311] transition-all duration-300 hover:bg-white hover:shadow-lg"
                   >
                     Subscribe
 
@@ -174,7 +175,7 @@ function Newsletter() {
 
                 </div>
 
-                <p className="mt-4 text-[8px] leading-5 text-[#c7b6aa]">
+                <p className="mt-4 text-[8px] leading-5 text-[#C5A880]">
                   By subscribing, you agree to receive emails from Luv03.
                   You can unsubscribe anytime.
                 </p>
@@ -210,16 +211,16 @@ function Newsletter() {
                     type: "spring",
                     stiffness: 180,
                   }}
-                  className="flex h-11 w-11 items-center justify-center rounded-full bg-[#f8f6f1] text-[#584539]"
+                  className="flex h-11 w-11 items-center justify-center rounded-full bg-[#C5A880] text-[#161311]"
                 >
                   <Check size={18} strokeWidth={1.5} />
                 </motion.div>
 
-                <h3 className="mt-5 font-serif text-2xl text-[#f8f6f1]">
+                <h3 className="mt-5 font-serif text-2xl text-[#FAF7F2]">
                   You're on the list.
                 </h3>
 
-                <p className="mt-2 text-xs leading-5 text-[#d8c9bf]">
+                <p className="mt-2 text-xs leading-5 text-[#E8D7BE]">
                   Welcome to the Luv03 community. Keep an eye on your inbox
                   for something lovely.
                 </p>

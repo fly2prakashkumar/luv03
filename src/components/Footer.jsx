@@ -36,7 +36,8 @@ function Footer() {
   };
 
   return (
-    <footer className="bg-[#2f2520] text-[#f8f6f1]">
+    <footer className="relative overflow-hidden bg-gradient-to-b from-[#0F0D0C] via-[#0A0807] to-[#070505] text-[#FAF7F2]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#C5A880]/40 to-transparent" />
       <div className="mx-auto max-w-[1440px] px-6 lg:px-10">
 
         {/* TOP FOOTER */}
@@ -64,10 +65,10 @@ function Footer() {
               href="#"
               className="font-serif text-3xl tracking-tight"
             >
-              Luv<span className="text-[#c58b65]">03</span>
+              Luv<span className="text-[#C5A880]">03</span>
             </a>
 
-            <p className="mt-5 max-w-xs text-[10px] leading-5 text-[#bcaea4]">
+            <p className="mt-5 max-w-xs text-[10px] leading-5 text-[#DDD5C7]">
               Thoughtfully made skincare for simple routines,
               comfortable skin and everyday glow.
             </p>
@@ -75,7 +76,7 @@ function Footer() {
             {/* CONTACT */}
             <div className="mt-7 space-y-3">
 
-              <div className="flex items-center gap-3 text-[#bcaea4]">
+              <div className="flex items-center gap-3 text-[#C5A880]">
                 <Mail size={13} strokeWidth={1.3} />
 
                 <span className="text-[9px]">
@@ -83,7 +84,7 @@ function Footer() {
                 </span>
               </div>
 
-              <div className="flex items-center gap-3 text-[#bcaea4]">
+              <div className="flex items-center gap-3 text-[#C5A880]">
                 <Phone size={13} strokeWidth={1.3} />
 
                 <span className="text-[9px]">
@@ -91,7 +92,7 @@ function Footer() {
                 </span>
               </div>
 
-              <div className="flex items-center gap-3 text-[#bcaea4]">
+              <div className="flex items-center gap-3 text-[#C5A880]">
                 <MapPin size={13} strokeWidth={1.3} />
 
                 <span className="text-[9px]">
@@ -134,7 +135,7 @@ function Footer() {
             <a
               href="#"
               aria-label="Instagram"
-              className="text-[9px] uppercase tracking-[0.12em] text-[#bcaea4] transition hover:text-[#f8f6f1]"
+              className="text-[9px] uppercase tracking-[0.12em] text-[#C5A880] transition hover:text-[#FAF7F2]"
             >
               Instagram
             </a>
@@ -142,7 +143,7 @@ function Footer() {
             <a
               href="#"
               aria-label="Facebook"
-              className="text-[9px] uppercase tracking-[0.12em] text-[#bcaea4] transition hover:text-[#f8f6f1]"
+              className="text-[9px] uppercase tracking-[0.12em] text-[#C5A880] transition hover:text-[#FAF7F2]"
             >
               Facebook
             </a>
@@ -150,7 +151,7 @@ function Footer() {
             <a
               href="#"
               aria-label="Pinterest"
-              className="text-[9px] uppercase tracking-[0.12em] text-[#bcaea4] transition hover:text-[#f8f6f1]"
+              className="text-[9px] uppercase tracking-[0.12em] text-[#C5A880] transition hover:text-[#FAF7F2]"
             >
               Pinterest
             </a>
@@ -158,14 +159,14 @@ function Footer() {
           </div>
 
           {/* COPYRIGHT */}
-          <p className="text-[8px] tracking-[0.05em] text-[#8f8178]">
+          <p className="text-[8px] tracking-[0.05em] text-[#C5A880]">
             © {new Date().getFullYear()} Luv03. All rights reserved.
           </p>
 
           {/* BACK TO TOP */}
           <button
             onClick={scrollToTop}
-            className="group flex items-center gap-2 self-start text-[8px] uppercase tracking-[0.14em] text-[#bcaea4] transition hover:text-[#f8f6f1] md:self-auto"
+            className="group flex items-center gap-2 self-start text-[8px] uppercase tracking-[0.14em] text-[#C5A880] transition hover:text-[#FAF7F2] md:self-auto"
           >
             Back to top
 
@@ -207,7 +208,7 @@ function FooterColumn({ title, links, delay }) {
         delay,
       }}
     >
-      <h3 className="text-[9px] font-medium uppercase tracking-[0.18em] text-[#f8f6f1]">
+      <h3 className="text-[9px] font-medium uppercase tracking-[0.18em] text-[#FAF7F2]">
         {title}
       </h3>
 
@@ -216,7 +217,7 @@ function FooterColumn({ title, links, delay }) {
           <li key={link}>
             <a
               href="#"
-              className="text-[9px] text-[#bcaea4] transition hover:text-[#f8f6f1]"
+              className="text-[9px] text-[#C5A880] transition hover:text-[#FAF7F2]"
             >
               {link}
             </a>

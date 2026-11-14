@@ -14,7 +14,7 @@ function Home() {
 
   return (
 
-    <div className="min-h-screen bg-[#f8f6f1]">
+    <div className="min-h-screen bg-transparent text-[#161311]">
 
       <Hero />
 

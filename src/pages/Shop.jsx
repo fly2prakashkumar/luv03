@@ -16,7 +16,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 
-import products from "../data/products";
+import products, { getStoredProducts } from "../data/products";
 import ProductCard from "../components/ProductCard";
 
 
@@ -85,8 +85,18 @@ function Shop() {
     useState("featured");
 
 
-  const [showFilters, setShowFilters] =
-    useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [productsList, setProductsList] = useState(() => getStoredProducts());
+
+  useEffect(() => {
+    const handleSync = () => setProductsList(getStoredProducts());
+    window.addEventListener("luv03-products-change", handleSync);
+    window.addEventListener("storage", handleSync);
+    return () => {
+      window.removeEventListener("luv03-products-change", handleSync);
+      window.removeEventListener("storage", handleSync);
+    };
+  }, []);
 
 
   // ==========================================
@@ -222,9 +232,7 @@ function Shop() {
   const filteredProducts =
     useMemo(() => {
 
-      let result = [
-        ...products,
-      ];
+      let result = [...productsList];
 
 
       // CATEGORY
@@ -405,12 +413,7 @@ function Shop() {
 
       return result;
 
-    }, [
-      category,
-      concern,
-      search,
-      sort,
-    ]);
+    }, [category, concern, search, sort, productsList]);
 
 
   // ==========================================
@@ -449,13 +452,13 @@ function Shop() {
 
 
   return (
-    <main className="min-h-screen bg-[#f8f6f1]">
+    <main className="min-h-screen bg-transparent">
 
       {/* ==========================================
           SHOP HERO
       ========================================== */}
 
-      <section className="border-b border-[#ddd7ce]">
+      <section className="border-b border-[#E5DED3]">
 
         <div className="mx-auto max-w-[1440px] px-6 pb-14 pt-14 lg:px-10 lg:pb-20 lg:pt-20">
 
@@ -479,12 +482,12 @@ function Shop() {
             }}
           >
 
-            <p className="text-[9px] font-medium uppercase tracking-[0.22em] text-[#8a796c]">
+            <p className="text-[9px] font-medium uppercase tracking-[0.22em] text-[#8C7E72]">
               The Luv03 shop
             </p>
 
 
-            <h1 className="mt-3 max-w-2xl font-serif text-4xl leading-[1.05] tracking-tight text-[#3d3028] md:text-6xl">
+            <h1 className="mt-3 max-w-2xl font-serif text-4xl leading-[1.05] tracking-tight text-[#161311] md:text-6xl">
 
               Skincare for your
 
@@ -495,7 +498,7 @@ function Shop() {
             </h1>
 
 
-            <p className="mt-5 max-w-lg text-xs leading-6 text-[#756960]">
+            <p className="mt-5 max-w-lg text-xs leading-6 text-[#524942]">
 
               Thoughtfully selected essentials designed to make your
               skincare routine feel simple, comfortable and beautiful.
@@ -513,7 +516,7 @@ function Shop() {
           CONTROLS
       ========================================== */}
 
-      <section className="sticky top-0 z-20 border-b border-[#ddd7ce] bg-[#f8f6f1]/95 backdrop-blur-md">
+      <section className="sticky top-20 z-20 border-b border-white/60 bg-white/70 backdrop-blur-xl shadow-[0_4px_20px_rgba(109,0,25,0.03)]">
 
         <div className="mx-auto max-w-[1440px] px-6 lg:px-10">
 
@@ -536,8 +539,8 @@ function Shop() {
                     }
                     className={`whitespace-nowrap border-b pb-1 text-[9px] font-medium uppercase tracking-[0.12em] transition ${
                       category === item
-                        ? "border-[#3d3028] text-[#3d3028]"
-                        : "border-transparent text-[#8a796c] hover:text-[#3d3028]"
+                        ? "border-[#161311] text-[#161311]"
+                        : "border-transparent text-[#8C7E72] hover:text-[#161311]"
                     }`}
                   >
 
@@ -560,7 +563,7 @@ function Shop() {
                   true
                 )
               }
-              className="flex items-center gap-2 text-[9px] font-medium uppercase tracking-[0.12em] text-[#51463f] md:hidden"
+              className="flex items-center gap-2 text-[9px] font-medium uppercase tracking-[0.12em] text-[#38312B] md:hidden"
             >
 
               <SlidersHorizontal
@@ -584,7 +587,7 @@ function Shop() {
                 <Search
                   size={14}
                   strokeWidth={1.4}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8a796c]"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8C7E72]"
                 />
 
 
@@ -597,7 +600,7 @@ function Shop() {
                     )
                   }
                   placeholder="Search"
-                  className="h-9 w-36 rounded-full border border-[#d8d0c7] bg-transparent pl-9 pr-3 text-[9px] text-[#3d3028] outline-none placeholder:text-[#9a897c] focus:border-[#8a796c]"
+                  className="h-9 w-36 rounded-full border border-[#E5DED3] bg-transparent pl-9 pr-3 text-[9px] text-[#161311] outline-none placeholder:text-[#9E9084] focus:border-[#8C7E72]"
                 />
 
               </div>
@@ -612,7 +615,7 @@ function Shop() {
                     event.target.value
                   )
                 }
-                className="h-9 rounded-full border border-[#d8d0c7] bg-transparent px-3 text-[9px] text-[#51463f] outline-none"
+                className="h-9 rounded-full border border-[#E5DED3] bg-transparent px-3 text-[9px] text-[#38312B] outline-none"
               >
 
                 <option value="featured">
@@ -647,7 +650,7 @@ function Shop() {
               <Search
                 size={14}
                 strokeWidth={1.4}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8a796c]"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8C7E72]"
               />
 
 
@@ -660,7 +663,7 @@ function Shop() {
                   )
                 }
                 placeholder="Search products"
-                className="h-10 w-full rounded-full border border-[#d8d0c7] bg-transparent pl-9 pr-4 text-[9px] text-[#3d3028] outline-none placeholder:text-[#9a897c]"
+                className="h-10 w-full rounded-full border border-[#E5DED3] bg-transparent pl-9 pr-4 text-[9px] text-[#161311] outline-none placeholder:text-[#9E9084]"
               />
 
             </div>
@@ -685,7 +688,7 @@ function Shop() {
 
           <div className="mb-8 flex items-center justify-between">
 
-            <p className="text-[9px] uppercase tracking-[0.14em] text-[#8a796c]">
+            <p className="text-[9px] uppercase tracking-[0.14em] text-[#8C7E72]">
 
               {filteredProducts.length}{" "}
 
@@ -704,7 +707,7 @@ function Shop() {
                 onClick={
                   clearFilters
                 }
-                className="text-[9px] uppercase tracking-[0.12em] text-[#8a796c] underline underline-offset-4 transition hover:text-[#3d3028]"
+                className="text-[9px] uppercase tracking-[0.12em] text-[#8C7E72] underline underline-offset-4 transition hover:text-[#161311]"
               >
 
                 Clear filters
@@ -772,17 +775,17 @@ function Shop() {
 
             <div className="flex min-h-[350px] flex-col items-center justify-center text-center">
 
-              <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-[#8a796c]">
+              <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-[#8C7E72]">
                 Nothing found
               </p>
 
 
-              <h2 className="mt-3 font-serif text-3xl text-[#3d3028]">
+              <h2 className="mt-3 font-serif text-3xl text-[#161311]">
                 No products match your search.
               </h2>
 
 
-              <p className="mt-3 max-w-sm text-[10px] leading-5 text-[#756960]">
+              <p className="mt-3 max-w-sm text-[10px] leading-5 text-[#524942]">
 
                 Try another search or
                 remove some filters to
@@ -797,7 +800,7 @@ function Shop() {
                 onClick={
                   clearFilters
                 }
-                className="mt-6 rounded-full bg-[#3d3028] px-6 py-3 text-[8px] font-medium uppercase tracking-[0.14em] text-[#f8f6f1] transition hover:bg-[#584539]"
+                className="mt-6 rounded-full bg-[#161311] px-6 py-3 text-[8px] font-medium uppercase tracking-[0.14em] text-[#FAF7F2] transition hover:bg-[#161311]"
               >
 
                 View all products
@@ -856,12 +859,12 @@ function Shop() {
                 1,
               ],
             }}
-            className="absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto rounded-t-[28px] bg-[#f8f6f1] p-6"
+            className="absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto rounded-t-[28px] bg-[#FAF7F2] p-6"
           >
 
             <div className="flex items-center justify-between">
 
-              <h2 className="font-serif text-2xl text-[#3d3028]">
+              <h2 className="font-serif text-2xl text-[#161311]">
                 Filters
               </h2>
 
@@ -873,7 +876,7 @@ function Shop() {
                     false
                   )
                 }
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-[#d8d0c7]"
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E5DED3]"
               >
 
                 <X
@@ -890,7 +893,7 @@ function Shop() {
 
             <div className="mt-8">
 
-              <p className="text-[9px] font-medium uppercase tracking-[0.16em] text-[#8a796c]">
+              <p className="text-[9px] font-medium uppercase tracking-[0.16em] text-[#8C7E72]">
                 Category
               </p>
 
@@ -910,8 +913,8 @@ function Shop() {
                       }
                       className={`rounded-full border px-4 py-2 text-[9px] transition ${
                         category === item
-                          ? "border-[#3d3028] bg-[#3d3028] text-[#f8f6f1]"
-                          : "border-[#d8d0c7] text-[#51463f]"
+                          ? "border-[#161311] bg-[#161311] text-[#FAF7F2]"
+                          : "border-[#E5DED3] text-[#38312B]"
                       }`}
                     >
 
@@ -931,7 +934,7 @@ function Shop() {
 
             <div className="mt-7">
 
-              <p className="text-[9px] font-medium uppercase tracking-[0.16em] text-[#8a796c]">
+              <p className="text-[9px] font-medium uppercase tracking-[0.16em] text-[#8C7E72]">
                 Skin concern
               </p>
 
@@ -951,8 +954,8 @@ function Shop() {
                       }
                       className={`rounded-full border px-4 py-2 text-[9px] transition ${
                         concern === item
-                          ? "border-[#3d3028] bg-[#3d3028] text-[#f8f6f1]"
-                          : "border-[#d8d0c7] text-[#51463f]"
+                          ? "border-[#161311] bg-[#161311] text-[#FAF7F2]"
+                          : "border-[#E5DED3] text-[#38312B]"
                       }`}
                     >
 
@@ -977,7 +980,7 @@ function Shop() {
                   false
                 )
               }
-              className="mt-8 w-full rounded-full bg-[#3d3028] py-4 text-[9px] font-medium uppercase tracking-[0.15em] text-[#f8f6f1]"
+              className="mt-8 w-full rounded-full bg-[#161311] py-4 text-[9px] font-medium uppercase tracking-[0.15em] text-[#FAF7F2]"
             >
 
               Show{" "}

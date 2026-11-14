@@ -35,7 +35,7 @@ const reasons = [
 
 function WhyLuv03() {
   return (
-    <section className="border-b border-[#ddd7ce] bg-[#f8f6f1]">
+    <section className="border-b border-white/60 bg-transparent">
       <div className="mx-auto max-w-[1440px] px-6 py-20 lg:px-10 lg:py-24">
 
         {/* HEADER */}
@@ -57,11 +57,11 @@ function WhyLuv03() {
             ease: [0.22, 1, 0.36, 1],
           }}
         >
-          <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-[#8a796c]">
+          <p className="inline-block rounded-full border border-white/80 bg-white/85 px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#161311] shadow-sm backdrop-blur-md">
             Why Luv03
           </p>
 
-          <h2 className="mt-2 font-serif text-3xl tracking-tight text-[#3d3028] md:text-4xl">
+          <h2 className="mt-2 font-serif text-3xl tracking-tight text-[#161311] md:text-4xl">
             Why choose Luv03
           </h2>
         </motion.div>
@@ -92,7 +92,7 @@ function WhyLuv03() {
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 className={`
-                  border-[#ddd7ce]
+                  border-white/60
                   px-5
                   py-6
                   lg:px-5
@@ -117,7 +117,7 @@ function WhyLuv03() {
                   transition={{
                     duration: 0.25,
                   }}
-                  className="mb-5 text-[#a96f4b]"
+                  className="mb-5 text-[#161311]"
                 >
                   <Icon
                     size={19}
@@ -126,12 +126,12 @@ function WhyLuv03() {
                 </motion.div>
 
                 {/* TITLE */}
-                <h3 className="max-w-[220px] font-serif text-[14px] leading-[1.3] text-[#3d3028]">
+                <h3 className="max-w-[220px] font-serif text-[14px] leading-[1.3] text-[#161311]">
                   {reason.title}
                 </h3>
 
                 {/* DESCRIPTION */}
-                <p className="mt-3 max-w-[235px] text-[9px] leading-5 text-[#756960]">
+                <p className="mt-3 max-w-[235px] text-[10px] font-normal leading-5 text-[#2E2620]">
                   {reason.description}
                 </p>
               </motion.div>

@@ -24,6 +24,7 @@ import {
 import { useCart } from "../context/CartContext";
 
 import products from "../data/products";
+import { isLoggedIn } from "../utils/auth";
 
 
 const navItems = [
@@ -93,6 +94,7 @@ function Navbar() {
 
   const [search, setSearch] =
     useState("");
+  const [loggedIn, setLoggedIn] = useState(() => isLoggedIn());
 
 
   const location =
@@ -185,6 +187,7 @@ function Navbar() {
     setCategoriesOpen(false);
     setMobileCategoriesOpen(false);
     setSearch("");
+    setLoggedIn(isLoggedIn());
 
   }, [
     location.pathname,
@@ -236,6 +239,7 @@ function Navbar() {
     setMenuOpen(false);
 
     setSearch("");
+    setLoggedIn(isLoggedIn());
 
   };
 
@@ -245,6 +249,7 @@ function Navbar() {
     setSearchOpen(false);
 
     setSearch("");
+    setLoggedIn(isLoggedIn());
 
   };
 
@@ -272,6 +277,7 @@ function Navbar() {
   ) => {
 
     setSearch("");
+    setLoggedIn(isLoggedIn());
 
     setSearchOpen(false);
 
@@ -291,8 +297,8 @@ function Navbar() {
       <header
         className={`fixed left-0 top-0 z-50 h-20 w-full transition-all duration-300 ${
           scrolled
-            ? "bg-[#f8f6f1]/95 shadow-sm backdrop-blur-md"
-            : "bg-[#f8f6f1]"
+            ? "border-b border-white/80 bg-white/85 shadow-[0_8px_32px_rgba(22,19,17,0.06)] backdrop-blur-xl"
+            : "border-b border-white/60 bg-white/70 backdrop-blur-lg shadow-sm"
         }`}
       >
 
@@ -312,11 +318,11 @@ function Navbar() {
               whileHover={{
                 scale: 1.03,
               }}
-              className="relative z-10 font-serif text-2xl tracking-tight text-[#3d3028]"
+              className="relative z-10 font-serif text-2xl tracking-tight text-[#161311]"
             >
 
               Luv
-              <span className="text-[#b56d43]">
+              <span className="text-[#C5A880]">
                 03
               </span>
 
@@ -371,8 +377,8 @@ function Navbar() {
                       <span
                         className={`transition-colors duration-300 ${
                           isActive
-                            ? "text-[#b56d43]"
-                            : "text-[#51463f] group-hover:text-[#b56d43]"
+                            ? "text-[#C5A880]"
+                            : "text-[#38312B] group-hover:text-[#C5A880]"
                         }`}
                       >
                         {item.name}
@@ -380,7 +386,7 @@ function Navbar() {
 
 
                       <span
-                        className={`absolute -bottom-2 left-0 h-px bg-[#b56d43] transition-all duration-300 ${
+                        className={`absolute -bottom-2 left-0 h-px bg-[#C5A880] transition-all duration-300 ${
                           isActive
                             ? "w-full"
                             : "w-0 group-hover:w-full"
@@ -413,7 +419,7 @@ function Navbar() {
 
               <button
                 type="button"
-                className="flex items-center gap-1 text-[11px] font-medium uppercase tracking-[0.12em] text-[#51463f] transition-colors hover:text-[#b56d43]"
+                className="flex items-center gap-1 text-[11px] font-medium uppercase tracking-[0.12em] text-[#38312B] transition-colors hover:text-[#C5A880]"
               >
 
                 Categories
@@ -446,7 +452,7 @@ function Navbar() {
                     transition={{
                       duration: 0.2,
                     }}
-                    className="absolute left-1/2 top-full mt-4 w-52 -translate-x-1/2 rounded-2xl border border-[#ddd7ce] bg-[#f8f6f1] p-2 shadow-lg"
+                    className="absolute left-1/2 top-full mt-4 w-52 -translate-x-1/2 rounded-2xl border border-[#E5DED3] bg-[#FAF7F2] p-2 shadow-lg"
                   >
 
                     {categories.map(
@@ -459,7 +465,7 @@ function Navbar() {
                           to={getCategoryLink(
                             category
                           )}
-                          className="flex items-center justify-between rounded-xl px-3 py-3 text-[9px] uppercase tracking-[0.1em] text-[#756960] transition-colors hover:bg-[#eee9df] hover:text-[#b56d43]"
+                          className="flex items-center justify-between rounded-xl px-3 py-3 text-[9px] uppercase tracking-[0.1em] text-[#524942] transition-colors hover:bg-[#F2ECE1] hover:text-[#C5A880]"
                         >
 
                           {category.name}
@@ -488,7 +494,7 @@ function Navbar() {
               RIGHT SIDE
           ================================================= */}
 
-          <div className="flex items-center gap-4 text-[#40352f]">
+          <div className="flex items-center gap-4 text-[#161311]">
 
 
             {/* SEARCH */}
@@ -503,7 +509,7 @@ function Navbar() {
                 scale: 0.9,
               }}
               aria-label="Search"
-              className="transition-colors hover:text-[#b56d43]"
+              className="transition-colors hover:text-[#C5A880]"
             >
 
               <Search
@@ -534,13 +540,13 @@ function Navbar() {
                 <Heart
                   size={16}
                   strokeWidth={1.5}
-                  className="transition-colors hover:text-[#b56d43]"
+                  className="transition-colors hover:text-[#C5A880]"
                 />
 
 
                 {wishlistCount > 0 && (
 
-                  <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#b56d43] px-1 text-[7px] text-white">
+                  <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#161311] border border-[#C5A880]/50 px-1 text-[7px] text-[#C5A880]">
 
                     {wishlistCount}
 
@@ -573,13 +579,13 @@ function Navbar() {
                 <ShoppingBag
                   size={16}
                   strokeWidth={1.5}
-                  className="transition-colors hover:text-[#b56d43]"
+                  className="transition-colors hover:text-[#C5A880]"
                 />
 
 
                 {cartCount > 0 && (
 
-                  <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#b56d43] px-1 text-[7px] text-white">
+                  <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#161311] border border-[#C5A880]/50 px-1 text-[7px] text-[#C5A880]">
 
                     {cartCount}
 
@@ -592,32 +598,38 @@ function Navbar() {
             </Link>
 
 
-            {/* PROFILE */}
-
-            <Link
-              to="/profile"
-              aria-label="Profile"
-            >
-
-              <motion.div
-                whileHover={{
-                  scale: 1.12,
-                }}
-                whileTap={{
-                  scale: 0.9,
-                }}
-                className="hidden sm:block"
+            {/* AUTH: PROFILE ICON IF LOGGED IN, LOGIN BUTTON IF NOT */}
+            {loggedIn ? (
+              <Link
+                to="/profile"
+                aria-label="Profile"
+                title="Your profile"
               >
-
-                <UserRound
-                  size={16}
-                  strokeWidth={1.5}
-                  className="transition-colors hover:text-[#b56d43]"
-                />
-
-              </motion.div>
-
-            </Link>
+                <motion.div
+                  whileHover={{
+                    scale: 1.12,
+                  }}
+                  whileTap={{
+                    scale: 0.9,
+                  }}
+                  className="block"
+                >
+                  <UserRound
+                    size={16}
+                    strokeWidth={1.5}
+                    className="transition-colors hover:text-[#C5A880]"
+                  />
+                </motion.div>
+              </Link>
+            ) : (
+              <Link
+                to="/login"
+                aria-label="Login"
+                className="inline-flex items-center justify-center rounded-full bg-[#161311] px-3.5 py-1 text-[8px] font-semibold uppercase tracking-[0.14em] text-[#FAF7F2] shadow-[0_4px_12px_rgba(22,19,17,0.18)] transition-all duration-300 hover:bg-[#C5A880] hover:text-[#161311] hover:shadow-md sm:px-4 sm:py-1.5 sm:text-[9px]"
+              >
+                Login
+              </Link>
+            )}
 
 
             {/* MOBILE MENU */}
@@ -677,7 +689,7 @@ function Navbar() {
                 opacity: 0,
                 height: 0,
               }}
-              className="border-t border-[#ddd7ce] bg-[#f8f6f1]"
+              className="border-t border-[#E5DED3] bg-[#FAF7F2]"
             >
 
               <div className="mx-auto max-w-[850px] px-6 py-5">
@@ -692,7 +704,7 @@ function Navbar() {
                   <Search
                     size={18}
                     strokeWidth={1.4}
-                    className="shrink-0 text-[#8a796c]"
+                    className="shrink-0 text-[#8C7E72]"
                   />
 
 
@@ -706,7 +718,7 @@ function Navbar() {
                     }
                     placeholder="Search products..."
                     autoFocus
-                    className="h-11 flex-1 bg-transparent text-sm text-[#3d3028] outline-none placeholder:text-[#aaa098]"
+                    className="h-11 flex-1 bg-transparent text-sm text-[#161311] outline-none placeholder:text-[#B3A69A]"
                   />
 
 
@@ -718,7 +730,7 @@ function Navbar() {
                         setSearch("")
                       }
                       aria-label="Clear search"
-                      className="text-[#8a796c] hover:text-[#b56d43]"
+                      className="text-[#8C7E72] hover:text-[#C5A880]"
                     >
 
                       <X
@@ -737,7 +749,7 @@ function Navbar() {
                       closeSearch
                     }
                     aria-label="Close search"
-                    className="text-[#8a796c] hover:text-[#b56d43]"
+                    className="text-[#8C7E72] hover:text-[#C5A880]"
                   >
 
                     <X
@@ -754,11 +766,11 @@ function Navbar() {
 
                 {search.trim() && (
 
-                  <div className="mt-4 overflow-hidden rounded-2xl border border-[#ddd7ce] bg-[#eee9df]">
+                  <div className="mt-4 overflow-hidden rounded-2xl border border-[#E5DED3] bg-[#F2ECE1]">
 
                     {searchResults.length > 0 ? (
 
-                      <div className="divide-y divide-[#d8d0c6]">
+                      <div className="divide-y divide-[#E5DED3]">
 
                         {searchResults.map(
                           (product) => (
@@ -773,7 +785,7 @@ function Navbar() {
                                   product.slug
                                 )
                               }
-                              className="flex w-full items-center gap-4 p-3 text-left transition-colors hover:bg-[#e5ded4]"
+                              className="flex w-full items-center gap-4 p-3 text-left transition-colors hover:bg-[#E8E0D2]"
                             >
 
                               <img
@@ -789,14 +801,14 @@ function Navbar() {
 
                               <div className="min-w-0 flex-1">
 
-                                <p className="text-[8px] font-medium uppercase tracking-[0.15em] text-[#9a897c]">
+                                <p className="text-[8px] font-medium uppercase tracking-[0.15em] text-[#9E9084]">
                                   {
                                     product.category
                                   }
                                 </p>
 
 
-                                <h3 className="mt-1 truncate font-serif text-[15px] text-[#3d3028]">
+                                <h3 className="mt-1 truncate font-serif text-[15px] text-[#161311]">
                                   {
                                     product.name
                                   }
@@ -805,7 +817,7 @@ function Navbar() {
 
                                 <div className="mt-1 flex items-center gap-2">
 
-                                  <span className="text-[11px] font-medium text-[#3d3028]">
+                                  <span className="text-[11px] font-medium text-[#161311]">
                                     ₹
                                     {Number(
                                       product.price
@@ -817,7 +829,7 @@ function Navbar() {
 
                                   {product.originalPrice && (
 
-                                    <span className="text-[9px] text-[#aaa098] line-through">
+                                    <span className="text-[9px] text-[#B3A69A] line-through">
                                       ₹
                                       {Number(
                                         product.originalPrice
@@ -833,7 +845,7 @@ function Navbar() {
                               </div>
 
 
-                              <span className="text-[#b56d43]">
+                              <span className="text-[#C5A880]">
                                 →
                               </span>
 
@@ -851,14 +863,14 @@ function Navbar() {
                         <Search
                           size={22}
                           strokeWidth={1.2}
-                          className="mx-auto text-[#aaa098]"
+                          className="mx-auto text-[#B3A69A]"
                         />
 
-                        <p className="mt-3 font-serif text-lg text-[#3d3028]">
+                        <p className="mt-3 font-serif text-lg text-[#161311]">
                           No products found
                         </p>
 
-                        <p className="mt-1 text-[10px] text-[#8a796c]">
+                        <p className="mt-1 text-[10px] text-[#8C7E72]">
                           Try another product or category.
                         </p>
 
@@ -874,7 +886,7 @@ function Navbar() {
                         onClick={
                           handleSearchSubmit
                         }
-                        className="w-full border-t border-[#d8d0c6] py-3 text-[8px] font-medium uppercase tracking-[0.16em] text-[#584539] transition-colors hover:bg-[#ddd5ca] hover:text-[#b56d43]"
+                        className="w-full border-t border-[#E5DED3] py-3 text-[8px] font-medium uppercase tracking-[0.16em] text-[#161311] transition-colors hover:bg-[#E8E0D2] hover:text-[#C5A880]"
                       >
                         View all search results →
                       </button>
@@ -915,7 +927,7 @@ function Navbar() {
                 opacity: 0,
                 height: 0,
               }}
-              className="overflow-hidden border-t border-[#ddd7ce] bg-[#f8f6f1] px-6 py-5 md:hidden"
+              className="overflow-hidden border-t border-[#E5DED3] bg-[#FAF7F2] px-6 py-5 md:hidden"
             >
 
               {navItems.map(
@@ -929,7 +941,7 @@ function Navbar() {
                         false
                       )
                     }
-                    className="block border-b border-[#ddd7ce] py-4 text-[11px] font-medium uppercase tracking-[0.12em] text-[#51463f]"
+                    className="block border-b border-[#E5DED3] py-4 text-[11px] font-medium uppercase tracking-[0.12em] text-[#38312B]"
                   >
 
                     {item.name}
@@ -942,7 +954,7 @@ function Navbar() {
 
               {/* MOBILE CATEGORIES */}
 
-              <div className="border-b border-[#ddd7ce]">
+              <div className="border-b border-[#E5DED3]">
 
                 <button
                   type="button"
@@ -951,7 +963,7 @@ function Navbar() {
                       !mobileCategoriesOpen
                     )
                   }
-                  className="flex w-full items-center justify-between py-4 text-[11px] font-medium uppercase tracking-[0.12em] text-[#51463f]"
+                  className="flex w-full items-center justify-between py-4 text-[11px] font-medium uppercase tracking-[0.12em] text-[#38312B]"
                 >
 
                   Categories
@@ -1004,7 +1016,7 @@ function Navbar() {
                                 false
                               )
                             }
-                            className="flex items-center justify-between px-2 py-3 text-[9px] uppercase tracking-[0.1em] text-[#756960] hover:text-[#b56d43]"
+                            className="flex items-center justify-between px-2 py-3 text-[9px] uppercase tracking-[0.1em] text-[#524942] hover:text-[#C5A880]"
                           >
 
                             {category.name}
@@ -1032,7 +1044,7 @@ function Navbar() {
               <button
                 type="button"
                 onClick={openSearch}
-                className="flex w-full items-center gap-3 border-b border-[#ddd7ce] py-4 text-[11px] font-medium uppercase tracking-[0.15em] text-[#51463f]"
+                className="flex w-full items-center gap-3 border-b border-[#E5DED3] py-4 text-[11px] font-medium uppercase tracking-[0.15em] text-[#38312B]"
               >
 
                 <Search
@@ -1049,24 +1061,39 @@ function Navbar() {
 
               <div className="flex flex-wrap gap-x-6 gap-y-4 pt-6">
 
-                <Link
-                  to="/login"
-                  onClick={() =>
-                    setMenuOpen(
-                      false
-                    )
-                  }
-                  className="flex items-center gap-2 text-[9px] uppercase tracking-[0.12em] text-[#756960] hover:text-[#b56d43]"
-                >
-
-                  <UserRound
-                    size={15}
-                    strokeWidth={1.4}
-                  />
-
-                  Account
-
-                </Link>
+                {loggedIn ? (
+                  <Link
+                    to="/profile"
+                    onClick={() =>
+                      setMenuOpen(
+                        false
+                      )
+                    }
+                    className="flex items-center gap-2 text-[9px] uppercase tracking-[0.12em] text-[#524942] hover:text-[#C5A880]"
+                  >
+                    <UserRound
+                      size={15}
+                      strokeWidth={1.4}
+                    />
+                    Profile
+                  </Link>
+                ) : (
+                  <Link
+                    to="/login"
+                    onClick={() =>
+                      setMenuOpen(
+                        false
+                      )
+                    }
+                    className="flex items-center gap-2 text-[9px] font-semibold uppercase tracking-[0.12em] text-[#161311] hover:text-[#C5A880]"
+                  >
+                    <UserRound
+                      size={15}
+                      strokeWidth={1.4}
+                    />
+                    Login
+                  </Link>
+                )}
 
 
                 <Link
@@ -1076,7 +1103,7 @@ function Navbar() {
                       false
                     )
                   }
-                  className="flex items-center gap-2 text-[9px] uppercase tracking-[0.12em] text-[#756960] hover:text-[#b56d43]"
+                  className="flex items-center gap-2 text-[9px] uppercase tracking-[0.12em] text-[#524942] hover:text-[#C5A880]"
                 >
 
                   <Heart
@@ -1088,7 +1115,7 @@ function Navbar() {
 
                   {wishlistCount > 0 && (
 
-                    <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-[#b56d43] px-1 text-[7px] text-white">
+                    <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-[#161311] border border-[#C5A880]/50 px-1 text-[7px] text-[#C5A880]">
                       {wishlistCount}
                     </span>
 
@@ -1104,7 +1131,7 @@ function Navbar() {
                       false
                     )
                   }
-                  className="flex items-center gap-2 text-[9px] uppercase tracking-[0.12em] text-[#756960] hover:text-[#b56d43]"
+                  className="flex items-center gap-2 text-[9px] uppercase tracking-[0.12em] text-[#524942] hover:text-[#C5A880]"
                 >
 
                   <ShoppingBag
@@ -1116,7 +1143,7 @@ function Navbar() {
 
                   {cartCount > 0 && (
 
-                    <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-[#b56d43] px-1 text-[7px] text-white">
+                    <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-[#161311] border border-[#C5A880]/50 px-1 text-[7px] text-[#C5A880]">
                       {cartCount}
                     </span>
 

@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 function About() {
   return (
-    <main className="bg-[#f8f6f1] text-[#3d3028]">
+    <main className="bg-transparent text-[#161311]">
 
       {/* HERO */}
 
@@ -17,7 +17,7 @@ function About() {
               ease: [0.22, 1, 0.36, 1],
             }}
           >
-            <p className="text-[9px] font-medium uppercase tracking-[0.22em] text-[#8a796c]">
+            <p className="text-[9px] font-medium uppercase tracking-[0.22em] text-[#8C7E72]">
               About Luv03
             </p>
 
@@ -27,12 +27,12 @@ function About() {
               like self-love.
             </h1>
 
-            <p className="mt-6 max-w-lg text-sm leading-7 text-[#756960]">
+            <p className="mt-6 max-w-lg text-sm leading-7 text-[#524942]">
               Luv03 was created around one simple idea — skincare
               should feel personal, uncomplicated, and enjoyable.
             </p>
 
-            <p className="mt-4 max-w-lg text-sm leading-7 text-[#756960]">
+            <p className="mt-4 max-w-lg text-sm leading-7 text-[#524942]">
               We believe in thoughtful formulas, comfortable textures,
               and everyday rituals that make taking care of your skin
               feel a little more special.
@@ -47,7 +47,7 @@ function About() {
               duration: 0.9,
               delay: 0.1,
             }}
-            className="overflow-hidden bg-[#eee9df]"
+            className="overflow-hidden rounded-[28px] border border-white/80 bg-gradient-to-b from-white/80 via-[#F2ECE1]/60 to-[#F2ECE1]/90 shadow-[0_20px_50px_rgba(109,0,25,0.06),0_0_40px_rgba(244,194,194,0.3)] backdrop-blur-sm"
           >
             <motion.img
               initial={{ scale: 1.08 }}
@@ -56,7 +56,7 @@ function About() {
                 duration: 1.2,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=1200&q=85"
+              src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=1200&q=85"
               alt="Luv03 skincare"
               className="aspect-[4/5] w-full object-cover"
             />
@@ -68,7 +68,7 @@ function About() {
 
       {/* PHILOSOPHY */}
 
-      <section className="bg-[#584539] text-[#f8f6f1]">
+      <section className="bg-[#161311] text-[#FAF7F2]">
         <div className="mx-auto max-w-[1440px] px-6 py-20 lg:px-10 lg:py-24">
 
           <motion.div
@@ -78,7 +78,7 @@ function About() {
             transition={{ duration: 0.7 }}
             className="max-w-2xl"
           >
-            <p className="text-[9px] font-medium uppercase tracking-[0.22em] text-[#d8c5b8]">
+            <p className="text-[9px] font-medium uppercase tracking-[0.22em] text-[#C5A880]">
               Our philosophy
             </p>
 
@@ -88,7 +88,7 @@ function About() {
               More ritual.
             </h2>
 
-            <p className="mt-6 max-w-xl text-sm leading-7 text-[#d8c9bf]">
+            <p className="mt-6 max-w-xl text-sm leading-7 text-[#E8D7BE]">
               Your skincare routine doesn't need to be complicated.
               We focus on simple products that fit naturally into your
               everyday life.
@@ -134,9 +134,9 @@ function About() {
                   delay: index * 0.12,
                   duration: 0.6,
                 }}
-                className="bg-[#584539] p-8 lg:p-10"
+                className="bg-[#161311] p-8 lg:p-10"
               >
-                <span className="text-[9px] tracking-[0.15em] text-[#c7b6aa]">
+                <span className="text-[9px] tracking-[0.15em] text-[#C5A880]">
                   {item.number}
                 </span>
 
@@ -144,7 +144,7 @@ function About() {
                   {item.title}
                 </h3>
 
-                <p className="mt-3 text-xs leading-6 text-[#d8c9bf]">
+                <p className="mt-3 text-xs leading-6 text-[#E8D7BE]">
                   {item.text}
                 </p>
               </motion.div>
@@ -165,7 +165,7 @@ function About() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-[9px] font-medium uppercase tracking-[0.22em] text-[#8a796c]"
+          className="text-[9px] font-medium uppercase tracking-[0.22em] text-[#8C7E72]"
         >
           Luv03
         </motion.p>

@@ -29,7 +29,7 @@ const steps = [
 
 function RitualSection() {
   return (
-    <section className="overflow-hidden border-b border-[#ddd7ce] bg-[#f8f6f1]">
+    <section className="overflow-hidden border-b border-white/60 bg-transparent">
       <div className="mx-auto max-w-[1440px] px-6 py-20 lg:px-10 lg:py-28">
 
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
@@ -52,7 +52,7 @@ function RitualSection() {
               duration: 0.9,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="relative overflow-hidden rounded-[28px]"
+            className="relative overflow-hidden rounded-[28px] border border-white/70 shadow-[0_20px_50px_rgba(109,0,25,0.08),0_0_30px_rgba(244,194,194,0.3)] backdrop-blur-sm"
           >
             <motion.img
               src="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1200&q=85"
@@ -74,7 +74,7 @@ function RitualSection() {
             />
 
             {/* IMAGE OVERLAY */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#3d3028]/10 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#161311]/10 to-transparent" />
           </motion.div>
 
           {/* CONTENT */}
@@ -99,12 +99,12 @@ function RitualSection() {
           >
 
             {/* LABEL */}
-            <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-[#8a796c]">
+            <p className="inline-block rounded-full border border-white/80 bg-white/85 px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#161311] shadow-sm backdrop-blur-md">
               The Luv03 ritual
             </p>
 
             {/* TITLE */}
-            <h2 className="mt-3 max-w-xl font-serif text-3xl leading-[1.05] tracking-tight text-[#3d3028] md:text-4xl lg:text-5xl">
+            <h2 className="mt-3 max-w-xl font-serif text-3xl leading-[1.05] tracking-tight text-[#161311] md:text-4xl lg:text-5xl">
               Four honest steps, morning and night
             </h2>
 
@@ -130,21 +130,21 @@ function RitualSection() {
                     duration: 0.55,
                     delay: 0.2 + index * 0.1,
                   }}
-                  className="grid grid-cols-[32px_1fr] gap-4 border-b border-[#ddd7ce] py-5 first:border-t"
+                  className="grid grid-cols-[32px_1fr] gap-4 border-b border-[#E5DED3] py-5 first:border-t"
                 >
 
                   {/* NUMBER */}
-                  <span className="pt-1 text-[8px] font-medium tracking-[0.1em] text-[#9a897c]">
+                  <span className="pt-1 text-[8px] font-medium tracking-[0.1em] text-[#C5A880]">
                     {step.number}
                   </span>
 
                   {/* TEXT */}
                   <div>
-                    <h3 className="font-serif text-[15px] text-[#3d3028]">
+                    <h3 className="font-serif text-[15px] text-[#161311]">
                       {step.title}
                     </h3>
 
-                    <p className="mt-2 max-w-lg text-[9px] leading-5 text-[#756960]">
+                    <p className="mt-2 max-w-lg text-[10px] font-normal leading-5 text-[#2E2620]">
                       {step.description}
                     </p>
                   </div>

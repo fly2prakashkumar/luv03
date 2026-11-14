@@ -31,7 +31,38 @@ function App() {
 
   return (
 
-    <div className="min-h-screen bg-[#f8f6f1]">
+    <div className="relative min-h-screen text-[#161311]">
+
+      {/* ======================================================
+          FULLY FIXED & FULLY FITTED SITE-WIDE LUXURY BACKGROUND
+      ====================================================== */}
+      <div 
+        className="pointer-events-none fixed inset-0 z-0 h-screen w-screen overflow-hidden bg-[#FAF7F2]" 
+        aria-hidden="true"
+        style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 0 }}
+      >
+        {/* Atmospheric blurred backdrop: gracefully extends the lilac & violet aesthetic to every screen ratio */}
+        <img
+          src="/site-bg.png"
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover blur-2xl opacity-60 scale-110"
+        />
+
+        {/* The Full Image - 100% fitted, completely uncropped */}
+        <img
+          src="/site-bg.png"
+          alt="Luv03 Luxury Brand Background"
+          className="relative z-10 h-full w-full object-contain object-center scale-[1.14] md:scale-[1.16] transform-gpu origin-center will-change-transform transition-transform duration-500 drop-shadow-[0_15px_35px_rgba(62,46,82,0.2)]"
+        />
+
+        {/* Luminous frosted glass veil: balanced to give all headings, body text, and UI crystal-clear contrast while keeping the lilac silk & bottles radiant */}
+        <div className="absolute inset-0 z-20 bg-gradient-to-b from-white/60 via-white/45 to-white/60 backdrop-blur-[2.5px]" />
+
+        {/* Subtle specular sheen overlay */}
+        <div className="absolute inset-0 z-20 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/40 via-transparent to-transparent opacity-70" />
+      </div>
+
+      <div className="relative z-10">
 
       {/* ======================================================
           CUSTOMER NAVBAR
@@ -203,6 +234,7 @@ function App() {
         />
 
       </Routes>
+      </div>
 
     </div>
 

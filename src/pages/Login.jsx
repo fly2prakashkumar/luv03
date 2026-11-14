@@ -284,7 +284,7 @@ function Login() {
 
   return (
 
-    <main className="min-h-screen bg-[#f8f6f1] px-5 py-12 sm:px-8 lg:py-16">
+    <main className="min-h-screen bg-transparent px-5 py-12 sm:px-8 lg:py-16">
 
       <div className="mx-auto max-w-md">
 
@@ -308,12 +308,12 @@ function Login() {
           className="text-center"
         >
 
-          <p className="text-[9px] font-medium uppercase tracking-[0.25em] text-[#9a897c]">
+          <p className="text-[9px] font-medium uppercase tracking-[0.25em] text-[#9E9084]">
             Luv03
           </p>
 
 
-          <h1 className="mt-3 font-serif text-4xl text-[#3d3028] sm:text-5xl">
+          <h1 className="mt-3 font-serif text-4xl text-[#161311] sm:text-5xl">
 
             {isCreateAccount
               ? "Create Account"
@@ -322,7 +322,7 @@ function Login() {
           </h1>
 
 
-          <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-[#756960]">
+          <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-[#524942]">
 
             {isCreateAccount
               ? "Create your Luv03 account and start your skincare journey."
@@ -350,7 +350,7 @@ function Login() {
             duration: 0.6,
             delay: 0.1,
           }}
-          className="mt-10 rounded-3xl border border-[#ddd7ce] bg-[#eee9df] p-6 sm:p-8"
+          className="mt-10 rounded-3xl border border-white/80 bg-white/70 p-6 shadow-[0_16px_40px_rgba(109,0,25,0.06)] backdrop-blur-xl sm:p-8"
         >
 
           <form
@@ -367,7 +367,7 @@ function Login() {
 
               <div>
 
-                <label className="mb-2 block text-[9px] font-medium uppercase tracking-[0.16em] text-[#756960]">
+                <label className="mb-2 block text-[9px] font-medium uppercase tracking-[0.16em] text-[#524942]">
                   Full Name
                 </label>
 
@@ -377,7 +377,7 @@ function Login() {
                   <UserRound
                     size={16}
                     strokeWidth={1.3}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9a897c]"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9E9084]"
                   />
 
 
@@ -390,7 +390,7 @@ function Login() {
                       )
                     }
                     placeholder="Your name"
-                    className="h-12 w-full rounded-full border border-[#d5cec5] bg-[#f8f6f1] pl-11 pr-4 text-sm text-[#3d3028] outline-none transition focus:border-[#584539]"
+                    className="h-12 w-full rounded-full border border-[#E5DED3] bg-[#FAF7F2] pl-11 pr-4 text-sm text-[#161311] outline-none transition focus:border-[#161311]"
                   />
 
                 </div>
@@ -406,7 +406,7 @@ function Login() {
 
             <div>
 
-              <label className="mb-2 block text-[9px] font-medium uppercase tracking-[0.16em] text-[#756960]">
+              <label className="mb-2 block text-[9px] font-medium uppercase tracking-[0.16em] text-[#524942]">
                 Email Address
               </label>
 
@@ -416,7 +416,7 @@ function Login() {
                 <Mail
                   size={16}
                   strokeWidth={1.3}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9a897c]"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9E9084]"
                 />
 
 
@@ -430,7 +430,7 @@ function Login() {
                   }
                   placeholder="you@example.com"
                   autoComplete="email"
-                  className="h-12 w-full rounded-full border border-[#d5cec5] bg-[#f8f6f1] pl-11 pr-4 text-sm text-[#3d3028] outline-none transition focus:border-[#584539]"
+                  className="h-12 w-full rounded-full border border-[#E5DED3] bg-[#FAF7F2] pl-11 pr-4 text-sm text-[#161311] outline-none transition focus:border-[#161311]"
                 />
 
               </div>
@@ -444,7 +444,7 @@ function Login() {
 
             <div>
 
-              <label className="mb-2 block text-[9px] font-medium uppercase tracking-[0.16em] text-[#756960]">
+              <label className="mb-2 block text-[9px] font-medium uppercase tracking-[0.16em] text-[#524942]">
                 Password
               </label>
 
@@ -454,7 +454,7 @@ function Login() {
                 <LockKeyhole
                   size={16}
                   strokeWidth={1.3}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9a897c]"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9E9084]"
                 />
 
 
@@ -476,7 +476,7 @@ function Login() {
                       ? "new-password"
                       : "current-password"
                   }
-                  className="h-12 w-full rounded-full border border-[#d5cec5] bg-[#f8f6f1] pl-11 pr-12 text-sm text-[#3d3028] outline-none transition focus:border-[#584539]"
+                  className="h-12 w-full rounded-full border border-[#E5DED3] bg-[#FAF7F2] pl-11 pr-12 text-sm text-[#161311] outline-none transition focus:border-[#161311]"
                 />
 
 
@@ -488,7 +488,7 @@ function Login() {
                         !current
                     )
                   }
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9a897c] transition hover:text-[#584539]"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9E9084] transition hover:text-[#161311]"
                 >
 
                   {showPassword ? (
@@ -522,7 +522,7 @@ function Login() {
 
               <div>
 
-                <label className="mb-2 block text-[9px] font-medium uppercase tracking-[0.16em] text-[#756960]">
+                <label className="mb-2 block text-[9px] font-medium uppercase tracking-[0.16em] text-[#524942]">
                   Confirm Password
                 </label>
 
@@ -532,7 +532,7 @@ function Login() {
                   <LockKeyhole
                     size={16}
                     strokeWidth={1.3}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9a897c]"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9E9084]"
                   />
 
 
@@ -552,7 +552,7 @@ function Login() {
                     }
                     placeholder="Confirm your password"
                     autoComplete="new-password"
-                    className="h-12 w-full rounded-full border border-[#d5cec5] bg-[#f8f6f1] pl-11 pr-12 text-sm text-[#3d3028] outline-none transition focus:border-[#584539]"
+                    className="h-12 w-full rounded-full border border-[#E5DED3] bg-[#FAF7F2] pl-11 pr-12 text-sm text-[#161311] outline-none transition focus:border-[#161311]"
                   />
 
 
@@ -564,7 +564,7 @@ function Login() {
                           !current
                       )
                     }
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9a897c] transition hover:text-[#584539]"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9E9084] transition hover:text-[#161311]"
                   >
 
                     {showConfirmPassword ? (
@@ -600,7 +600,7 @@ function Login() {
 
               <div className="rounded-2xl border border-[#d7aaa0] bg-[#f8e9e5] px-4 py-3">
 
-                <p className="text-center text-xs text-[#8f4c40]">
+                <p className="text-center text-xs text-[#161311]">
                   {error}
                 </p>
 
@@ -632,7 +632,7 @@ function Login() {
 
             <button
               type="submit"
-              className="flex h-12 w-full items-center justify-center rounded-full bg-[#584539] px-6 text-[9px] font-medium uppercase tracking-[0.18em] text-[#f8f6f1] transition hover:bg-[#3d3028]"
+              className="flex h-12 w-full items-center justify-center rounded-full bg-[#161311] px-6 text-[9px] font-medium uppercase tracking-[0.18em] text-[#FAF7F2] transition hover:bg-[#161311]"
             >
 
               {isCreateAccount
@@ -650,7 +650,7 @@ function Login() {
 
           <div className="mt-7 text-center">
 
-            <p className="text-xs text-[#756960]">
+            <p className="text-xs text-[#524942]">
 
               {isCreateAccount
                 ? "Already have an account?"
@@ -662,7 +662,7 @@ function Login() {
             <button
               type="button"
               onClick={switchMode}
-              className="mt-2 text-[9px] font-medium uppercase tracking-[0.16em] text-[#b56d43] transition hover:text-[#584539]"
+              className="mt-2 text-[9px] font-medium uppercase tracking-[0.16em] text-[#C5A880] transition hover:text-[#161311]"
             >
 
               {isCreateAccount
@@ -676,7 +676,7 @@ function Login() {
         </motion.div>
 
 
-        <p className="mt-6 text-center text-[8px] leading-5 text-[#aaa098]">
+        <p className="mt-6 text-center text-[8px] leading-5 text-[#B3A69A]">
           Administrator access is restricted to authorized credentials.
         </p>
 

@@ -4,7 +4,11 @@ import {
   ArrowLeft,
   Lock,
   ShoppingBag,
+  CreditCard,
+  Banknote,
+  ShieldCheck,
 } from "lucide-react";
+import { getStoredProducts, saveStoredProducts } from "../data/products";
 
 import {
   Link,
@@ -55,7 +59,7 @@ function Checkout() {
       city: "",
       state: "",
       pincode: "",
-
+      paymentMethod: "Prepaid",
     });
 
 
@@ -188,118 +192,35 @@ function Checkout() {
     // ORDER
     // --------------------------------------------------------
 
+    const isCod = (formData.paymentMethod || "Prepaid") === "COD";
+
     const order = {
-
-      id:
-        orderId,
-
-
-      // ------------------------------------------------------
-      // CUSTOMER EMAIL
-      // Used by getUserOrders()
-      // ------------------------------------------------------
-
-      customerEmail:
-        currentUser.email,
-
-
-      // ------------------------------------------------------
-      // CUSTOMER
-      // ------------------------------------------------------
-
+      id: orderId,
+      customerEmail: currentUser.email,
       customer: {
-
-        firstName:
-          formData.firstName,
-
-        lastName:
-          formData.lastName,
-
-        email:
-          formData.email ||
-          currentUser.email,
-
-        phone:
-          formData.phone,
-
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        name: `${formData.firstName} ${formData.lastName}`.trim() || currentUser.name || "Customer",
+        email: formData.email || currentUser.email,
+        phone: formData.phone,
       },
-
-
-      // ------------------------------------------------------
-      // SHIPPING
-      // ------------------------------------------------------
-
       shipping: {
-
-        address:
-          formData.address,
-
-        apartment:
-          formData.apartment,
-
-        city:
-          formData.city,
-
-        state:
-          formData.state,
-
-        pincode:
-          formData.pincode,
-
+        address: formData.address,
+        apartment: formData.apartment,
+        city: formData.city,
+        state: formData.state,
+        pincode: formData.pincode,
       },
-
-
-      // ------------------------------------------------------
-      // PRODUCTS
-      // ------------------------------------------------------
-
-      items:
-        cartItems.map(
-          (item) => ({
-
-            ...item,
-
-            quantity:
-              Number(
-                item.quantity
-              ) || 1,
-
-          })
-        ),
-
-
-      // ------------------------------------------------------
-      // TOTAL
-      // ------------------------------------------------------
-
-      total:
-        Number(
-          cartTotal
-        ) || 0,
-
-
-      // ------------------------------------------------------
-      // STATUS
-      // ------------------------------------------------------
-
-      status:
-        "Order confirmed",
-
-
-      // ------------------------------------------------------
-      // DATE
-      // ------------------------------------------------------
-
-      date:
-        orderDate,
-
-
-      // Keep createdAt as well
-      // for compatibility
-
-      createdAt:
-        orderDate,
-
+      items: cartItems.map((item) => ({
+        ...item,
+        quantity: Number(item.quantity) || 1,
+      })),
+      total: Number(cartTotal) || 0,
+      paymentMethod: isCod ? "COD" : "Prepaid",
+      paymentStatus: isCod ? "Pay on Delivery" : "Paid",
+      status: "Order Confirmed",
+      date: orderDate,
+      createdAt: orderDate,
     };
 
 
@@ -307,10 +228,64 @@ function Checkout() {
     // SAVE ORDER TO ALL ORDERS
     // ========================================================
 
-    const saved =
-      saveOrder(
-        order
-      );
+    const saved = saveOrder(order);
+
+    // Deduct warehouse inventory stock
+    try {
+      const currentProducts = getStoredProducts();
+      let updatedAny = false;
+      const updatedProducts = currentProducts.map((p) => {
+        const itemInCart = cartItems.find((ci) => ci.id === p.id || ci.slug === p.slug);
+        if (itemInCart) {
+          updatedAny = true;
+          const qty = Number(itemInCart.quantity) || 1;
+          return { ...p, stock: Math.max(0, (Number(p.stock) || 0) - qty) };
+        }
+        return p;
+      });
+      if (updatedAny) {
+        saveStoredProducts(updatedProducts);
+      }
+    } catch (err) {
+      console.error("Stock deduction error:", err);
+    }
+
+    // ========================================================
+    // SYNC ORDER DIRECTLY TO GOOGLE SHEET
+    // ========================================================
+    const GOOGLE_SCRIPT_URL =
+      "https://script.google.com/macros/s/AKfycbz6Uwk_617PXrfPNAgQmXiz2KMkTa1TIfM-iosBundJ07OuT4gTH7Dp8Dopl5Eizvs/exec";
+
+    try {
+      const orderParams = new URLSearchParams({
+        action: "order",
+        orderId: order.id,
+        name: order.customer.name,
+        email: order.customer.email,
+        phone: order.customer.phone || "",
+        address: `${order.shipping.address || ""} ${order.shipping.apartment || ""}`.trim(),
+        city: order.shipping.city || "",
+        state: order.shipping.state || "",
+        pincode: order.shipping.pincode || "",
+        items: order.items.map((i) => `${i.name} (Qty: ${i.quantity}, ₹${i.price})`).join("; "),
+        total: `₹${Number(order.total).toLocaleString("en-IN")}`,
+        paymentMethod: order.paymentMethod,
+        paymentStatus: order.paymentStatus,
+        status: order.status,
+        courier: "Blue Dart Express",
+        trackingNumber: `BD-${Math.floor(100000 + Math.random() * 900000)}`,
+        date: orderDate,
+      });
+
+      fetch(`${GOOGLE_SCRIPT_URL}?${orderParams.toString()}`, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: orderParams.toString(),
+      }).catch((e) => console.warn("Order Sheet sync notice:", e));
+    } catch (sheetErr) {
+      console.warn("Could not sync order to Sheet:", sheetErr);
+    }
 
 
     // --------------------------------------------------------
@@ -390,13 +365,13 @@ function Checkout() {
 
     return (
 
-      <main className="min-h-screen bg-[#f8f6f1]">
+      <main className="min-h-screen bg-transparent">
 
         <section className="flex min-h-[70vh] items-center justify-center px-6">
 
           <div className="text-center">
 
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#eee9df] text-[#584539]">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#F2ECE1] text-[#161311]">
 
               <ShoppingBag
                 size={25}
@@ -406,17 +381,17 @@ function Checkout() {
             </div>
 
 
-            <p className="mt-7 text-[9px] font-medium uppercase tracking-[0.2em] text-[#8a796c]">
+            <p className="mt-7 text-[9px] font-medium uppercase tracking-[0.2em] text-[#8C7E72]">
               Checkout
             </p>
 
 
-            <h1 className="mt-3 font-serif text-3xl text-[#3d3028]">
+            <h1 className="mt-3 font-serif text-3xl text-[#161311]">
               Your bag is empty
             </h1>
 
 
-            <p className="mx-auto mt-3 max-w-sm text-xs leading-6 text-[#8a796c]">
+            <p className="mx-auto mt-3 max-w-sm text-xs leading-6 text-[#8C7E72]">
               Add something beautiful to your bag
               before continuing to checkout.
             </p>
@@ -424,7 +399,7 @@ function Checkout() {
 
             <Link
               to="/shop"
-              className="mt-7 inline-flex rounded-full bg-[#584539] px-7 py-3 text-[9px] font-medium uppercase tracking-[0.15em] text-[#f8f6f1] transition hover:bg-[#3d3028]"
+              className="mt-7 inline-flex rounded-full bg-[#161311] px-7 py-3 text-[9px] font-medium uppercase tracking-[0.15em] text-[#FAF7F2] transition hover:bg-[#161311]"
             >
               Continue shopping
             </Link>
@@ -456,20 +431,20 @@ function Checkout() {
 
   return (
 
-    <main className="min-h-screen bg-[#f8f6f1]">
+    <main className="min-h-screen bg-transparent">
 
 
       {/* ====================================================
           HEADER
       ==================================================== */}
 
-      <section className="border-b border-[#ddd7ce]">
+      <section className="border-b border-[#E5DED3]">
 
         <div className="mx-auto max-w-[1440px] px-6 py-14 lg:px-10">
 
           <Link
             to="/cart"
-            className="inline-flex items-center gap-2 text-[9px] font-medium uppercase tracking-[0.12em] text-[#756960] transition hover:text-[#b56d43]"
+            className="inline-flex items-center gap-2 text-[9px] font-medium uppercase tracking-[0.12em] text-[#524942] transition hover:text-[#C5A880]"
           >
 
             <ArrowLeft
@@ -482,12 +457,12 @@ function Checkout() {
           </Link>
 
 
-          <p className="mt-8 text-[9px] font-medium uppercase tracking-[0.2em] text-[#8a796c]">
+          <p className="mt-8 text-[9px] font-medium uppercase tracking-[0.2em] text-[#8C7E72]">
             Almost there
           </p>
 
 
-          <h1 className="mt-3 font-serif text-4xl tracking-tight text-[#3d3028] md:text-5xl">
+          <h1 className="mt-3 font-serif text-4xl tracking-tight text-[#161311] md:text-5xl">
             Checkout
           </h1>
 
@@ -524,12 +499,12 @@ function Checkout() {
 
               <div>
 
-                <p className="text-[9px] font-medium uppercase tracking-[0.18em] text-[#8a796c]">
+                <p className="text-[9px] font-medium uppercase tracking-[0.18em] text-[#8C7E72]">
                   01
                 </p>
 
 
-                <h2 className="mt-2 font-serif text-2xl text-[#3d3028]">
+                <h2 className="mt-2 font-serif text-2xl text-[#161311]">
                   Contact information
                 </h2>
 
@@ -543,7 +518,7 @@ function Checkout() {
 
                     <label
                       htmlFor="email"
-                      className="mb-2 block text-[9px] font-medium uppercase tracking-[0.12em] text-[#756960]"
+                      className="mb-2 block text-[9px] font-medium uppercase tracking-[0.12em] text-[#524942]"
                     >
                       Email address
                     </label>
@@ -561,7 +536,7 @@ function Checkout() {
                         handleChange
                       }
                       placeholder="you@example.com"
-                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs text-[#3d3028] outline-none focus:border-[#584539]"
+                      className="h-12 w-full rounded-xl border border-[#E5DED3] bg-transparent px-4 text-xs text-[#161311] outline-none focus:border-[#161311]"
                     />
 
                   </div>
@@ -573,7 +548,7 @@ function Checkout() {
 
                     <label
                       htmlFor="phone"
-                      className="mb-2 block text-[9px] font-medium uppercase tracking-[0.12em] text-[#756960]"
+                      className="mb-2 block text-[9px] font-medium uppercase tracking-[0.12em] text-[#524942]"
                     >
                       Phone number
                     </label>
@@ -591,7 +566,7 @@ function Checkout() {
                         handleChange
                       }
                       placeholder="+91 98765 43210"
-                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs text-[#3d3028] outline-none focus:border-[#584539]"
+                      className="h-12 w-full rounded-xl border border-[#E5DED3] bg-transparent px-4 text-xs text-[#161311] outline-none focus:border-[#161311]"
                     />
 
                   </div>
@@ -605,14 +580,14 @@ function Checkout() {
                   SHIPPING
               ================================================== */}
 
-              <div className="mt-14 border-t border-[#ddd7ce] pt-10">
+              <div className="mt-14 border-t border-[#E5DED3] pt-10">
 
-                <p className="text-[9px] font-medium uppercase tracking-[0.18em] text-[#8a796c]">
+                <p className="text-[9px] font-medium uppercase tracking-[0.18em] text-[#8C7E72]">
                   02
                 </p>
 
 
-                <h2 className="mt-2 font-serif text-2xl text-[#3d3028]">
+                <h2 className="mt-2 font-serif text-2xl text-[#161311]">
                   Delivery address
                 </h2>
 
@@ -624,7 +599,7 @@ function Checkout() {
 
                   <div>
 
-                    <label className="mb-2 block text-[9px] uppercase tracking-[0.12em] text-[#756960]">
+                    <label className="mb-2 block text-[9px] uppercase tracking-[0.12em] text-[#524942]">
                       First name
                     </label>
 
@@ -639,7 +614,7 @@ function Checkout() {
                       onChange={
                         handleChange
                       }
-                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs outline-none focus:border-[#584539]"
+                      className="h-12 w-full rounded-xl border border-[#E5DED3] bg-transparent px-4 text-xs outline-none focus:border-[#161311]"
                     />
 
                   </div>
@@ -649,7 +624,7 @@ function Checkout() {
 
                   <div>
 
-                    <label className="mb-2 block text-[9px] uppercase tracking-[0.12em] text-[#756960]">
+                    <label className="mb-2 block text-[9px] uppercase tracking-[0.12em] text-[#524942]">
                       Last name
                     </label>
 
@@ -664,7 +639,7 @@ function Checkout() {
                       onChange={
                         handleChange
                       }
-                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs outline-none focus:border-[#584539]"
+                      className="h-12 w-full rounded-xl border border-[#E5DED3] bg-transparent px-4 text-xs outline-none focus:border-[#161311]"
                     />
 
                   </div>
@@ -674,7 +649,7 @@ function Checkout() {
 
                   <div className="sm:col-span-2">
 
-                    <label className="mb-2 block text-[9px] uppercase tracking-[0.12em] text-[#756960]">
+                    <label className="mb-2 block text-[9px] uppercase tracking-[0.12em] text-[#524942]">
                       Address
                     </label>
 
@@ -690,7 +665,7 @@ function Checkout() {
                         handleChange
                       }
                       placeholder="House no., street, area"
-                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs outline-none focus:border-[#584539]"
+                      className="h-12 w-full rounded-xl border border-[#E5DED3] bg-transparent px-4 text-xs outline-none focus:border-[#161311]"
                     />
 
                   </div>
@@ -700,7 +675,7 @@ function Checkout() {
 
                   <div className="sm:col-span-2">
 
-                    <label className="mb-2 block text-[9px] uppercase tracking-[0.12em] text-[#756960]">
+                    <label className="mb-2 block text-[9px] uppercase tracking-[0.12em] text-[#524942]">
                       Apartment / Landmark
                     </label>
 
@@ -714,7 +689,7 @@ function Checkout() {
                       onChange={
                         handleChange
                       }
-                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs outline-none focus:border-[#584539]"
+                      className="h-12 w-full rounded-xl border border-[#E5DED3] bg-transparent px-4 text-xs outline-none focus:border-[#161311]"
                     />
 
                   </div>
@@ -724,7 +699,7 @@ function Checkout() {
 
                   <div>
 
-                    <label className="mb-2 block text-[9px] uppercase tracking-[0.12em] text-[#756960]">
+                    <label className="mb-2 block text-[9px] uppercase tracking-[0.12em] text-[#524942]">
                       City
                     </label>
 
@@ -739,7 +714,7 @@ function Checkout() {
                       onChange={
                         handleChange
                       }
-                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs outline-none focus:border-[#584539]"
+                      className="h-12 w-full rounded-xl border border-[#E5DED3] bg-transparent px-4 text-xs outline-none focus:border-[#161311]"
                     />
 
                   </div>
@@ -749,7 +724,7 @@ function Checkout() {
 
                   <div>
 
-                    <label className="mb-2 block text-[9px] uppercase tracking-[0.12em] text-[#756960]">
+                    <label className="mb-2 block text-[9px] uppercase tracking-[0.12em] text-[#524942]">
                       State
                     </label>
 
@@ -764,7 +739,7 @@ function Checkout() {
                       onChange={
                         handleChange
                       }
-                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs outline-none focus:border-[#584539]"
+                      className="h-12 w-full rounded-xl border border-[#E5DED3] bg-transparent px-4 text-xs outline-none focus:border-[#161311]"
                     />
 
                   </div>
@@ -774,7 +749,7 @@ function Checkout() {
 
                   <div>
 
-                    <label className="mb-2 block text-[9px] uppercase tracking-[0.12em] text-[#756960]">
+                    <label className="mb-2 block text-[9px] uppercase tracking-[0.12em] text-[#524942]">
                       Pincode
                     </label>
 
@@ -792,7 +767,7 @@ function Checkout() {
                       onChange={
                         handleChange
                       }
-                      className="h-12 w-full rounded-xl border border-[#d7cec5] bg-transparent px-4 text-xs outline-none focus:border-[#584539]"
+                      className="h-12 w-full rounded-xl border border-[#E5DED3] bg-transparent px-4 text-xs outline-none focus:border-[#161311]"
                     />
 
                   </div>
@@ -803,49 +778,94 @@ function Checkout() {
 
 
               {/* ==================================================
-                  PAYMENT
+                  PAYMENT METHOD
               ================================================== */}
 
-              <div className="mt-14 border-t border-[#ddd7ce] pt-10">
+              <div className="mt-14 border-t border-[#E5DED3] pt-10">
 
-                <p className="text-[9px] font-medium uppercase tracking-[0.18em] text-[#8a796c]">
+                <p className="text-[9px] font-medium uppercase tracking-[0.18em] text-[#8C7E72]">
                   03
                 </p>
 
-
-                <h2 className="mt-2 font-serif text-2xl text-[#3d3028]">
-                  Payment
+                <h2 className="mt-2 font-serif text-2xl text-[#161311]">
+                  Payment Method
                 </h2>
 
+                <p className="mt-1 text-xs text-[#8C7E72]">
+                  Choose how you would like to pay for your luxury order.
+                </p>
 
-                <div className="mt-6 rounded-2xl border border-[#d7cec5] bg-[#eee9df]/50 p-5">
+                <div className="mt-6 space-y-4">
 
-                  <div className="flex gap-3">
-
-                    <div className="mt-1 h-4 w-4 shrink-0 rounded-full border border-[#584539] p-[3px]">
-
-                      <div className="h-full w-full rounded-full bg-[#584539]" />
-
+                  {/* PREPAID OPTION */}
+                  <div
+                    onClick={() => setFormData((prev) => ({ ...prev, paymentMethod: "Prepaid" }))}
+                    className={`flex cursor-pointer items-start gap-4 rounded-2xl border p-5 transition ${
+                      formData.paymentMethod === "Prepaid"
+                        ? "border-[#161311] bg-[#FAF7F2] shadow-sm"
+                        : "border-[#E5DED3] bg-white hover:border-[#C5A880]"
+                    }`}
+                  >
+                    <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#161311]">
+                      {formData.paymentMethod === "Prepaid" && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-[#161311]" />
+                      )}
                     </div>
-
-
-                    <div>
-
-                      <p className="text-[10px] font-medium text-[#3d3028]">
-                        Payment integration coming soon
+                    <div className="flex-1">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <CreditCard size={18} className="text-[#161311]" />
+                          <span className="font-medium text-sm text-[#161311]">
+                            Prepaid (Online Payment)
+                          </span>
+                        </div>
+                        <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-emerald-800">
+                          Instant Confirmation
+                        </span>
+                      </div>
+                      <p className="mt-1.5 text-xs leading-5 text-[#6B5E55]">
+                        Pay instantly via Google Pay, PhonePe, UPI QR, Cards, or Net Banking.
                       </p>
-
-
-                      <p className="mt-1 text-[9px] leading-5 text-[#8a796c]">
-                        Online payment will be connected
-                        later. For now, you can test the
-                        complete order experience.
-                      </p>
-
                     </div>
-
                   </div>
 
+                  {/* CASH ON DELIVERY (COD) OPTION */}
+                  <div
+                    onClick={() => setFormData((prev) => ({ ...prev, paymentMethod: "COD" }))}
+                    className={`flex cursor-pointer items-start gap-4 rounded-2xl border p-5 transition ${
+                      formData.paymentMethod === "COD"
+                        ? "border-[#161311] bg-[#FAF7F2] shadow-sm"
+                        : "border-[#E5DED3] bg-white hover:border-[#C5A880]"
+                    }`}
+                  >
+                    <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#161311]">
+                      {formData.paymentMethod === "COD" && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-[#161311]" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <Banknote size={18} className="text-[#161311]" />
+                          <span className="font-medium text-sm text-[#161311]">
+                            Cash on Delivery (COD)
+                          </span>
+                        </div>
+                        <span className="rounded-full bg-[#161311]/10 px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-[#161311]">
+                          Pay on Delivery
+                        </span>
+                      </div>
+                      <p className="mt-1.5 text-xs leading-5 text-[#6B5E55]">
+                        Pay in cash or scan delivery agent's UPI QR code upon arrival at your doorstep.
+                      </p>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div className="mt-4 flex items-center gap-2 text-[11px] text-[#8C7E72]">
+                  <ShieldCheck size={14} className="text-[#C5A880]" />
+                  <span>256-bit SSL encrypted & verified luxury delivery guarantee.</span>
                 </div>
 
               </div>
@@ -866,20 +886,20 @@ function Checkout() {
                 opacity: 1,
                 x: 0,
               }}
-              className="h-fit rounded-[24px] bg-[#eee9df] p-7 lg:sticky lg:top-28"
+              className="h-fit rounded-[24px] border border-white/80 bg-white/70 p-7 shadow-[0_16px_40px_rgba(109,0,25,0.06)] backdrop-blur-xl lg:sticky lg:top-28"
             >
 
-              <p className="text-[9px] uppercase tracking-[0.18em] text-[#8a796c]">
+              <p className="text-[9px] uppercase tracking-[0.18em] text-[#8C7E72]">
                 Your order
               </p>
 
 
-              <h2 className="mt-3 font-serif text-2xl text-[#3d3028]">
+              <h2 className="mt-3 font-serif text-2xl text-[#161311]">
                 Order summary
               </h2>
 
 
-              <div className="mt-7 space-y-5 border-b border-[#d5ccc2] pb-6">
+              <div className="mt-7 space-y-5 border-b border-[#E5DED3] pb-6">
 
                 {cartItems.map(
                   (
@@ -907,7 +927,7 @@ function Checkout() {
                         className="flex gap-4"
                       >
 
-                        <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-xl bg-[#f8f6f1]">
+                        <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-xl bg-[#FAF7F2]">
 
                           <img
                             src={
@@ -920,7 +940,7 @@ function Checkout() {
                           />
 
 
-                          <span className="absolute right-1 top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#584539] px-1 text-[7px] text-white">
+                          <span className="absolute right-1 top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#161311] px-1 text-[7px] text-white">
                             {quantity}
                           </span>
 
@@ -929,17 +949,17 @@ function Checkout() {
 
                         <div className="min-w-0 flex-1">
 
-                          <p className="text-[8px] uppercase tracking-[0.12em] text-[#9a897c]">
+                          <p className="text-[8px] uppercase tracking-[0.12em] text-[#9E9084]">
                             {item.category}
                           </p>
 
 
-                          <p className="mt-1 font-serif text-sm text-[#3d3028]">
+                          <p className="mt-1 font-serif text-sm text-[#161311]">
                             {item.name}
                           </p>
 
 
-                          <p className="mt-1 text-[10px] text-[#756960]">
+                          <p className="mt-1 text-[10px] text-[#524942]">
                             ₹
                             {price.toLocaleString(
                               "en-IN"
@@ -960,7 +980,7 @@ function Checkout() {
 
               {/* SUBTOTAL */}
 
-              <div className="mt-5 flex justify-between text-xs text-[#756960]">
+              <div className="mt-5 flex justify-between text-xs text-[#524942]">
 
                 <span>
                   Subtotal
@@ -979,7 +999,7 @@ function Checkout() {
 
               {/* SHIPPING */}
 
-              <div className="mt-4 flex justify-between text-xs text-[#756960]">
+              <div className="mt-4 flex justify-between text-xs text-[#524942]">
 
                 <span>
                   Shipping
@@ -995,14 +1015,14 @@ function Checkout() {
 
               {/* TOTAL */}
 
-              <div className="mt-5 flex items-center justify-between border-t border-[#d5ccc2] pt-5">
+              <div className="mt-5 flex items-center justify-between border-t border-[#E5DED3] pt-5">
 
-                <span className="text-[9px] font-medium uppercase tracking-[0.14em] text-[#51463f]">
+                <span className="text-[9px] font-medium uppercase tracking-[0.14em] text-[#38312B]">
                   Total
                 </span>
 
 
-                <span className="font-serif text-2xl text-[#3d3028]">
+                <span className="font-serif text-2xl text-[#161311]">
                   ₹
                   {safeCartTotal.toLocaleString(
                     "en-IN"
@@ -1022,7 +1042,7 @@ function Checkout() {
                 whileTap={{
                   scale: 0.98,
                 }}
-                className="mt-7 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#584539] text-[9px] font-medium uppercase tracking-[0.15em] text-[#f8f6f1] transition hover:bg-[#3d3028] disabled:opacity-60"
+                className="mt-7 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#161311] text-[9px] font-medium uppercase tracking-[0.15em] text-[#FAF7F2] transition hover:bg-[#161311] disabled:opacity-60"
               >
 
                 <Lock
